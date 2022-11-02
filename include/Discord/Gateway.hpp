@@ -10,7 +10,11 @@
 
 namespace Strawberry::Discord
 {
-	using namespace Strawberry::Standard::Net::Websocket;
+	namespace
+	{
+		using Standard::Result;
+		using Standard::Net::Websocket::Message;
+	}
 
 
 

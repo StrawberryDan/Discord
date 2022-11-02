@@ -12,17 +12,23 @@
 
 
 
+namespace
+{
+	using Strawberry::Standard::Clock;
+	using Strawberry::Standard::Mutex;
+	using Strawberry::Standard::Option;
+	using Strawberry::Standard::SharedMutex;
+	using Strawberry::Standard::Net::Websocket::WSSClient;
+}
+
+
+
 namespace Strawberry::Discord
 {
-	using namespace Strawberry::Standard;
-	using namespace Strawberry::Standard::Net;
-
-
-
 	class Heartbeat
 	{
 	public:
-		Heartbeat(SharedMutex<Websocket::WSSClient> wss, double interval);
+		Heartbeat(SharedMutex<WSSClient> wss, double interval);
 		~Heartbeat();
 
 		void UpdateSequenceNumber(size_t value);
@@ -34,7 +40,7 @@ namespace Strawberry::Discord
 		const double mInterval;
 		Clock mClock;
 		Mutex<bool> mShouldStop;
-		SharedMutex<Websocket::WSSClient> mWSS;
+		SharedMutex<WSSClient> mWSS;
 		Option<Mutex<size_t>> mLastSequenceNumber;
 	};
 }

@@ -2,6 +2,13 @@
 
 
 
+namespace
+{
+	using Strawberry::Standard::Assert;
+}
+
+
+
 namespace Strawberry::Discord
 {
 	Gateway::Gateway(std::string endpoint, std::string token, Intent intent)

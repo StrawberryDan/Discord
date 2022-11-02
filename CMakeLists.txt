@@ -15,7 +15,9 @@ add_library(Discord STATIC
         include/Discord/Entity/Guild.hpp
         include/Discord/Entity/Channel.hpp
         src/Entities/Guild.cpp
-        src/Entities/Channel.cpp)
+        src/Entities/Channel.cpp
+        include/Discord/EventListener.hpp
+        include/Discord/Event/Base.hpp)
 target_include_directories(Discord PUBLIC include)
 target_link_libraries(Discord PUBLIC Codec Standard)
 

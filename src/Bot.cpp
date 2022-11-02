@@ -7,7 +7,9 @@
 
 namespace Strawberry::Discord
 {
-	using namespace Strawberry::Standard::Net;
+	using Strawberry::Standard::Assert;
+	using Strawberry::Standard::Unreachable;
+	using Strawberry::Standard::Net::HTTP::HTTPSClient;
 
 
 
@@ -45,6 +47,21 @@ namespace Strawberry::Discord
 
 
 
+	void Bot::RegisterEventListener(EventListener* listener)
+	{
+		mEventListeners.insert(listener);
+	}
+
+
+
+	void Bot::DeregisterEventListener(EventListener* listener)
+	{
+		Assert(mEventListeners.contains(listener));
+		mEventListeners.erase(listener);
+	}
+
+
+
 	void Bot::OnGatewayMessage(Message message)
 	{
 		auto json = message.AsJSON().UnwrapOr({});
@@ -62,11 +79,13 @@ namespace Strawberry::Discord
 				{
 					Event::Ready event;
 					if (mBehaviour) mBehaviour->OnReady(event);
+					DispatchEvent(event);
 				}
 				else if (json["t"] == "GUILD_CREATE")
 				{
 					auto event = Event::GuildCreate::Parse(json).Unwrap();
 					if (mBehaviour) mBehaviour->OnGuildCreate(event);
+					DispatchEvent(event);
 				}
 
 				break;
@@ -83,15 +102,31 @@ namespace Strawberry::Discord
 
 
 
+	void Bot::DispatchEvent(const Event::Base& event) const
+	{
+		for (auto listener : mEventListeners)
+		{
+			listener->ProcessEvent(event);
+		}
+	}
+
+
+
 	std::string Bot::GetGatewayEndpoint()
 	{
-		HTTP::Request request(HTTP::Verb::GET, "/api/v10/gateway/bot");
+		using Strawberry::Standard::Net::HTTP::Request;
+		using Strawberry::Standard::Net::HTTP::Verb;
+		using Strawberry::Standard::Net::HTTP::ChunkedPayload;
+
+
+
+		Request request(Verb::GET, "/api/v10/gateway/bot");
 		request.GetHeader().Add("Authorization", fmt::format("Discord {}", mToken));
 		request.GetHeader().Add("Host", "discord.com");
 		mHTTPS.Lock()->SendRequest(request);
 		auto response = mHTTPS.Lock()->Receive();
 		Assert(response.GetStatus() == 200);
-		auto payload = std::get<HTTP::ChunkedPayload>(*response.GetPayload());
+		auto payload = std::get<ChunkedPayload>(*response.GetPayload());
 		auto json = *payload[0].AsJSON();
 		auto url = (std::string) json["url"];
 		url.erase(0, 6);

@@ -9,12 +9,15 @@
 
 
 
+namespace
+{
+	using Strawberry::Standard::Result;
+}
+
+
+
 namespace Strawberry::Discord::Entity
 {
-	using namespace Strawberry::Standard;
-
-
-
 	class Channel
 	{
 	public:

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <optional>
+#include <set>
 
 
 
@@ -12,15 +13,20 @@
 #include "Gateway.hpp"
 #include "Intent.hpp"
 #include "Behaviour.hpp"
+#include "EventListener.hpp"
+#include "Event/Base.hpp"
+
+
+
+namespace
+{
+	using Strawberry::Standard::Net::HTTP::HTTPSClient;
+}
 
 
 
 namespace Strawberry::Discord
 {
-	using namespace Strawberry::Standard::Net::HTTP;
-
-
-
 	class Bot
 	{
 	public:
@@ -28,6 +34,8 @@ namespace Strawberry::Discord
 
 	public:
 	    explicit Bot(Token token, Intent intents);
+
+
 
 	    void Run();
 
@@ -37,8 +45,18 @@ namespace Strawberry::Discord
 
 
 
+		void RegisterEventListener(EventListener* listener);
+
+		void DeregisterEventListener(EventListener* listener);
+
+
+
 	private:
 		void OnGatewayMessage(Message message);
+
+
+
+		void DispatchEvent(const Event::Base& event) const;
 
 
 
@@ -53,5 +71,6 @@ namespace Strawberry::Discord
 	    SharedMutex<HTTPSClient>       mHTTPS;
 	    Option<Gateway>                mGateway;
 		std::unique_ptr<Behaviour>     mBehaviour;
+		std::set<EventListener*>       mEventListeners;
 	};
 }

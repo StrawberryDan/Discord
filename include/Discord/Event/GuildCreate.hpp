@@ -5,18 +5,23 @@
 #include <nlohmann/json.hpp>
 #include "Discord/Snowflake.hpp"
 #include "Discord/Error.hpp"
-#include "Standard/Result.hpp"
 #include "Discord/Entity/Guild.hpp"
+#include "Base.hpp"
+#include "Standard/Result.hpp"
+
+
+
+namespace
+{
+	using Strawberry::Standard::Result;
+}
 
 
 
 namespace Strawberry::Discord::Event
 {
-	using namespace Strawberry::Standard;
-
-
-
 	class GuildCreate
+		: public Base
 	{
 	public:
 		// Constructors
