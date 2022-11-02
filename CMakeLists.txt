@@ -20,6 +20,6 @@ target_include_directories(Discord PUBLIC include)
 target_link_libraries(Discord PUBLIC Codec Standard)
 
 
-add_executable(Bot_Test
+add_executable(Discord_Test
         test/Main.cpp)
-target_link_libraries(Bot_Test PRIVATE Discord)
+target_link_libraries(Discord_Test PRIVATE Discord)
