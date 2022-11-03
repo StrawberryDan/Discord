@@ -49,14 +49,15 @@ namespace Strawberry::Discord
 			}
 			else
 			{
-				if (msg.Err() == WSSClient::Error::NoMessage)
+				switch (msg.Err())
 				{
-					std::this_thread::yield();
-					continue;
-				}
-				else
-				{
-					return msg;
+					case WSSClient::Error::NoMessage:
+						std::this_thread::yield();
+						continue;
+					case WSSClient::Error::Closed:
+						return msg.Err();
+					default:
+						Standard::Unreachable();
 				}
 			}
 		}
