@@ -64,6 +64,7 @@ namespace Strawberry::Discord
 	    std::string GetGatewayEndpoint();
 
 
+
 	private:
 		bool                           mRunning;
 	    Token                          mToken;

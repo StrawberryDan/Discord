@@ -14,8 +14,10 @@ namespace Strawberry::Discord
 
 
 	Bot::Bot(Token token, Intent intents)
-			: mRunning(true), mToken(std::move(token)), mIntents(intents), mHTTPS("discord.com"),
-			  mGateway(GetGatewayEndpoint(), mToken, mIntents)
+			: mRunning(true)
+			, mToken(std::move(token))
+			, mIntents(intents), mHTTPS("discord.com")
+			, mGateway(GetGatewayEndpoint(), mToken, mIntents)
 	{}
 
 
@@ -32,8 +34,14 @@ namespace Strawberry::Discord
 			}
 			else
 			{
-				continue;
-				Unreachable();;
+				switch (gatewayMessage.Err())
+				{
+					case WSSClient::Error::Closed:
+						mRunning = false;
+						break;
+					default:
+						Unreachable();
+				}
 			}
 		}
 	}
@@ -121,7 +129,7 @@ namespace Strawberry::Discord
 
 
 		Request request(Verb::GET, "/api/v10/gateway/bot");
-		request.GetHeader().Add("Authorization", fmt::format("Discord {}", mToken));
+		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
 		request.GetHeader().Add("Host", "discord.com");
 		mHTTPS.Lock()->SendRequest(request);
 		auto response = mHTTPS.Lock()->Receive();
