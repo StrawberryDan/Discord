@@ -25,3 +25,8 @@ namespace Strawberry::Discord::Event
 }
 
 
+
+const Strawberry::Discord::Entity::Guild& Strawberry::Discord::Event::GuildCreate::GetGuild() const
+{
+	return mGuild;
+}

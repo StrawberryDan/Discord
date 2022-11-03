@@ -22,6 +22,8 @@ namespace Strawberry::Discord::Event
 	class Base
 	{
 	public:
+		virtual ~Base() = default;
+
 		template<typename T>
 		bool IsType() const requires(std::derived_from<T, Base>);
 

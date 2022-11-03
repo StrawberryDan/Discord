@@ -29,6 +29,10 @@ namespace Strawberry::Discord::Event
 
 
 
+		const Entity::Guild& GetGuild() const;
+
+
+
 	private:
 		GuildCreate() = default;
 
