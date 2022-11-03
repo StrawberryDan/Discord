@@ -36,6 +36,9 @@ namespace Strawberry::Discord
 			{
 				switch (gatewayMessage.Err())
 				{
+					case WSSClient::Error::NoMessage:
+						std::this_thread::yield();
+						continue;
 					case WSSClient::Error::Closed:
 						mRunning = false;
 						break;
@@ -44,6 +47,13 @@ namespace Strawberry::Discord
 				}
 			}
 		}
+	}
+
+
+
+	void Bot::Stop()
+	{
+		mRunning = false;
 	}
 
 

@@ -41,6 +41,10 @@ namespace Strawberry::Discord
 
 
 
+		void Stop();
+
+
+
 		void SetBehaviour(std::unique_ptr<Behaviour> behaviour);
 
 

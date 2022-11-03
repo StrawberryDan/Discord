@@ -33,32 +33,27 @@ namespace Strawberry::Discord
 
 	Result<Message, WSSClient::Error> Gateway::Receive()
 	{
-		while (true)
+		auto msg = mWSS.Lock()->ReadMessage();
+
+		if (msg)
 		{
-			auto msg = mWSS.Lock()->ReadMessage();
-
-			if (msg)
+			auto json = msg->AsJSON();
+			if (mHeartbeat && json && json->at("s").is_number())
 			{
-				auto json = msg->AsJSON();
-				if (mHeartbeat && json && json->at("s").is_number())
-				{
-					mHeartbeat->UpdateSequenceNumber(json.Unwrap()["s"]);
-				}
-
-				return msg;
+				mHeartbeat->UpdateSequenceNumber(json.Unwrap()["s"]);
 			}
-			else
+
+			return msg;
+		}
+		else
+		{
+			switch (msg.Err())
 			{
-				switch (msg.Err())
-				{
-					case WSSClient::Error::NoMessage:
-						std::this_thread::yield();
-						continue;
-					case WSSClient::Error::Closed:
-						return msg.Err();
-					default:
-						Standard::Unreachable();
-				}
+				case WSSClient::Error::NoMessage:
+				case WSSClient::Error::Closed:
+					return msg.Err();
+				default:
+					Standard::Unreachable();
 			}
 		}
 	}
