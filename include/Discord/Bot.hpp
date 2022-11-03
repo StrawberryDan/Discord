@@ -37,20 +37,23 @@ namespace Strawberry::Discord
 
 
 
+	public:
 	    void Run();
-
-
-
 		void Stop();
 
 
 
+	public:
+		const Entity::Channel* GetChannelById(const Snowflake& id) const;
+
+
+
+	public:
 		void SetBehaviour(std::unique_ptr<Behaviour> behaviour);
 
 
-
+	public:
 		void RegisterEventListener(EventListener* listener);
-
 		void DeregisterEventListener(EventListener* listener);
 
 
@@ -77,5 +80,11 @@ namespace Strawberry::Discord
 	    Option<Gateway>                mGateway;
 		std::unique_ptr<Behaviour>     mBehaviour;
 		std::set<EventListener*>       mEventListeners;
+
+
+
+	private:
+		std::unordered_map<Snowflake, Entity::Guild>   mGuilds;
+		std::unordered_map<Snowflake, Entity::Channel> mChannels;
 	};
 }

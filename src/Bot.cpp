@@ -58,6 +58,20 @@ namespace Strawberry::Discord
 
 
 
+	const Entity::Channel* Bot::GetChannelById(const Snowflake& id) const
+	{
+		if (mChannels.contains(id))
+		{
+			return &mChannels.at(id);
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+
+
 	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
 	{
 		mBehaviour = std::move(behaviour);
@@ -102,6 +116,15 @@ namespace Strawberry::Discord
 				else if (json["t"] == "GUILD_CREATE")
 				{
 					auto event = Event::GuildCreate::Parse(json).Unwrap();
+
+					// Cache guilds and Channels
+					mGuilds.insert_or_assign(event.GetGuild().GetId(), event.GetGuild());
+					for (const auto& channel : event.GetGuild().GetChannels())
+					{
+						mChannels.insert_or_assign(channel.GetId(), channel);
+					}
+
+					// Action event
 					if (mBehaviour) mBehaviour->OnGuildCreate(event);
 					DispatchEvent(event);
 				}
