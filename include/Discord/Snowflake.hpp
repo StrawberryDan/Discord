@@ -29,8 +29,24 @@ namespace Strawberry::Discord
 
 
 
+	public:
+		friend struct  std::hash<Snowflake>;
+
+
+
 	private:
 		// Members
 		uint64_t mSnowflake;
 	};
 }
+
+
+
+template <>
+struct std::hash<Strawberry::Discord::Snowflake>
+{
+	std::size_t operator()(const Strawberry::Discord::Snowflake& v) const noexcept
+	{
+		return v.operator*();
+	}
+};
