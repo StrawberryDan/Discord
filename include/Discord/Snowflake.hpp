@@ -18,7 +18,7 @@ namespace Strawberry::Discord
 		explicit Snowflake(const std::string& snowflake);
 
 		// Methods
-
+		std::string AsString() const;
 
 
 	public:

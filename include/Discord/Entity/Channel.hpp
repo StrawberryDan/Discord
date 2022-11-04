@@ -9,13 +9,6 @@
 
 
 
-namespace
-{
-	using Strawberry::Standard::Result;
-}
-
-
-
 namespace Strawberry::Discord::Entity
 {
 	class Channel
@@ -26,7 +19,7 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		static Result<Channel, Error> Parse(const nlohmann::json& json);
+		static Standard::Result<Channel, Error> Parse(const nlohmann::json& json);
 
 
 

@@ -4,7 +4,7 @@
 
 namespace Strawberry::Discord::Entity
 {
-	Result<Guild, Error> Guild::Parse(const nlohmann::json& json)
+	Standard::Result<Guild, Error> Guild::Parse(const nlohmann::json& json)
 	{
 		Guild guild;
 		guild.mGuildId = Snowflake(static_cast<std::string>(json["id"]));

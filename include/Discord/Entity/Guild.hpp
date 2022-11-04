@@ -21,7 +21,7 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		static Result<Guild, Error> Parse(const nlohmann::json& json);
+		static Standard::Result<Guild, Error> Parse(const nlohmann::json& json);
 
 
 

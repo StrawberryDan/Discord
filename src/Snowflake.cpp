@@ -29,6 +29,13 @@ namespace Strawberry::Discord
 
 
 
+	std::string Snowflake::AsString() const
+	{
+		return std::to_string(mSnowflake);
+	}
+
+
+
 	bool Snowflake::operator==(const Snowflake& rhs) const
 	{
 		return mSnowflake == rhs.mSnowflake;

@@ -1,18 +1,11 @@
-#include "Discord/Gateway.hpp"
+#include "Discord/Gateway/Gateway.hpp"
 
 
 
-namespace
-{
-	using Strawberry::Standard::Assert;
-}
-
-
-
-namespace Strawberry::Discord
+namespace Strawberry::Discord::Gateway
 {
 	Gateway::Gateway(std::string endpoint, std::string token, Intent intent)
-		: mWSS(WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
+		: mWSS(Standard::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
 		, mHeartbeat()
 	{
 		auto hello = Receive().Unwrap().AsJSON().Unwrap();
@@ -26,12 +19,12 @@ namespace Strawberry::Discord
 		identifier["d"]["properties"]["os"]      = "windows";
 		identifier["d"]["properties"]["browser"] = "strawberry";
 		identifier["d"]["properties"]["device"]  = "strawberry";
-		Send(Message(to_string(identifier)));
+		Send(Standard::Net::Websocket::Message(identifier.dump()));
 	}
 
 
 
-	Result<Message, WSSClient::Error> Gateway::Receive()
+	Standard::Result<Standard::Net::Websocket::Message, Standard::Net::Websocket::Error> Gateway::Receive()
 	{
 		auto msg = mWSS.Lock()->ReadMessage();
 
@@ -49,8 +42,8 @@ namespace Strawberry::Discord
 		{
 			switch (msg.Err())
 			{
-				case WSSClient::Error::NoMessage:
-				case WSSClient::Error::Closed:
+				case Standard::Net::Websocket::Error::NoMessage:
+				case Standard::Net::Websocket::Error::Closed:
 					return msg.Err();
 				default:
 					Standard::Unreachable();
@@ -60,7 +53,7 @@ namespace Strawberry::Discord
 
 
 
-	void Gateway::Send(const Message& msg)
+	void Gateway::Send(const Standard::Net::Websocket::Message& msg)
 	{
 		mWSS.Lock()->SendMessage(msg);
 	}

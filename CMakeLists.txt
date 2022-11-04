@@ -1,10 +1,10 @@
 add_library(Discord STATIC
         include/Discord/Bot.hpp
         src/Bot.cpp
-        src/Heartbeater.cpp
-        include/Discord/Heartbeat.hpp
-        include/Discord/Gateway.hpp
-        src/Gateway.cpp
+        src/Gateway/Heartbeat.cpp
+        include/Discord/Gateway/Heartbeat.hpp
+        include/Discord/Gateway/Gateway.hpp
+        src/Gateway/Gateway.cpp
         include/Discord/Snowflake.hpp
         src/Snowflake.cpp
         include/Discord/Behaviour.hpp
@@ -17,7 +17,12 @@ add_library(Discord STATIC
         src/Entities/Guild.cpp
         src/Entities/Channel.cpp
         include/Discord/EventListener.hpp
-        include/Discord/Event/Base.hpp)
+        include/Discord/Event/Base.hpp
+        src/Voice/Connection.cpp
+        include/Discord/Voice/Connection.hpp
+        src/Events/Ready.cpp
+        include/Discord/Voice/Heartbeat.hpp
+        src/Voice/Heartbeat.cpp)
 target_include_directories(Discord PUBLIC include)
 target_link_libraries(Discord PUBLIC Codec Standard)
 

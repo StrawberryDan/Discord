@@ -11,13 +11,6 @@
 
 
 
-namespace
-{
-	using Strawberry::Standard::Result;
-}
-
-
-
 namespace Strawberry::Discord::Event
 {
 	class GuildCreate
@@ -25,7 +18,7 @@ namespace Strawberry::Discord::Event
 	{
 	public:
 		// Constructors
-		static Result<GuildCreate, Error> Parse(const nlohmann::json& json);
+		static Standard::Result<GuildCreate, Error> Parse(const nlohmann::json& json);
 
 
 

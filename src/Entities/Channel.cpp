@@ -4,7 +4,7 @@
 
 namespace Strawberry::Discord::Entity
 {
-	Result<Channel, Error> Channel::Parse(const nlohmann::json& json)
+	Standard::Result<Channel, Error> Channel::Parse(const nlohmann::json& json)
 	{
 		Channel channel;
 		channel.mId = Snowflake(static_cast<std::string>(json["id"]));
