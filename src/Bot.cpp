@@ -44,6 +44,8 @@ namespace Strawberry::Discord
 					case Websocket::Error::Closed:
 						mRunning = false;
 						break;
+					case Websocket::Error::BadOp:
+						continue;
 					default:
 						Unreachable();
 				}
