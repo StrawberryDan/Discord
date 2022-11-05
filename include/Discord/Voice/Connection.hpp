@@ -6,6 +6,7 @@
 #include "Standard/Net/Websocket/Client.hpp"
 #include "Standard/Mutex.hpp"
 #include "Standard/Option.hpp"
+#include "Standard/Net/Socket/UDPClient.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
 #include "Discord/Snowflake.hpp"
 
@@ -25,11 +26,16 @@ namespace Strawberry::Discord::Voice
 
 
 	private:
-		Standard::SharedMutex<Standard::Net::Websocket::WSSClient> mWSS;
-		Standard::Option<Heartbeat>                                mHeartbeat;
-
-
-
-
+		using WSS = Standard::SharedMutex<Standard::Net::Websocket::WSSClient>;
+		using UDP = Standard::Option<Standard::Net::Socket::UDPClient>;
+		using Key = std::array<uint8_t, 32>;
+		
+		
+		
+	private:
+		WSS                         mWSS;
+		Standard::Option<Heartbeat> mHeartbeat;
+		UDP                         mUDP;
+		Standard::Option<Key>       mKey;
 	};
 }
