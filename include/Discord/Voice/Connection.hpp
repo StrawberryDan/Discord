@@ -26,16 +26,14 @@ namespace Strawberry::Discord::Voice
 
 
 	private:
-		using WSS = Standard::SharedMutex<Standard::Net::Websocket::WSSClient>;
-		using UDP = Standard::Option<Standard::Net::Socket::UDPClient>;
 		using Key = std::array<uint8_t, 32>;
 		
 		
 		
 	private:
-		WSS                         mWSS;
-		Standard::Option<Heartbeat> mHeartbeat;
-		UDP                         mUDP;
-		Standard::Option<Key>       mKey;
+		Standard::SharedMutex<Standard::Net::Websocket::WSSClient> mWSS;
+		Standard::Option<Heartbeat>                                mHeartbeat;
+		Standard::Option<Standard::Net::Sockets::UDPClient>        mUDP;
+		Standard::Option<Key>                                      mKey;
 	};
 }
