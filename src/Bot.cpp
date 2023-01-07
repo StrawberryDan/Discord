@@ -218,7 +218,6 @@ namespace Strawberry::Discord
 	{
 		using Strawberry::Standard::Net::HTTP::Request;
 		using Strawberry::Standard::Net::HTTP::Verb;
-		using Strawberry::Standard::Net::HTTP::ChunkedPayload;
 
 
 
@@ -228,8 +227,9 @@ namespace Strawberry::Discord
 		mHTTPS.Lock()->SendRequest(request);
 		auto response = mHTTPS.Lock()->Receive();
 		Assert(response.GetStatus() == 200);
-		auto payload = std::get<ChunkedPayload>(*response.GetPayload());
-		auto json = *payload[0].AsJSON();
+		auto payload = response.GetPayload();
+		auto string = payload.AsString();
+		auto json = nlohmann::json::parse(string);
 		auto url = (std::string) json["url"];
 		url.erase(0, 6);
 		return url;

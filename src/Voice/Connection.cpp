@@ -4,6 +4,7 @@
 
 #include "nlohmann/json.hpp"
 #include "Standard/Net/Address.hpp"
+#include "Standard/Net/Endpoint.hpp"
 
 
 
@@ -40,7 +41,7 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	uint16_t port = ready["d"]["port"];
 	std::vector<std::string> modes = ready["d"]["modes"];
 	Standard::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
-	mUDP.Emplace(addr.AsString(), port);
+	mUDP = Standard::Net::Socket::UDPClient::Create().Unwrap();
 
 
 	// Send protocol selection

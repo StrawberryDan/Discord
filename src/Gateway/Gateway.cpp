@@ -9,7 +9,7 @@ namespace Strawberry::Discord::Gateway
 		, mHeartbeat()
 	{
 		auto hello = Receive().Unwrap().AsJSON().Unwrap();
-		Assert(hello["op"] == 10);
+		Standard::Assert(hello["op"] == 10);
 		mHeartbeat.Emplace(mWSS, static_cast<double>(hello["d"]["heartbeat_interval"]) / 1000.0);
 
 		nlohmann::json identifier;

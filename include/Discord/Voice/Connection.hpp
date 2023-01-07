@@ -33,7 +33,7 @@ namespace Strawberry::Discord::Voice
 	private:
 		Standard::SharedMutex<Standard::Net::Websocket::WSSClient> mWSS;
 		Standard::Option<Heartbeat>                                mHeartbeat;
-		Standard::Option<Standard::Net::Sockets::UDPClient>        mUDP;
+		Standard::Option<Standard::Net::Socket::UDPClient>         mUDP;
 		Standard::Option<Key>                                      mKey;
 	};
 }
