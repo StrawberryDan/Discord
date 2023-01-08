@@ -2,6 +2,10 @@
 
 
 
+#include <variant>
+
+
+
 namespace Strawberry::Discord
 {
 	class Error
