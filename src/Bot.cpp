@@ -200,9 +200,9 @@ namespace Strawberry::Discord
 			request["d"]["self_deaf"] = true;
 
 
-			mVoiceEndpoint  = {};
-			mVoiceToken     = {};
-			mVoiceSessionId = {};
+			mVoiceEndpoint.Reset();
+			mVoiceToken.Reset();
+			mVoiceSessionId.Reset();
 			mVoiceGuild     = guild;
 			mVoiceChannel   = channel;
 
@@ -230,7 +230,7 @@ namespace Strawberry::Discord
 		auto payload = response.GetPayload();
 		auto string = payload.AsString();
 		auto json = nlohmann::json::parse(string);
-		auto url = (std::string) json["url"];
+		auto url = static_cast<std::string>(json["url"]);
 		url.erase(0, 6);
 		return url;
 	}
