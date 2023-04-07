@@ -27,6 +27,6 @@ target_include_directories(Strawberry_Discord PUBLIC include)
 target_link_libraries(Strawberry_Discord PUBLIC Strawberry_Codec Strawberry_Core)
 
 
-add_executable(Discord_Test
+add_executable(Strawberry_Discord_Test
         test/Main.cpp)
-target_link_libraries(Discord_Test PRIVATE Discord)
+target_link_libraries(Strawberry_Discord_Test PRIVATE Strawberry_Discord)
