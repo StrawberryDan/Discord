@@ -1,27 +1,27 @@
 add_library(Strawberry_Discord STATIC
-        include/Discord/Bot.hpp
-        src/Bot.cpp
-        src/Gateway/Heartbeat.cpp
-        include/Discord/Gateway/Heartbeat.hpp
-        include/Discord/Gateway/Gateway.hpp
-        src/Gateway/Gateway.cpp
-        include/Discord/Snowflake.hpp
-        src/Snowflake.cpp
         include/Discord/Behaviour.hpp
+        include/Discord/Bot.hpp
+        include/Discord/Entity/Channel.hpp
+        include/Discord/Entity/Guild.hpp
+        include/Discord/Error.hpp
+        include/Discord/Event/Base.hpp
         include/Discord/Event/GuildCreate.hpp
         include/Discord/Event/Ready.hpp
-        src/Events/GuildCreate.cpp
-        include/Discord/Error.hpp
-        include/Discord/Entity/Guild.hpp
-        include/Discord/Entity/Channel.hpp
-        src/Entities/Guild.cpp
-        src/Entities/Channel.cpp
         include/Discord/EventListener.hpp
-        include/Discord/Event/Base.hpp
-        src/Voice/Connection.cpp
+        include/Discord/Gateway/Gateway.hpp
+        include/Discord/Gateway/Heartbeat.hpp
+        include/Discord/Snowflake.hpp
         include/Discord/Voice/Connection.hpp
-        src/Events/Ready.cpp
         include/Discord/Voice/Heartbeat.hpp
+        src/Bot.cpp
+        src/Entities/Channel.cpp
+        src/Entities/Guild.cpp
+        src/Events/GuildCreate.cpp
+        src/Events/Ready.cpp
+        src/Gateway/Gateway.cpp
+        src/Gateway/Heartbeat.cpp
+        src/Snowflake.cpp
+        src/Voice/Connection.cpp
         src/Voice/Heartbeat.cpp)
 target_include_directories(Strawberry_Discord PUBLIC include)
 target_link_libraries(Strawberry_Discord PUBLIC Strawberry_Codec Strawberry_Core)
