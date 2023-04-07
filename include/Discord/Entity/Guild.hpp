@@ -6,7 +6,7 @@
 #include "Channel.hpp"
 #include "Discord/Error.hpp"
 #include "nlohmann/json.hpp"
-#include "Standard/Result.hpp"
+#include "Core/Result.hpp"
 #include <string>
 
 
@@ -21,7 +21,7 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		static Standard::Result<Guild, Error> Parse(const nlohmann::json& json);
+		static Core::Result<Guild, Error> Parse(const nlohmann::json& json);
 
 
 

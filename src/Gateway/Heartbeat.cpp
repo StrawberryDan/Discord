@@ -9,7 +9,7 @@
 
 namespace Strawberry::Discord::Gateway
 {
-	Heartbeat::Heartbeat(Standard::SharedMutex<Standard::Net::Websocket::WSSClient> wss, double interval)
+	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
 			: mWSS(std::move(wss))
 			, mInterval(interval)
 			, mShouldStop(false)
@@ -48,7 +48,7 @@ namespace Strawberry::Discord::Gateway
 				nlohmann::json message;
 				message["op"] = 1;
 				message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
-				Standard::Net::Websocket::Message wssMessage(to_string(message));
+				Core::Net::Websocket::Message wssMessage(to_string(message));
 
 				mWSS.Lock()->SendMessage(wssMessage);
 				count += 1;

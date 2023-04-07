@@ -4,7 +4,7 @@
 
 namespace Strawberry::Discord::Event
 {
-	Standard::Result<Ready, Error> Strawberry::Discord::Event::Ready::Parse(const nlohmann::json& json)
+	Core::Result<Ready, Error> Strawberry::Discord::Event::Ready::Parse(const nlohmann::json& json)
 	{
 		Ready event;
 		event.mUserId = Snowflake(static_cast<std::string>(json["d"]["user"]["id"]));

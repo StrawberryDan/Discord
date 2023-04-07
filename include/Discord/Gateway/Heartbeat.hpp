@@ -6,9 +6,9 @@
 
 
 
-#include "Standard/Clock.hpp"
-#include "Standard/Mutex.hpp"
-#include "Standard/Net/Websocket/Client.hpp"
+#include "Core/Clock.hpp"
+#include "Core/Mutex.hpp"
+#include "Core/Net/Websocket/Client.hpp"
 
 
 
@@ -17,7 +17,7 @@ namespace Strawberry::Discord::Gateway
 	class Heartbeat
 	{
 	public:
-		Heartbeat(Standard::SharedMutex<Standard::Net::Websocket::WSSClient> wss, double interval);
+		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
 		~Heartbeat();
 
 		void UpdateSequenceNumber(size_t value);
@@ -32,9 +32,9 @@ namespace Strawberry::Discord::Gateway
 
 		std::thread                                                mThread;
 		const double                                               mInterval;
-		Standard::Clock                                            mClock;
-		Standard::Mutex<bool>                                      mShouldStop;
-		Standard::SharedMutex<Standard::Net::Websocket::WSSClient> mWSS;
-		Standard::Option<Standard::Mutex<size_t>>                  mLastSequenceNumber;
+		Core::Clock                                            mClock;
+		Core::Mutex<bool>                                      mShouldStop;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
+		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
 	};
 }

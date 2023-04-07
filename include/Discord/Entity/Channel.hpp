@@ -3,7 +3,7 @@
 
 
 #include "nlohmann/json.hpp"
-#include "Standard/Result.hpp"
+#include "Core/Result.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 
@@ -19,7 +19,7 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		static Standard::Result<Channel, Error> Parse(const nlohmann::json& json);
+		static Core::Result<Channel, Error> Parse(const nlohmann::json& json);
 
 
 

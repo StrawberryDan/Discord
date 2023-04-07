@@ -3,8 +3,8 @@
 
 
 #include "nlohmann/json.hpp"
-#include "Standard/Net/Address.hpp"
-#include "Standard/Net/Endpoint.hpp"
+#include "Core/Net/Address.hpp"
+#include "Core/Net/Endpoint.hpp"
 
 
 
@@ -13,10 +13,10 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 												   std::string token,
 												   Snowflake guildId,
 												   Snowflake userId)
-	: mWSS(Standard::Net::Websocket::WSSClient::Connect(endpoint, "/?v=4").Unwrap())
+	: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=4").Unwrap())
 {
 	using nlohmann::json;
-	using Standard::Net::Websocket::Message;
+	using Core::Net::Websocket::Message;
 
 
 	json ident;
@@ -36,12 +36,12 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 
 	// Receive Voice Ready
 	auto ready = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	Standard::Assert(ready["op"] == 2);
-	auto addr = Strawberry::Standard::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
+	Core::Assert(ready["op"] == 2);
+	auto addr = Strawberry::Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
 	uint16_t port = ready["d"]["port"];
 	std::vector<std::string> modes = ready["d"]["modes"];
-	Standard::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
-	mUDP = Standard::Net::Socket::UDPClient::Create().Unwrap();
+	Core::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
+	mUDP = Core::Net::Socket::UDPClient::Create().Unwrap();
 
 
 	// Send protocol selection
@@ -51,12 +51,12 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	protocolSelect["d"]["data"]["address"] = addr.AsString();
 	protocolSelect["d"]["data"]["port"] = port;
 	protocolSelect["d"]["data"]["mode"] = "xsalsa20_poly1305";
-	mWSS.Lock()->SendMessage(Standard::Net::Websocket::Message(protocolSelect.dump()));
+	mWSS.Lock()->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump()));
 
 
 	// Receive session description
 	auto sessionDescription = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	Standard::Assert(sessionDescription["op"] == 4);
-	Standard::Assert(sessionDescription["d"]["mode"] == "xsalsa20_poly1305");
+	Core::Assert(sessionDescription["op"] == 4);
+	Core::Assert(sessionDescription["d"]["mode"] == "xsalsa20_poly1305");
 	mKey = sessionDescription["d"]["secret_key"];
 }

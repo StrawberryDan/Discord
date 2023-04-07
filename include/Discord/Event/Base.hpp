@@ -6,7 +6,7 @@
 
 
 
-#include "Standard/Option.hpp"
+#include "Core/Option.hpp"
 
 
 
@@ -21,10 +21,10 @@ namespace Strawberry::Discord::Event
 		bool IsType() const requires(std::derived_from<T, Base>);
 
 		template<typename T>
-		Standard::Option<T*> Cast() requires(std::derived_from<T, Base>);
+		Core::Option<T*> Cast() requires(std::derived_from<T, Base>);
 
 		template<typename T>
-		Standard::Option<const T*> Cast() const requires(std::derived_from<T, Base>);
+		Core::Option<const T*> Cast() const requires(std::derived_from<T, Base>);
 	};
 }
 
@@ -41,7 +41,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Standard::Option<T*> Base::Cast() requires (std::derived_from<T, Base>)
+	Core::Option<T*> Base::Cast() requires (std::derived_from<T, Base>)
 	{
 		auto ptr = dynamic_cast<T*>(this);
 		if (ptr)
@@ -57,7 +57,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Standard::Option<const T*> Base::Cast() const requires (std::derived_from<T, Base>)
+	Core::Option<const T*> Base::Cast() const requires (std::derived_from<T, Base>)
 	{
 		auto ptr = dynamic_cast<const T*>(this);
 		if (ptr)

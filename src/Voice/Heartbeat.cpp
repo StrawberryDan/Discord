@@ -8,7 +8,7 @@
 
 namespace Strawberry::Discord::Voice
 {
-	Heartbeat::Heartbeat(Standard::SharedMutex<Standard::Net::Websocket::WSSClient> wss, double interval)
+	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
 			: mWSS(wss)
 			, mInterval(interval)
 			, mShouldStop(false)
@@ -48,7 +48,7 @@ namespace Strawberry::Discord::Voice
 				message["op"] = 3;
 				uint64_t nonce = mRandomDevice();
 				message["d"] = nonce;
-				Standard::Net::Websocket::Message wssMessage(to_string(message));
+				Core::Net::Websocket::Message wssMessage(to_string(message));
 
 				mWSS.Lock()->SendMessage(wssMessage);
 				count += 1;

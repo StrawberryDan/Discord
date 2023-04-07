@@ -3,10 +3,10 @@
 
 
 #include <string>
-#include "Standard/Net/Websocket/Client.hpp"
-#include "Standard/Mutex.hpp"
-#include "Standard/Option.hpp"
-#include "Standard/Net/Socket/UDPClient.hpp"
+#include "Core/Net/Websocket/Client.hpp"
+#include "Core/Mutex.hpp"
+#include "Core/Option.hpp"
+#include "Core/Net/Socket/UDPClient.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
 #include "Discord/Snowflake.hpp"
 
@@ -31,9 +31,9 @@ namespace Strawberry::Discord::Voice
 		
 		
 	private:
-		Standard::SharedMutex<Standard::Net::Websocket::WSSClient> mWSS;
-		Standard::Option<Heartbeat>                                mHeartbeat;
-		Standard::Option<Standard::Net::Socket::UDPClient>         mUDP;
-		Standard::Option<Key>                                      mKey;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
+		Core::Option<Heartbeat>                                mHeartbeat;
+		Core::Option<Core::Net::Socket::UDPClient>         mUDP;
+		Core::Option<Key>                                      mKey;
 	};
 }

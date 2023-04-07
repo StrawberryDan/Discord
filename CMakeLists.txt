@@ -1,4 +1,4 @@
-add_library(Discord STATIC
+add_library(Strawberry_Discord STATIC
         include/Discord/Bot.hpp
         src/Bot.cpp
         src/Gateway/Heartbeat.cpp
@@ -23,8 +23,8 @@ add_library(Discord STATIC
         src/Events/Ready.cpp
         include/Discord/Voice/Heartbeat.hpp
         src/Voice/Heartbeat.cpp)
-target_include_directories(Discord PUBLIC include)
-target_link_libraries(Discord PUBLIC Codec Standard)
+target_include_directories(Strawberry_Discord PUBLIC include)
+target_link_libraries(Strawberry_Discord PUBLIC Strawberry_Codec Strawberry_Core)
 
 
 add_executable(Discord_Test

@@ -2,13 +2,13 @@
 
 
 
-#include "Standard/Assert.hpp"
+#include "Core/Assert.hpp"
 
 
 
 namespace Strawberry::Discord::Event
 {
-	Standard::Result<GuildCreate, Error> GuildCreate::Parse(const nlohmann::json& json)
+	Core::Result<GuildCreate, Error> GuildCreate::Parse(const nlohmann::json& json)
 	{
 		if(json["op"] != 0 || json["t"] != "GUILD_CREATE")
 		{

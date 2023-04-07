@@ -8,8 +8,8 @@
 
 
 
-#include "Standard/Mutex.hpp"
-#include "Standard/Net/HTTP/Client.hpp"
+#include "Core/Mutex.hpp"
+#include "Core/Net/HTTP/Client.hpp"
 #include "Discord/Gateway/Gateway.hpp"
 #include "Intent.hpp"
 #include "Behaviour.hpp"
@@ -58,7 +58,7 @@ namespace Strawberry::Discord
 
 
 	private:
-		void OnGatewayMessage(Standard::Net::Websocket::Message message);
+		void OnGatewayMessage(Core::Net::Websocket::Message message);
 
 
 
@@ -80,19 +80,19 @@ namespace Strawberry::Discord
 		bool                                                     mRunning;
 	    Token                                                    mToken;
 	    Intent                                                   mIntents;
-		Standard::SharedMutex<Standard::Net::HTTP::HTTPSClient>  mHTTPS;
-		Standard::Option<Gateway::Gateway>                       mGateway;
+		Core::SharedMutex<Core::Net::HTTP::HTTPSClient>  mHTTPS;
+		Core::Option<Gateway::Gateway>                       mGateway;
 		std::unique_ptr<Behaviour>                               mBehaviour;
 		std::set<EventListener*>                                 mEventListeners;
-		Standard::Option<Snowflake>                              mUserId;
+		Core::Option<Snowflake>                              mUserId;
 
 
-		Standard::Option<Snowflake>                              mVoiceGuild;
-		Standard::Option<Snowflake>                              mVoiceChannel;
-		Standard::Option<std::string>                            mVoiceEndpoint;
-		Standard::Option<std::string>                            mVoiceToken;
-		Standard::Option<std::string>                            mVoiceSessionId;
-		Standard::Option<Voice::Connection>                      mVoiceConnection;
+		Core::Option<Snowflake>                              mVoiceGuild;
+		Core::Option<Snowflake>                              mVoiceChannel;
+		Core::Option<std::string>                            mVoiceEndpoint;
+		Core::Option<std::string>                            mVoiceToken;
+		Core::Option<std::string>                            mVoiceSessionId;
+		Core::Option<Voice::Connection>                      mVoiceConnection;
 
 
 

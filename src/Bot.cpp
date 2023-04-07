@@ -5,10 +5,10 @@
 
 
 
-using namespace Strawberry::Standard::Net;
-using Strawberry::Standard::Assert;
-using Strawberry::Standard::Unreachable;
-using Strawberry::Standard::Net::HTTP::HTTPSClient;
+using namespace Strawberry::Core::Net;
+using Strawberry::Core::Assert;
+using Strawberry::Core::Unreachable;
+using Strawberry::Core::Net::HTTP::HTTPSClient;
 
 
 
@@ -188,7 +188,7 @@ namespace Strawberry::Discord
 	void Bot::RequestVoiceInfo(Snowflake guild, Snowflake channel)
 	{
 		using nlohmann::json;
-		namespace WS = Standard::Net::Websocket;
+		namespace WS = Core::Net::Websocket;
 
 		if (guild != mVoiceGuild || channel != mVoiceChannel)
 		{
@@ -216,8 +216,8 @@ namespace Strawberry::Discord
 
 	std::string Bot::GetGatewayEndpoint()
 	{
-		using Strawberry::Standard::Net::HTTP::Request;
-		using Strawberry::Standard::Net::HTTP::Verb;
+		using Strawberry::Core::Net::HTTP::Request;
+		using Strawberry::Core::Net::HTTP::Verb;
 
 
 

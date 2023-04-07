@@ -7,7 +7,7 @@
 #include "Discord/Error.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "Base.hpp"
-#include "Standard/Result.hpp"
+#include "Core/Result.hpp"
 
 
 
@@ -18,7 +18,7 @@ namespace Strawberry::Discord::Event
 	{
 	public:
 		// Constructors
-		static Standard::Result<GuildCreate, Error> Parse(const nlohmann::json& json);
+		static Core::Result<GuildCreate, Error> Parse(const nlohmann::json& json);
 
 
 
