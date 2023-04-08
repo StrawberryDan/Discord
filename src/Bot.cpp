@@ -18,7 +18,8 @@ namespace Strawberry::Discord
 	Bot::Bot(Token token, Intent intents)
 			: mRunning(true)
 			, mToken(std::move(token))
-			, mIntents(intents), mHTTPS("discord.com")
+			, mIntents(intents)
+			, mHTTPS("discord.com")
 			, mGateway(GetGatewayEndpoint(), mToken, mIntents)
 	{}
 
