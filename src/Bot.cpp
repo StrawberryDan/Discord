@@ -33,6 +33,11 @@ namespace Strawberry::Discord
 			auto gatewayMessage = mGateway->Receive();
 			if (gatewayMessage)
 			{
+				if (gatewayMessage->GetOpcode() == Core::Net::Websocket::Message::Opcode::Close)
+				{
+					std::cerr << "Websocket server closed with: " << gatewayMessage->GetCloseStatusCode() << std::endl;
+				}
+
 				OnGatewayMessage(gatewayMessage.Unwrap());
 			}
 			else
