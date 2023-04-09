@@ -77,14 +77,14 @@ namespace Strawberry::Discord
 
 
 	private:
-		bool                                                     mRunning;
-	    Token                                                    mToken;
-	    Intent                                                   mIntents;
-		Core::SharedMutex<Core::Net::HTTP::HTTPSClient>  mHTTPS;
-		Core::Option<Gateway::Gateway>                       mGateway;
-		std::unique_ptr<Behaviour>                               mBehaviour;
-		std::set<EventListener*>                                 mEventListeners;
-		Core::Option<Snowflake>                              mUserId;
+		bool											mRunning;
+	    Token											mToken;
+	    Intent											mIntents;
+		Core::SharedMutex<Core::Net::HTTP::HTTPSClient>	mHTTPS;
+		Core::Option<Gateway::Gateway>					mGateway;
+		std::unique_ptr<Behaviour>						mBehaviour;
+		std::set<EventListener*>						mEventListeners;
+		Core::Option<Snowflake>							mUserId;
 
 
 		Core::Option<Snowflake>                              mVoiceGuild;
