@@ -2,6 +2,7 @@
 
 
 
+#include "Core/Result.hpp"
 #include "Core/Net/Websocket/Client.hpp"
 #include "Heartbeat.hpp"
 #include "Discord/Intent.hpp"
@@ -17,8 +18,8 @@ namespace Strawberry::Discord::Gateway
 
 
 
-		Core::Result<Core::Net::Websocket::Message, Core::Net::Websocket::Error> Receive();
-		void                                                                                 Send(const Core::Net::Websocket::Message& msg);
+		Core::Result<Core::Net::Websocket::Message, Core::Net::Websocket::Error>	Receive();
+		Core::Result<int, Core::Net::Websocket::Error>								Send(const Core::Net::Websocket::Message& msg);
 
 
 

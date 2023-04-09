@@ -19,7 +19,7 @@ namespace Strawberry::Discord::Gateway
 		identifier["d"]["properties"]["os"]      = "windows";
 		identifier["d"]["properties"]["browser"] = "strawberry";
 		identifier["d"]["properties"]["device"]  = "strawberry";
-		Send(Core::Net::Websocket::Message(identifier.dump()));
+		Send(Core::Net::Websocket::Message(identifier.dump())).Unwrap();
 	}
 
 
@@ -54,8 +54,8 @@ namespace Strawberry::Discord::Gateway
 
 
 
-	void Gateway::Send(const Core::Net::Websocket::Message& msg)
+	Core::Result<int, Core::Net::Websocket::Error> Gateway::Send(const Core::Net::Websocket::Message& msg)
 	{
-		mWSS.Lock()->SendMessage(msg);
+		return mWSS.Lock()->SendMessage(msg);
 	}
 }

@@ -25,7 +25,7 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	ident["d"]["user_id"] = userId.AsString();
 	ident["d"]["session_id"] = sessionId;
 	ident["d"]["token"] = token;
-	mWSS.Lock()->SendMessage(Message(ident.dump()));
+	mWSS.Lock()->SendMessage(Message(ident.dump())).Unwrap();
 
 
 	// Receive Hello
@@ -51,7 +51,7 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	protocolSelect["d"]["data"]["address"] = addr.AsString();
 	protocolSelect["d"]["data"]["port"] = port;
 	protocolSelect["d"]["data"]["mode"] = "xsalsa20_poly1305";
-	mWSS.Lock()->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump()));
+	mWSS.Lock()->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump())).Unwrap();
 
 
 	// Receive session description

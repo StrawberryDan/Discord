@@ -209,7 +209,7 @@ namespace Strawberry::Discord
 
 
 			WS::Message msg(request.dump());
-			mGateway->Send(msg);
+			mGateway->Send(msg).Unwrap();
 		}
 	}
 
