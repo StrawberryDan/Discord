@@ -87,17 +87,17 @@ namespace Strawberry::Discord
 		Core::Option<Snowflake>							mUserId;
 
 
-		Core::Option<Snowflake>                              mVoiceGuild;
-		Core::Option<Snowflake>                              mVoiceChannel;
-		Core::Option<std::string>                            mVoiceEndpoint;
-		Core::Option<std::string>                            mVoiceToken;
-		Core::Option<std::string>                            mVoiceSessionId;
-		Core::Option<Voice::Connection>                      mVoiceConnection;
+		Core::Option<Snowflake>							mVoiceGuild;
+		Core::Option<Snowflake>							mVoiceChannel;
+		Core::Option<std::string>						mVoiceEndpoint;
+		Core::Option<std::string>						mVoiceToken;
+		Core::Option<std::string>						mVoiceSessionId;
+		Core::Option<Voice::Connection>					mVoiceConnection;
 
 
 
 	private:
-		std::unordered_map<Snowflake, Entity::Guild>             mGuilds;
-		std::unordered_map<Snowflake, Entity::Channel>           mChannels;
+		std::unordered_map<Snowflake, Entity::Guild>	mGuilds;
+		std::unordered_map<Snowflake, Entity::Channel>	mChannels;
 	};
 }
