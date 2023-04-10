@@ -17,6 +17,7 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 {
 	using nlohmann::json;
 	using Core::Net::Websocket::Message;
+	auto wss = mWSS.Lock();
 
 
 	json ident;
@@ -25,21 +26,24 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	ident["d"]["user_id"] = userId.AsString();
 	ident["d"]["session_id"] = sessionId;
 	ident["d"]["token"] = token;
-	mWSS.Lock()->SendMessage(Message(ident.dump())).Unwrap();
+	wss->SendMessage(Message(ident.dump())).Unwrap();
 
 
 	// Receive Hello
-	auto hello = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	auto heartbeatInterval = static_cast<double>(hello["d"]["heartbeat_interval"]) / 1000.0;
+	auto helloMsg  = wss->WaitMessage().Unwrap();
+	auto helloJSON = helloMsg.AsJSON().Unwrap();
+	auto heartbeatInterval = static_cast<double>(helloJSON["d"]["heartbeat_interval"]) / 1000.0;
 	mHeartbeat.Emplace(mWSS, heartbeatInterval);
 
 
 	// Receive Voice Ready
-	auto ready = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	Core::Assert(ready["op"] == 2);
-	auto addr = Strawberry::Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
-	uint16_t port = ready["d"]["port"];
-	std::vector<std::string> modes = ready["d"]["modes"];
+	auto readyMsg  = wss->WaitMessage().Unwrap();
+	auto readyJSON = readyMsg.AsJSON().Unwrap();
+	std::cerr << readyJSON.dump('\t') << std::endl;
+	Core::Assert(readyJSON["op"] == 2);
+	auto addr = Strawberry::Core::Net::IPv4Address::Parse(readyJSON["d"]["ip"]).Unwrap();
+	uint16_t port = readyJSON["d"]["port"];
+	std::vector<std::string> modes = readyJSON["d"]["modes"];
 	Core::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
 	mUDP = Core::Net::Socket::UDPClient::Create().Unwrap();
 
@@ -51,12 +55,13 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	protocolSelect["d"]["data"]["address"] = addr.AsString();
 	protocolSelect["d"]["data"]["port"] = port;
 	protocolSelect["d"]["data"]["mode"] = "xsalsa20_poly1305";
-	mWSS.Lock()->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump())).Unwrap();
+	wss->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump())).Unwrap();
 
 
 	// Receive session description
-	auto sessionDescription = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	Core::Assert(sessionDescription["op"] == 4);
-	Core::Assert(sessionDescription["d"]["mode"] == "xsalsa20_poly1305");
-	mKey = sessionDescription["d"]["secret_key"];
+	auto sessionDescriptionMsg = wss->WaitMessage().Unwrap();
+	auto sessionDescriptionJSON = sessionDescriptionMsg.AsJSON().Unwrap();
+	Core::Assert(sessionDescriptionJSON["op"] == 4);
+	Core::Assert(sessionDescriptionJSON["d"]["mode"] == "xsalsa20_poly1305");
+	mKey = sessionDescriptionJSON["d"]["secret_key"];
 }
