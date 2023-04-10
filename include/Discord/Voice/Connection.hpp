@@ -20,8 +20,8 @@ namespace Strawberry::Discord::Voice
 		Connection(std::string endpoint,
 				   std::string sessionId,
 				   std::string token,
-		           Snowflake guildId,
-		           Snowflake userId);
+				   Snowflake guildId,
+				   Snowflake userId);
 
 
 
@@ -31,9 +31,9 @@ namespace Strawberry::Discord::Voice
 		
 		
 	private:
-		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Heartbeat>                                mHeartbeat;
-		Core::Option<Core::Net::Socket::UDPClient>         mUDP;
-		Core::Option<Key>                                      mKey;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mWSS;
+		Core::Option<Heartbeat>								mHeartbeat;
+		Core::Option<Core::Net::Socket::UDPClient>			mUDP;
+		Core::Option<Key>									mKey;
 	};
 }
