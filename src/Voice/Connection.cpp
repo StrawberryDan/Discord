@@ -39,7 +39,6 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 	// Receive Voice Ready
 	auto readyMsg  = wss->WaitMessage().Unwrap();
 	auto readyJSON = readyMsg.AsJSON().Unwrap();
-	std::cerr << readyJSON.dump('\t') << std::endl;
 	Core::Assert(readyJSON["op"] == 2);
 	auto addr = Strawberry::Core::Net::IPv4Address::Parse(readyJSON["d"]["ip"]).Unwrap();
 	uint16_t port = readyJSON["d"]["port"];
