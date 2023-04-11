@@ -50,7 +50,16 @@ namespace Strawberry::Discord::Voice
 				message["d"] = nonce;
 				Core::Net::Websocket::Message wssMessage(to_string(message));
 
-				mWSS.Lock()->SendMessage(wssMessage).Unwrap();
+				auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
+				if (!sendResult && sendResult.Err() == Core::Net::Websocket::Error::Closed)
+				{
+					return;
+				}
+				else
+				{
+					sendResult.Unwrap();
+				}
+
 				count += 1;
 				mClock.Restart();
 			}
