@@ -117,6 +117,12 @@ namespace Strawberry::Discord
 		{
 			auto guild = Entity::Guild::Parse(guildJSON).Unwrap();
 			result.insert(guild.GetId());
+
+			// Cache guild id.
+			if (!mGuilds.contains(guild.GetId()))
+			{
+				mGuilds.insert({guild.GetId(), {}});
+			}
 		}
 
 		return result;
