@@ -12,7 +12,9 @@ namespace Strawberry::Discord::Entity
 
 		for (auto channelInfo : json["channels"])
 		{
-			guild.mChannels.push_back(Channel::Parse(channelInfo).Unwrap());
+			auto channel = Channel::Parse(channelInfo).Unwrap();
+			channel.mGuildId = guild.mGuildId;
+			guild.mChannels.emplace_back(std::move(channel));
 		}
 
 		return guild;

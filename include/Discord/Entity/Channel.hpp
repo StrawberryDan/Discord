@@ -4,6 +4,7 @@
 
 #include "nlohmann/json.hpp"
 #include "Core/Result.hpp"
+#include "Core/Option.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 
@@ -13,6 +14,8 @@ namespace Strawberry::Discord::Entity
 {
 	class Channel
 	{
+		friend class Guild;
+
 	public:
 		enum class Type : uint8_t;
 
@@ -28,13 +31,15 @@ namespace Strawberry::Discord::Entity
 		const std::string&	GetName() const		{ return mName; }
 		const Type&			GetType() const		{ return mType; }
 		const size_t		GetPosition() const	{ return mPosition; }
+		const auto&			GetGuild() const	{ return mGuildId; }
 
 
 	private:
-		Snowflake   mId;
-		std::string mName;
-		Type        mType;
-		size_t      mPosition;
+		Snowflake				mId;
+		std::string				mName;
+		Type					mType;
+		size_t					mPosition;
+		Core::Option<Snowflake>	mGuildId;
 	};
 
 
