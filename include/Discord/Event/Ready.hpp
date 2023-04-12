@@ -2,7 +2,7 @@
 
 
 
-#include "Base.hpp"
+#include "EventBase.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Core/Result.hpp"
 #include "nlohmann/json.hpp"
@@ -13,7 +13,7 @@
 namespace Strawberry::Discord::Event
 {
 	class Ready
-		: public Base
+		: public EventBase
 	{
 	public:
 		static Core::Result<Ready, Error> Parse(const nlohmann::json& json);

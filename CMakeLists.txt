@@ -4,7 +4,7 @@ add_library(Strawberry_Discord STATIC
         include/Discord/Entity/Channel.hpp
         include/Discord/Entity/Guild.hpp
         include/Discord/Error.hpp
-        include/Discord/Event/Base.hpp
+        include/Discord/Event/EventBase.hpp
         include/Discord/Event/GuildCreate.hpp
         include/Discord/Event/Ready.hpp
         include/Discord/EventListener.hpp
@@ -22,7 +22,7 @@ add_library(Strawberry_Discord STATIC
         src/Gateway/Heartbeat.cpp
         src/Snowflake.cpp
         src/Voice/Connection.cpp
-        src/Voice/Heartbeat.cpp)
+        src/Voice/Heartbeat.cpp src/EventListener.cpp)
 target_include_directories(Strawberry_Discord PUBLIC include)
 target_link_libraries(Strawberry_Discord PUBLIC Strawberry_Codec Strawberry_Core)
 

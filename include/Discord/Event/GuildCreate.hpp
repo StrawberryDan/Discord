@@ -6,7 +6,7 @@
 #include "Discord/Snowflake.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Entity/Guild.hpp"
-#include "Base.hpp"
+#include "EventBase.hpp"
 #include "Core/Result.hpp"
 
 
@@ -14,7 +14,7 @@
 namespace Strawberry::Discord::Event
 {
 	class GuildCreate
-		: public Base
+		: public EventBase
 	{
 	public:
 		// Constructors

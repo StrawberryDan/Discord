@@ -12,19 +12,19 @@
 
 namespace Strawberry::Discord::Event
 {
-	class Base
+	class EventBase
 	{
 	public:
-		virtual ~Base() = default;
+		virtual ~EventBase() = default;
 
 		template<typename T>
-		bool IsType() const requires(std::derived_from<T, Base>);
+		bool IsType() const requires(std::derived_from<T, EventBase>);
 
 		template<typename T>
-		Core::Option<T*> Cast() requires(std::derived_from<T, Base>);
+		Core::Option<T*> Cast() requires(std::derived_from<T, EventBase>);
 
 		template<typename T>
-		Core::Option<const T*> Cast() const requires(std::derived_from<T, Base>);
+		Core::Option<const T*> Cast() const requires(std::derived_from<T, EventBase>);
 	};
 }
 
@@ -33,7 +33,7 @@ namespace Strawberry::Discord::Event
 namespace Strawberry::Discord::Event
 {
 	template <typename T>
-	bool Base::IsType() const requires(std::derived_from<T, Base>)
+	bool EventBase::IsType() const requires(std::derived_from<T, EventBase>)
 	{
 		return dynamic_cast<const T*>(this) != nullptr;
 	}
@@ -41,7 +41,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Core::Option<T*> Base::Cast() requires (std::derived_from<T, Base>)
+	Core::Option<T*> EventBase::Cast() requires (std::derived_from<T, EventBase>)
 	{
 		auto ptr = dynamic_cast<T*>(this);
 		if (ptr)
@@ -57,7 +57,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Core::Option<const T*> Base::Cast() const requires (std::derived_from<T, Base>)
+	Core::Option<const T*> EventBase::Cast() const requires (std::derived_from<T, EventBase>)
 	{
 		auto ptr = dynamic_cast<const T*>(this);
 		if (ptr)
