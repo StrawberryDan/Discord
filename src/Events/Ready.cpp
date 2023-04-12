@@ -8,6 +8,7 @@ namespace Strawberry::Discord::Event
 	{
 		Ready event;
 		event.mUserId = Snowflake(static_cast<std::string>(json["d"]["user"]["id"]));
+		event.mSessionId = static_cast<std::string>(json["d"]["session_id"]);
 		return event;
 	}
 
@@ -16,5 +17,12 @@ namespace Strawberry::Discord::Event
 	Snowflake Strawberry::Discord::Event::Ready::GetUserId() const
 	{
 		return mUserId;
+	}
+
+
+
+	std::string Ready::GetSessionId() const
+	{
+		return mSessionId;
 	}
 }

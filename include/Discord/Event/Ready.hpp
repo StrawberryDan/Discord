@@ -21,11 +21,13 @@ namespace Strawberry::Discord::Event
 
 
 	public:
-		Snowflake GetUserId() const;
+		Snowflake		GetUserId() const;
+		std::string		GetSessionId() const;
 
 
 
 	private:
-		Snowflake mUserId;
+		Snowflake		mUserId;
+		std::string		mSessionId;
 	};
 }
