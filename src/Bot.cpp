@@ -68,6 +68,21 @@ namespace Strawberry::Discord
 
 
 
+	bool Bot::IsRunning() const
+	{
+		return mRunning;
+	}
+
+
+
+	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
+	{
+		Core::Assert(!IsRunning());
+		mBehaviour = std::move(behaviour);
+	}
+
+
+
 	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
 	{
 		RequestVoiceInfo(guild, channel);
