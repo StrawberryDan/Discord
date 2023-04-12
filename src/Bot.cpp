@@ -138,8 +138,6 @@ namespace Strawberry::Discord
 			return;
 		}
 
-		std::cout << json.dump('\t') << std::endl;
-
 		switch (static_cast<int>(json["op"]))
 		{
 			case 0: // Update Event
