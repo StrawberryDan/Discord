@@ -125,6 +125,8 @@ namespace Strawberry::Discord
 			return;
 		}
 
+		std::cout << json.dump('\t') << std::endl;
+
 		switch (static_cast<int>(json["op"]))
 		{
 			case 0: // Update Event
@@ -133,7 +135,9 @@ namespace Strawberry::Discord
 				if (type == "READY")
 				{
 					Event::Ready event = Event::Ready::Parse(json).Unwrap();
-					mUserId = event.GetUserId();
+					mUserId			= event.GetUserId();
+					mSessionId		= event.GetSessionId();
+					mVoiceSessionId = event.GetSessionId();
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
 				}
@@ -154,12 +158,14 @@ namespace Strawberry::Discord
 				}
 				else if (json["t"] == "VOICE_SERVER_UPDATE")
 				{
+					std::cout << "Voice Server Update Received" << std::endl;
 					mVoiceEndpoint = json["d"]["endpoint"];
 					mVoiceEndpoint->erase(mVoiceEndpoint->find(":"), mVoiceEndpoint->size());
 					mVoiceToken    = json["d"]["token"];
 				}
 				else if (json["t"] == "VOICE_STATE_UPDATE")
 				{
+					std::cout << "Voice State Update Received" << std::endl;
 					mVoiceSessionId = json["d"]["session_id"];
 				}
 				else
@@ -169,6 +175,9 @@ namespace Strawberry::Discord
 
 				break;
 			}
+
+			case 4:
+
 
 			case 11: // Heartbeat Acknowledge
 				break;
@@ -203,12 +212,11 @@ namespace Strawberry::Discord
 			request["d"]["guild_id"] = guild.AsString();
 			request["d"]["channel_id"] = channel.AsString();
 			request["d"]["self_mute"] = false;
-			request["d"]["self_deaf"] = true;
+			request["d"]["self_deaf"] = false;
 
 
 			mVoiceEndpoint.Reset();
 			mVoiceToken.Reset();
-			mVoiceSessionId.Reset();
 			mVoiceGuild     = guild;
 			mVoiceChannel   = channel;
 

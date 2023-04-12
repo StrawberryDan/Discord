@@ -24,15 +24,15 @@ namespace Strawberry::Discord
 	class Bot
 	{
 	public:
-	    using Token = std::string;
+		using Token = std::string;
 
 	public:
-	    explicit Bot(Token token, Intent intents);
+		explicit Bot(Token token, Intent intents);
 
 
 
 	public:
-	    void Run();
+		void Run();
 		void Stop();
 
 
@@ -72,19 +72,20 @@ namespace Strawberry::Discord
 
 
 	private:
-	    std::string GetGatewayEndpoint();
+		std::string GetGatewayEndpoint();
 
 
 
 	private:
 		bool											mRunning;
-	    Token											mToken;
-	    Intent											mIntents;
+		Token											mToken;
+		Intent											mIntents;
 		Core::SharedMutex<Core::Net::HTTP::HTTPSClient>	mHTTPS;
 		Core::Option<Gateway::Gateway>					mGateway;
 		std::unique_ptr<Behaviour>						mBehaviour;
 		std::set<EventListener*>						mEventListeners;
 		Core::Option<Snowflake>							mUserId;
+		Core::Option<std::string>						mSessionId;
 
 
 		Core::Option<Snowflake>							mVoiceGuild;
