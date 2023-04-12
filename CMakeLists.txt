@@ -16,6 +16,7 @@ add_library(Strawberry_Discord STATIC
         src/Bot.cpp
         src/Entities/Channel.cpp
         src/Entities/Guild.cpp
+        src/EventListener.cpp
         src/Events/GuildCreate.cpp
         src/Events/Ready.cpp
         src/Gateway/Gateway.cpp
