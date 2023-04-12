@@ -2,7 +2,9 @@
 
 
 
-#include "Event/Base.hpp"
+#include "Event/EventBase.hpp"
+#include "Core/Mutex.hpp"
+#include <set>
 
 
 
@@ -10,7 +12,17 @@ namespace Strawberry::Discord
 {
 	class EventListener
 	{
+		friend class Bot;
+
 	public:
-		virtual void ProcessEvent(const Event::Base& event) = 0;
+		EventListener();
+		EventListener(EventListener&& other);
+		EventListener& operator=(EventListener&& other);
+		virtual ~EventListener();
+
+		virtual void ProcessEvent(const Event::EventBase& event) = 0;
+
+	private:
+		Core::SharedMutex<std::set<EventListener*>> mRegistry;
 	};
 }

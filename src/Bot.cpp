@@ -95,24 +95,22 @@ namespace Strawberry::Discord
 
 
 
-	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
-	{
-		mBehaviour = std::move(behaviour);
-	}
-
-
-
 	void Bot::RegisterEventListener(EventListener* listener)
 	{
-		mEventListeners.insert(listener);
+		listener->mRegistry = this->mEventListenerRegistry;
+		mEventListenerRegistry.Lock()->insert(listener);
 	}
 
 
 
 	void Bot::DeregisterEventListener(EventListener* listener)
 	{
-		Assert(mEventListeners.contains(listener));
-		mEventListeners.erase(listener);
+		auto eventListeners = mEventListenerRegistry.Lock();
+		if (eventListeners->contains(listener))
+		{
+			eventListeners->erase(listener);
+			listener->mRegistry = nullptr;
+		}
 	}
 
 
@@ -190,9 +188,10 @@ namespace Strawberry::Discord
 
 
 
-	void Bot::DispatchEvent(const Event::Base& event) const
+	void Bot::DispatchEvent(const Event::EventBase& event) const
 	{
-		for (auto listener : mEventListeners)
+		auto eventListeners = mEventListenerRegistry.Lock();
+		for (auto listener : *eventListeners)
 		{
 			listener->ProcessEvent(event);
 		}
