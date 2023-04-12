@@ -77,6 +77,7 @@ namespace Strawberry::Discord
 
 
 	private:
+		// General Utility State
 		bool											mRunning;
 		Token											mToken;
 		Intent											mIntents;
@@ -88,6 +89,7 @@ namespace Strawberry::Discord
 		Core::Option<std::string>						mSessionId;
 
 
+		/// Voice State Info
 		Core::Option<Snowflake>							mVoiceGuild;
 		Core::Option<Snowflake>							mVoiceChannel;
 		Core::Option<std::string>						mVoiceEndpoint;
@@ -95,9 +97,7 @@ namespace Strawberry::Discord
 		Core::Option<std::string>						mVoiceSessionId;
 		Core::Option<Voice::Connection>					mVoiceConnection;
 
-
-
-	private:
+		// Cache
 		std::unordered_map<Snowflake, Entity::Guild>	mGuilds;
 		std::unordered_map<Snowflake, Entity::Channel>	mChannels;
 	};
