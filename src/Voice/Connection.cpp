@@ -21,28 +21,26 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 
 
 	json ident;
-	ident["op"] = 0;
-	ident["d"]["server_id"] = guildId.AsString();
-	ident["d"]["user_id"] = userId.AsString();
-	ident["d"]["session_id"] = sessionId;
-	ident["d"]["token"] = token;
+	ident["op"]					= 0;
+	ident["d"]["server_id"]		= guildId.AsString();
+	ident["d"]["user_id"]		= userId.AsString();
+	ident["d"]["session_id"]	= sessionId;
+	ident["d"]["token"]			= token;
 	wss->SendMessage(Message(ident.dump())).Unwrap();
 
 
 	// Receive Hello
-	auto helloMsg  = wss->WaitMessage().Unwrap();
-	auto helloJSON = helloMsg.AsJSON().Unwrap();
-	auto heartbeatInterval = static_cast<double>(helloJSON["d"]["heartbeat_interval"]) / 1000.0;
+	auto hello				= wss->WaitMessage().Unwrap().AsJSON().Unwrap();
+	auto heartbeatInterval	= static_cast<double>(hello["d"]["heartbeat_interval"]) / 1000.0;
 	mHeartbeat.Emplace(mWSS, heartbeatInterval);
 
 
 	// Receive Voice Ready
-	auto readyMsg  = wss->WaitMessage().Unwrap();
-	auto readyJSON = readyMsg.AsJSON().Unwrap();
-	Core::Assert(readyJSON["op"] == 2);
-	auto addr = Strawberry::Core::Net::IPv4Address::Parse(readyJSON["d"]["ip"]).Unwrap();
-	uint16_t port = readyJSON["d"]["port"];
-	std::vector<std::string> modes = readyJSON["d"]["modes"];
+	auto ready	= wss->WaitMessage().Unwrap().AsJSON().Unwrap();
+	Core::Assert(ready["op"] == 2);
+	auto addr = Strawberry::Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
+	uint16_t port = ready["d"]["port"];
+	std::vector<std::string> modes = ready["d"]["modes"];
 	Core::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
 	mUDP = Core::Net::Socket::UDPClient::Create().Unwrap();
 
@@ -58,9 +56,8 @@ Strawberry::Discord::Voice::Connection::Connection(std::string endpoint,
 
 
 	// Receive session description
-	auto sessionDescriptionMsg = wss->WaitMessage().Unwrap();
-	auto sessionDescriptionJSON = sessionDescriptionMsg.AsJSON().Unwrap();
-	Core::Assert(sessionDescriptionJSON["op"] == 4);
-	Core::Assert(sessionDescriptionJSON["d"]["mode"] == "xsalsa20_poly1305");
-	mKey = sessionDescriptionJSON["d"]["secret_key"];
+	auto sessionDescription = wss->WaitMessage().Unwrap().AsJSON().Unwrap();
+	Core::Assert(sessionDescription["op"] == 4);
+	Core::Assert(sessionDescription["d"]["mode"] == "xsalsa20_poly1305");
+	mKey = sessionDescription["d"]["secret_key"];
 }
