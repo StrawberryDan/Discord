@@ -96,11 +96,48 @@ namespace Strawberry::Discord
 
 
 
+	std::unordered_set<Snowflake> Bot::FetchGuilds()
+	{
+		using namespace Strawberry::Core::Net;
+
+		std::unordered_set<Snowflake> result;
+		// Request guilds
+		HTTP::Request request(HTTP::Verb::GET, "/api/v10/users/@me/guilds");
+		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
+		request.GetHeader().Add("Host", "discord.com");
+		// Receive Response
+		auto https = mHTTPS.Lock();
+		https->SendRequest(request);
+		HTTP::Response response = https->Receive();
+		Core::Assert(response.GetStatus() == 200);
+		nlohmann::json responseJSON = nlohmann::json::parse(response.GetPayload().AsString());
+		Core::Assert(responseJSON.is_array());
+		// Add to lise of known guilds.
+		for (auto guildJSON: responseJSON)
+		{
+			auto guild = Entity::Guild::Parse(guildJSON).Unwrap();
+			result.insert(guild.GetId());
+		}
+
+		return result;
+	}
+
+
+
 	const Entity::Channel* Bot::GetChannelById(const Snowflake& id) const
 	{
 		if (mChannels.contains(id))
 		{
-			return &mChannels.at(id);
+			Core::Option<Entity::Channel> channel = mChannels.at(id);
+			if (channel)
+			{
+				return &*mChannels.at(id);
+			}
+			else
+			{
+				// TODO: implement fetching from server here.
+				return nullptr;
+			}
 		}
 		else
 		{
@@ -151,6 +188,15 @@ namespace Strawberry::Discord
 					mVoiceSessionId = event.GetSessionId();
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
+
+					// Get the list of guilds we are in after we are ready.
+					for (auto snowflake : FetchGuilds())
+					{
+						if (!mGuilds.contains(snowflake))
+						{
+							mGuilds.insert({snowflake, {}});
+						}
+					}
 				}
 				else if (json["t"] == "GUILD_CREATE")
 				{

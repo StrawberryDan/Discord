@@ -5,6 +5,7 @@
 #include <string>
 #include <optional>
 #include <set>
+#include <unordered_set>
 
 
 
@@ -21,6 +22,10 @@
 
 namespace Strawberry::Discord
 {
+	using GuildList		= std::unordered_map<Snowflake, Core::Option<Entity::Guild>>;
+	using ChannelList	= std::unordered_map<Snowflake, Core::Option<Entity::Channel>>;
+
+
 	class Bot
 	{
 	public:
@@ -31,27 +36,30 @@ namespace Strawberry::Discord
 
 
 		// Runs the bot. Does not start a new thread. Can be called from another thread however.
-		void Run();
+		void							Run();
 		// Sets the flag so that Run will return as soon as possible.
-		void Stop();
+		void							Stop();
 		// Returns whether the bot is running or not.
-		bool IsRunning() const;
+		bool							IsRunning() const;
 		// Set the behaviour to use whilst the Bot is running.
 		// This Must be called whilst the bot is not running.
-		void SetBehaviour(std::unique_ptr<Behaviour> behaviour);
+		void							SetBehaviour(std::unique_ptr<Behaviour> behaviour);
 
 
 		// Connects the bot to the given channel in the given guild.
-		void ConnectToVoice(Snowflake guild, Snowflake channel);
+		void							ConnectToVoice(Snowflake guild, Snowflake channel);
 
+
+		// Retrieves the list of known guilds this bot is a member of.
+		std::unordered_set<Snowflake>	FetchGuilds();
 		// Get the channel with the given ID if it is cached.
 		// Otherwise, return nullptr if the channel is unknown to us.
-		const Entity::Channel* GetChannelById(const Snowflake& id) const;
+		const Entity::Channel*			GetChannelById(const Snowflake& id) const;
 
 		// Register an EventListener with this bot.
-		void RegisterEventListener(EventListener* listener);
+		void							RegisterEventListener(EventListener* listener);
 		// Unregister an event listener with this bot.
-		void DeregisterEventListener(EventListener* listener);
+		void							DeregisterEventListener(EventListener* listener);
 
 
 
@@ -88,8 +96,8 @@ namespace Strawberry::Discord
 		Core::Option<std::string>						mVoiceSessionId;
 		Core::Option<Voice::Connection>					mVoiceConnection;
 
-		// Cache
-		std::unordered_map<Snowflake, Entity::Guild>	mGuilds;
-		std::unordered_map<Snowflake, Entity::Channel>	mChannels;
+		// Caches
+		GuildList										mGuilds;
+		ChannelList										mChannels;
 	};
 }
