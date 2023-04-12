@@ -130,6 +130,21 @@ namespace Strawberry::Discord
 
 
 
+	std::unordered_set<Snowflake> Bot::GetGuilds() const
+	{
+		std::unordered_set<Snowflake> result;
+		result.reserve(mGuilds.size());
+
+		for (auto& [id, data] : mGuilds)
+		{
+			result.insert(id);
+		}
+
+		return std::move(result);
+	}
+
+
+
 	const Entity::Channel* Bot::GetChannelById(const Snowflake& id) const
 	{
 		if (mChannels.contains(id))
