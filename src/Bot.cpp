@@ -210,14 +210,8 @@ namespace Strawberry::Discord
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
 
-					// Get the list of guilds we are in after we are ready.
-					for (auto snowflake : FetchGuilds())
-					{
-						if (!mGuilds.contains(snowflake))
-						{
-							mGuilds.insert({snowflake, {}});
-						}
-					}
+					// Cache guild ids.
+					FetchGuilds();
 				}
 				else if (json["t"] == "GUILD_CREATE")
 				{
