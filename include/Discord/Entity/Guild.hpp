@@ -2,12 +2,14 @@
 
 
 
-#include "Discord/Snowflake.hpp"
 #include "Channel.hpp"
-#include "Discord/Error.hpp"
-#include "nlohmann/json.hpp"
 #include "Core/Result.hpp"
+#include "Discord/Error.hpp"
+#include "Discord/Snowflake.hpp"
+#include "nlohmann/json.hpp"
+
 #include <string>
+#include <unordered_set>
 
 
 
@@ -16,19 +18,19 @@ namespace Strawberry::Discord::Entity
 	class Guild
 	{
 	public:
-		static Core::Result<Guild, Error> Parse(const nlohmann::json& json);
+		static Core::Result<Guild, Error>		Parse(const nlohmann::json& json);
 
 
 
 	public:
-		const Snowflake&   GetId() const { return mGuildId; }
-		const std::string& GetName() const { return mGuildName; }
+		inline const Snowflake&					GetId() const { return mGuildId; }
+		inline const std::string&				GetName() const { return mGuildName; }
 
 
 
 
 	private:
-		Snowflake            mGuildId;
-		std::string          mGuildName;
+		Snowflake								mGuildId;
+		std::string								mGuildName;
 	};
 }
