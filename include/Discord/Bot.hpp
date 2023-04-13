@@ -6,6 +6,7 @@
 #include <optional>
 #include <set>
 #include <unordered_set>
+#include <concepts>
 
 
 
@@ -35,7 +36,7 @@ namespace Strawberry::Discord
 		explicit Bot(Token token, Intent intents);
 
 
-		// Runs the bot. Does not start a new thread. Can be called from another thread however.
+		// Runs the bot. Does not start a new thread. Can be called from another thread.
 		void							Run();
 		// Sets the flag so that Run will return as soon as possible.
 		void							Stop();
@@ -69,14 +70,24 @@ namespace Strawberry::Discord
 
 
 	private:
+		// Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
+		template <typename... Ts> requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
+		inline Core::Option<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
+		{
+			return GetEntity(fmt::format(endpoint, std::forward<Ts>(args)...));
+		}
+		// Base case for GetEntity which actuall does the request.
+		template<>
+		Core::Option<nlohmann::json>	GetEntity(const std::string& endpoint);
+
 		// Callback when a gateway message is received.
-		void			OnGatewayMessage(Core::Net::Websocket::Message message);
+		void							OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
-		void			DispatchEvent(const Event::EventBase& event) const;
+		void							DispatchEvent(const Event::EventBase& event) const;
 		// Sends a request for voice server information for the given channel.
-		void			RequestVoiceInfo(Snowflake guild, Snowflake channel);
+		void							RequestVoiceInfo(Snowflake guild, Snowflake channel);
 		// Gets the gateway URL from HTTP.
-		std::string		GetGatewayEndpoint();
+		std::string						GetGatewayEndpoint();
 
 
 

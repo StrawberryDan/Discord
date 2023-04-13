@@ -98,19 +98,8 @@ namespace Strawberry::Discord
 
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
 	{
-		using namespace Strawberry::Core::Net;
-
 		std::unordered_set<Snowflake> result;
-		// Request guilds
-		HTTP::Request request(HTTP::Verb::GET, "/api/v10/users/@me/guilds");
-		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
-		request.GetHeader().Add("Host", "discord.com");
-		// Receive Response
-		auto https = mHTTPS.Lock();
-		https->SendRequest(request);
-		HTTP::Response response = https->Receive();
-		Core::Assert(response.GetStatus() == 200);
-		nlohmann::json responseJSON = nlohmann::json::parse(response.GetPayload().AsString());
+		nlohmann::json responseJSON = GetEntity("/users/@me/guilds").Unwrap();
 		Core::Assert(responseJSON.is_array());
 		// Add to lise of known guilds.
 		for (auto guildJSON: responseJSON)
@@ -147,18 +136,7 @@ namespace Strawberry::Discord
 
 	const Entity::Guild* Bot::FetchGuild(const Snowflake& id)
 	{
-		using namespace Core::Net;
-
-		HTTP::Request request(HTTP::Verb::GET, fmt::format("/api/v10/guilds/{}", id.AsString()));
-		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
-		request.GetHeader().Add("Host", "discord.com");
-
-		auto http = mHTTPS.Lock();
-		http->SendRequest(request);
-		HTTP::Response response = http->Receive();
-		Core::Assert(response.GetStatus() == 200);
-
-		auto guildInfo = nlohmann::json::parse(response.GetPayload().AsString());
+		auto guildInfo = GetEntity("/guilds/{}", id.AsString()).Unwrap();
 		mGuilds.insert_or_assign(id, Entity::Guild::Parse(guildInfo).Unwrap());
 		return &*mGuilds.at(id);
 	}
@@ -179,16 +157,7 @@ namespace Strawberry::Discord
 
 	const Entity::Channel* Bot::FetchChannel(const Snowflake& id)
 	{
-		HTTP::Request request(HTTP::Verb::GET, fmt::format("/api/v10/channels/{}", id.AsString()));
-		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
-		request.GetHeader().Add("Host", "discord.com");
-
-		auto http = mHTTPS.Lock();
-		http->SendRequest(request);
-		HTTP::Response response = http->Receive();
-		Core::Assert(response.GetStatus() == 200);
-
-		auto channelInfo = nlohmann::json::parse(response.GetPayload().AsString());
+		auto channelInfo = GetEntity("/channels/{}", id.AsString()).Unwrap();
 		mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap());
 		return &*mChannels.at(id);
 	}
@@ -229,7 +198,52 @@ namespace Strawberry::Discord
 
 
 
-	void Bot::OnGatewayMessage(Websocket::Message message)
+	template<>
+	Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
+	{
+		using namespace Strawberry::Core::Net;
+
+		static constexpr const char* API_PREFIX = "/api/v10";
+
+		// Setup
+		Core::Assert(endpoint.starts_with('/'));
+		HTTP::Request request(HTTP::Verb::GET, fmt::format("{}{}", API_PREFIX, endpoint));
+		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
+		request.GetHeader().Add("Host", "discord.com");
+
+		auto http = mHTTPS.Lock();
+		http->SendRequest(request);
+		HTTP::Response response = http->Receive();
+
+		switch (response.GetStatus())
+		{
+			case 200:
+				try
+				{
+					return nlohmann::json::parse(response.GetPayload().AsString());
+				}
+				catch (std::exception e)
+				{
+					return {};
+				}
+			case 429:
+			{
+				float waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
+				std::chrono::duration<float> timeToWait(waitTime);
+				std::this_thread::sleep_for(timeToWait);
+				return GetEntity(endpoint);
+			}
+
+			default:
+				Core::Unreachable();
+
+		}
+
+	}
+
+
+
+	void Bot::OnGatewayMessage(const Websocket::Message& message)
 	{
 		auto json = message.AsJSON().UnwrapOr({});
 		if (json.is_null())
@@ -250,9 +264,6 @@ namespace Strawberry::Discord
 					mVoiceSessionId = event.GetSessionId();
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
-
-					// Cache guild ids.
-					FetchGuilds();
 				}
 				else if (json["t"] == "GUILD_CREATE")
 				{
@@ -340,20 +351,7 @@ namespace Strawberry::Discord
 
 	std::string Bot::GetGatewayEndpoint()
 	{
-		using Strawberry::Core::Net::HTTP::Request;
-		using Strawberry::Core::Net::HTTP::Verb;
-
-
-
-		Request request(Verb::GET, "/api/v10/gateway/bot");
-		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
-		request.GetHeader().Add("Host", "discord.com");
-		mHTTPS.Lock()->SendRequest(request);
-		auto response = mHTTPS.Lock()->Receive();
-		Assert(response.GetStatus() == 200);
-		auto payload = response.GetPayload();
-		auto string = payload.AsString();
-		auto json = nlohmann::json::parse(string);
+		auto json = GetEntity("/gateway/bot").Unwrap();
 		auto url = static_cast<std::string>(json["url"]);
 		url.erase(0, 6);
 		return url;
