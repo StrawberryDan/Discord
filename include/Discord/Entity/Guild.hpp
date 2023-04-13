@@ -16,11 +16,6 @@ namespace Strawberry::Discord::Entity
 	class Guild
 	{
 	public:
-		using ChannelList = std::vector<Channel>;
-
-
-
-	public:
 		static Core::Result<Guild, Error> Parse(const nlohmann::json& json);
 
 
@@ -28,7 +23,6 @@ namespace Strawberry::Discord::Entity
 	public:
 		const Snowflake&   GetId() const { return mGuildId; }
 		const std::string& GetName() const { return mGuildName; }
-		const ChannelList& GetChannels() const { return mChannels; }
 
 
 
@@ -36,6 +30,5 @@ namespace Strawberry::Discord::Entity
 	private:
 		Snowflake            mGuildId;
 		std::string          mGuildName;
-		ChannelList          mChannels;
 	};
 }

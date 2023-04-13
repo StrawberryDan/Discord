@@ -54,9 +54,12 @@ namespace Strawberry::Discord
 		// Fetch indicates getting the list from the server, whilst Get means using the cache.
 		std::unordered_set<Snowflake>	FetchGuilds();
 		std::unordered_set<Snowflake>	GetGuilds() const;
-		// Get the channel with the given ID if it is cached.
-		// Otherwise, return nullptr if the channel is unknown to us.
-		const Entity::Channel*			GetChannelById(const Snowflake& id) const;
+		// Retrieves guild data from server or from cache.
+		const Entity::Guild*			FetchGuild(const Snowflake& id);
+		const Entity::Guild*			GetGuild(const Snowflake& id) const;
+		// Get the channel with the given ID.
+		const Entity::Channel*			FetchChannel(const Snowflake& id);
+		const Entity::Channel*			GetChannel(const Snowflake& id) const;
 
 		// Register an EventListener with this bot.
 		void							RegisterEventListener(EventListener* listener);

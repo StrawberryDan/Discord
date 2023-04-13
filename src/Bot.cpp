@@ -145,20 +145,61 @@ namespace Strawberry::Discord
 
 
 
-	const Entity::Channel* Bot::GetChannelById(const Snowflake& id) const
+	const Entity::Guild* Bot::FetchGuild(const Snowflake& id)
+	{
+		using namespace Core::Net;
+
+		HTTP::Request request(HTTP::Verb::GET, fmt::format("/api/v10/guilds/{}", id.AsString()));
+		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
+		request.GetHeader().Add("Host", "discord.com");
+
+		auto http = mHTTPS.Lock();
+		http->SendRequest(request);
+		HTTP::Response response = http->Receive();
+		Core::Assert(response.GetStatus() == 200);
+
+		auto guildInfo = nlohmann::json::parse(response.GetPayload().AsString());
+		mGuilds.insert_or_assign(id, Entity::Guild::Parse(guildInfo).Unwrap());
+		return &*mGuilds.at(id);
+	}
+
+
+
+	const Entity::Guild* Bot::GetGuild(const Snowflake& id) const
+	{
+		if (mGuilds.contains(id))
+		{
+			return mGuilds.at(id).AsPtr().UnwrapOr(nullptr);
+		}
+
+		return nullptr;
+	}
+
+
+
+	const Entity::Channel* Bot::FetchChannel(const Snowflake& id)
+	{
+		HTTP::Request request(HTTP::Verb::GET, fmt::format("/api/v10/channels/{}", id.AsString()));
+		request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
+		request.GetHeader().Add("Host", "discord.com");
+
+		auto http = mHTTPS.Lock();
+		http->SendRequest(request);
+		HTTP::Response response = http->Receive();
+		Core::Assert(response.GetStatus() == 200);
+
+		auto channelInfo = nlohmann::json::parse(response.GetPayload().AsString());
+		mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap());
+		return &*mChannels.at(id);
+	}
+
+
+
+	const Entity::Channel* Bot::GetChannel(const Snowflake& id) const
 	{
 		if (mChannels.contains(id))
 		{
-			Core::Option<Entity::Channel> channel = mChannels.at(id);
-			if (channel)
-			{
-				return &*mChannels.at(id);
-			}
-			else
-			{
-				// TODO: implement fetching from server here.
-				return nullptr;
-			}
+			return mChannels.at(id).AsPtr().UnwrapOr(nullptr);
 		}
 		else
 		{
@@ -219,10 +260,6 @@ namespace Strawberry::Discord
 
 					// Cache guilds and Channels
 					mGuilds.insert_or_assign(event.GetGuild().GetId(), event.GetGuild());
-					for (const auto& channel : event.GetGuild().GetChannels())
-					{
-						mChannels.insert_or_assign(channel.GetId(), channel);
-					}
 
 					// Action event
 					if (mBehaviour) mBehaviour->OnGuildCreate(event);
