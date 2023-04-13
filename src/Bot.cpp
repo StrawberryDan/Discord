@@ -101,7 +101,7 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> result;
 		nlohmann::json responseJSON = GetEntity("/users/@me/guilds").Unwrap();
 		Core::Assert(responseJSON.is_array());
-		// Add to lise of known guilds.
+		// Add to list of known guilds.
 		for (auto guildJSON: responseJSON)
 		{
 			auto guild = Entity::Guild::Parse(guildJSON).Unwrap();
@@ -110,7 +110,7 @@ namespace Strawberry::Discord
 			// Cache guild id.
 			if (!mGuilds.contains(guild.GetId()))
 			{
-				mGuilds.insert({guild.GetId(), {}});
+				mGuilds.insert({guild.GetId(), guild});
 			}
 		}
 
@@ -151,6 +151,44 @@ namespace Strawberry::Discord
 		}
 
 		return nullptr;
+	}
+
+
+
+	std::unordered_set<Snowflake> Bot::FetchChannels(const Strawberry::Discord::Snowflake& guildId)
+	{
+		std::unordered_set<Snowflake> result;
+		nlohmann::json responseJSON = GetEntity("/guilds/{}/channels", guildId.AsString()).Unwrap();
+		Core::Assert(responseJSON.is_array());
+		// Add to lise of known guilds.
+		for (auto channelJSON : responseJSON)
+		{
+			auto channel = Entity::Channel::Parse(channelJSON).Unwrap();
+			result.insert(channel.GetId());
+
+			// Cache guild id.
+			if (!mChannels.contains(channel.GetId()))
+			{
+				mChannels.insert({channel.GetId(), channel});
+			}
+		}
+
+		return result;
+	}
+
+
+
+	std::unordered_set<Snowflake> Bot::GetChannels(const Strawberry::Discord::Snowflake& guildId) const
+	{
+		std::unordered_set<Snowflake> result;
+		result.reserve(mGuilds.size());
+
+		for (auto& [id, data] : mChannels)
+		{
+			result.insert(id);
+		}
+
+		return std::move(result);
 	}
 
 
