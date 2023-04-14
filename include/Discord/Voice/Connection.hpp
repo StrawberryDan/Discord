@@ -9,6 +9,7 @@
 #include "Core/Net/Socket/UDPClient.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
 #include "Discord/Snowflake.hpp"
+#include "Discord/Gateway/Gateway.hpp"
 
 
 
@@ -17,11 +18,20 @@ namespace Strawberry::Discord::Voice
 	class Connection
 	{
 	public:
-		Connection(std::string endpoint,
+		Connection(Core::SharedMutex<Gateway::Gateway> gateway,
 				   std::string sessionId,
-				   std::string token,
 				   Snowflake guildId,
+				   Snowflake channelId,
 				   Snowflake userId);
+
+
+
+		void SetEndpoint(std::string endpoint);
+		void SetToken(std::string token);
+		void SetSessionId(std::string id);
+
+		bool IsReady() const;
+		void Start();
 
 
 
@@ -31,9 +41,17 @@ namespace Strawberry::Discord::Voice
 		
 		
 	private:
+		Core::SharedMutex<Gateway::Gateway>					mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mWSS;
 		Core::Option<Heartbeat>								mHeartbeat;
 		Core::Option<Core::Net::Socket::UDPClient>			mUDP;
 		Core::Option<Key>									mKey;
+
+		Snowflake											mGuild;
+		Snowflake											mChannel;
+		Snowflake											mUser;
+		Core::Option<std::string>							mEndpoint;
+		Core::Option<std::string>							mToken;
+		std::string											mSessionId;
 	};
 }

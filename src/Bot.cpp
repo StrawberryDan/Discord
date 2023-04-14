@@ -30,7 +30,7 @@ namespace Strawberry::Discord
 		mRunning = true;
 		while (mRunning)
 		{
-			auto gatewayMessage = mGateway->Receive();
+			auto gatewayMessage = mGateway.Lock()->Receive();
 			if (gatewayMessage)
 			{
 				if (gatewayMessage->GetOpcode() == Core::Net::Websocket::Message::Opcode::Close)
@@ -85,13 +85,7 @@ namespace Strawberry::Discord
 
 	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
 	{
-		RequestVoiceInfo(guild, channel);
-		while (!mVoiceEndpoint || !mVoiceSessionId || !mVoiceToken || !mUserId)
-		{
-			std::this_thread::yield();
-		}
-
-		mVoiceConnection.Emplace(*mVoiceEndpoint, *mVoiceSessionId, *mVoiceToken, guild, *mUserId);
+		mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId);
 	}
 
 
@@ -299,7 +293,6 @@ namespace Strawberry::Discord
 					Event::Ready event = Event::Ready::Parse(json).Unwrap();
 					mUserId			= event.GetUserId();
 					mSessionId		= event.GetSessionId();
-					mVoiceSessionId = event.GetSessionId();
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
 				}
@@ -316,15 +309,21 @@ namespace Strawberry::Discord
 				}
 				else if (json["t"] == "VOICE_SERVER_UPDATE")
 				{
-					std::cout << "Voice Server Update Received" << std::endl;
-					mVoiceEndpoint = json["d"]["endpoint"];
-					mVoiceEndpoint->erase(mVoiceEndpoint->find(":"), mVoiceEndpoint->size());
-					mVoiceToken    = json["d"]["token"];
+					if (mVoiceConnection)
+					{
+						mVoiceConnection->SetEndpoint(json["d"]["endpoint"]);
+						mVoiceConnection->SetToken(json["d"]["token"]);
+						if (mVoiceConnection->IsReady())
+						{
+							mVoiceConnection->Start();
+						}
+					}
 				}
 				else if (json["t"] == "VOICE_STATE_UPDATE")
 				{
-					std::cout << "Voice State Update Received" << std::endl;
-					mVoiceSessionId = json["d"]["session_id"];
+					// Print for later debugging purposes.
+					std::cout << "Voice State Update" << std::endl;
+					std::cout << json["d"].dump('\t') << std::end;
 				}
 				else
 				{
@@ -354,34 +353,6 @@ namespace Strawberry::Discord
 		for (auto listener : *eventListeners)
 		{
 			listener->ProcessEvent(event);
-		}
-	}
-
-
-
-	void Bot::RequestVoiceInfo(Snowflake guild, Snowflake channel)
-	{
-		using nlohmann::json;
-		namespace WS = Core::Net::Websocket;
-
-		if (guild != mVoiceGuild || channel != mVoiceChannel)
-		{
-			json request;
-			request["op"] = 4;
-			request["d"]["guild_id"] = guild.AsString();
-			request["d"]["channel_id"] = channel.AsString();
-			request["d"]["self_mute"] = false;
-			request["d"]["self_deaf"] = false;
-
-
-			mVoiceEndpoint.Reset();
-			mVoiceToken.Reset();
-			mVoiceGuild     = guild;
-			mVoiceChannel   = channel;
-
-
-			WS::Message msg(request.dump());
-			mGateway->Send(msg).Unwrap();
 		}
 	}
 

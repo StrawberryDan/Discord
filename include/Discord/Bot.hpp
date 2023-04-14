@@ -87,8 +87,6 @@ namespace Strawberry::Discord
 		void							OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
 		void							DispatchEvent(const Event::EventBase& event) const;
-		// Sends a request for voice server information for the given channel.
-		void							RequestVoiceInfo(Snowflake guild, Snowflake channel);
 		// Gets the gateway URL from HTTP.
 		std::string						GetGatewayEndpoint();
 
@@ -100,19 +98,13 @@ namespace Strawberry::Discord
 		Token											mToken;
 		Intent											mIntents;
 		Core::SharedMutex<Core::Net::HTTP::HTTPSClient>	mHTTPS;
-		Core::Option<Gateway::Gateway>					mGateway;
+		Core::SharedMutex<Gateway::Gateway>				mGateway;
 		std::unique_ptr<Behaviour>						mBehaviour;
 		Core::SharedMutex<std::set<EventListener*>>		mEventListenerRegistry;
 		Core::Option<Snowflake>							mUserId;
 		Core::Option<std::string>						mSessionId;
 
-
-		/// Voice State Info
-		Core::Option<Snowflake>							mVoiceGuild;
-		Core::Option<Snowflake>							mVoiceChannel;
-		Core::Option<std::string>						mVoiceEndpoint;
-		Core::Option<std::string>						mVoiceToken;
-		Core::Option<std::string>						mVoiceSessionId;
+		// Voice State Info
 		Core::Option<Voice::Connection>					mVoiceConnection;
 
 		// Caches
