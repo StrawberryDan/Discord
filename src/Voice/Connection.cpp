@@ -26,14 +26,29 @@ namespace Strawberry::Discord::Voice
 		using namespace Core::Net::Websocket;
 
 		json request;
-		request["op"] = 4;
-		request["d"]["guild_id"] = guildId.AsString();
-		request["d"]["channel_id"] = channelId.AsString();
-		request["d"]["self_mute"] = false;
-		request["d"]["self_deaf"] = false;
+		request["op"]				= 4;
+		request["d"]["guild_id"]	= mGuild.AsString();
+		request["d"]["channel_id"]	= mChannel.AsString();
+		request["d"]["self_mute"]	= false;
+		request["d"]["self_deaf"]	= false;
 
-		mGuild = guildId;
-		mChannel = channelId;
+		Message msg(request.dump());
+		mGateway.Lock()->Send(msg).Unwrap();
+	}
+
+
+
+	Connection::~Connection()
+	{
+		using nlohmann::json;
+		using namespace Core::Net::Websocket;
+
+		json request;
+		request["op"]				= 4;
+		request["d"]["guild_id"]	= mGuild.AsString();
+		request["d"]["channel_id"]	= {};
+		request["d"]["self_mute"]	= false;
+		request["d"]["self_deaf"]	= false;
 
 		Message msg(request.dump());
 		mGateway.Lock()->Send(msg).Unwrap();

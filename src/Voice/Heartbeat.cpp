@@ -12,16 +12,15 @@ namespace Strawberry::Discord::Voice
 			: mWSS(wss)
 			, mInterval(interval)
 			, mShouldStop(false)
-	{
-		mThread = std::thread(&Heartbeat::Run, this);
-	}
+			, mThread(std::make_unique<std::thread>(&Heartbeat::Run, this))
+	{}
 
 
 
 	Heartbeat::~Heartbeat()
 	{
 		(*mShouldStop.Lock()) = true;
-		mThread.join();
+		mThread->join();
 	}
 
 
@@ -46,7 +45,7 @@ namespace Strawberry::Discord::Voice
 			{
 				nlohmann::json message;
 				message["op"] = 3;
-				uint64_t nonce = mRandomDevice();
+				uint64_t nonce = rd();
 				message["d"] = nonce;
 				Core::Net::Websocket::Message wssMessage(to_string(message));
 

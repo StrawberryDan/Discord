@@ -24,6 +24,13 @@ namespace Strawberry::Discord::Voice
 				   Snowflake channelId,
 				   Snowflake userId);
 
+		Connection(const Connection&)				= delete;
+		Connection(Connection&&)					= default;
+		Connection& operator=(const Connection&)	= delete;
+		Connection& operator=(Connection&&)			= delete;
+
+		~Connection();
+
 
 
 		void SetEndpoint(std::string endpoint);
