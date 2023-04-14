@@ -90,6 +90,12 @@ namespace Strawberry::Discord
 
 
 
+	void Bot::DisconnectFromVoice()
+	{
+		mVoiceConnection.Reset();
+	}
+
+
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
 	{
 		std::unordered_set<Snowflake> result;
