@@ -323,7 +323,7 @@ namespace Strawberry::Discord
 				{
 					// Print for later debugging purposes.
 					std::cout << "Voice State Update" << std::endl;
-					std::cout << json["d"].dump('\t') << std::end;
+					std::cout << json["d"].dump('\t') << std::endl;
 				}
 				else
 				{
