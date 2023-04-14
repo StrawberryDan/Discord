@@ -88,7 +88,6 @@ namespace Strawberry::Discord::Voice
 	void Connection::Start()
 	{
 		using nlohmann::json;
-		using namespace Core::Net;
 		using namespace Core::Net::Websocket;
 
 		// Start websocket
@@ -112,11 +111,11 @@ namespace Strawberry::Discord::Voice
 		// Receive Voice Ready
 		auto ready = wss->WaitMessage().Unwrap().AsJSON().Unwrap();
 		Core::Assert(ready["op"] == 2);
-		auto addr = IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
+		auto addr = Strawberry::Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
 		uint16_t port = ready["d"]["port"];
 		std::vector<std::string> modes = ready["d"]["modes"];
 		Core::Assert(std::find(modes.begin(), modes.end(), "xsalsa20_poly1305") != modes.end());
-		mUDP = UDPClient::Create().Unwrap();
+		mUDP = Core::Net::Socket::UDPClient::Create().Unwrap();
 
 		// Send protocol selection
 		nlohmann::json protocolSelect;
@@ -125,7 +124,7 @@ namespace Strawberry::Discord::Voice
 		protocolSelect["d"]["data"]["address"] = addr.AsString();
 		protocolSelect["d"]["data"]["port"] = port;
 		protocolSelect["d"]["data"]["mode"] = "xsalsa20_poly1305";
-		wss->SendMessage(Message(protocolSelect.dump())).Unwrap();
+		wss->SendMessage(Core::Net::Websocket::Message(protocolSelect.dump())).Unwrap();
 
 		// Receive session description
 		auto sessionDescription = wss->WaitMessage().Unwrap().AsJSON().Unwrap();
