@@ -51,7 +51,7 @@ namespace Strawberry::Discord::Voice
 		Core::SharedMutex<Gateway::Gateway>					mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mWSS;
 		Core::Option<Heartbeat>								mHeartbeat;
-		Core::Option<Core::Net::Socket::UDPClient>			mUDP;
+		Core::Option<Core::Net::UDPClient>					mUDP;
 		Core::Option<Key>									mKey;
 
 		Snowflake											mGuild;
