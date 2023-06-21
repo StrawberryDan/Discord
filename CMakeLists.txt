@@ -1,4 +1,18 @@
-add_library(Strawberry_Discord STATIC
+cmake_minimum_required(VERSION 3.20)
+project(StrawberryDiscord)
+set(CMAKE_CXX_STANDARD 23)
+
+
+if (NOT TARGET StrawberryCore AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Core AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Core)
+	add_subdirectory(../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)
+endif()
+
+if (NOT TARGET StrawberryCodec AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Codec AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Codec)
+	add_subdirectory(../Codec ${CMAKE_CURRENT_BINARY_DIR}/Codec)
+endif()
+
+
+add_library(StrawberryDiscord STATIC
         include/Discord/Behaviour.hpp
         include/Discord/Bot.hpp
         include/Discord/Entity/Channel.hpp
