@@ -3,10 +3,10 @@
 
 
 #include <string>
-#include "Core/Net/Websocket/Client.hpp"
-#include "Core/Mutex.hpp"
-#include "Core/Option.hpp"
-#include "Core/Net/Socket/UDPClient.hpp"
+#include "Strawberry/Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Option.hpp"
+#include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Discord/Gateway/Gateway.hpp"

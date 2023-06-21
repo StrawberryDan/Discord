@@ -6,9 +6,9 @@
 
 
 
-#include "Core/Clock.hpp"
-#include "Core/Mutex.hpp"
-#include "Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/Clock.hpp"
+#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Net/Websocket/Client.hpp"
 
 
 

@@ -2,8 +2,8 @@
 
 
 
-#include "Core/Result.hpp"
-#include "Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/Result.hpp"
+#include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Heartbeat.hpp"
 #include "Discord/Intent.hpp"
 

@@ -4,7 +4,7 @@
 
 #include "EventBase.hpp"
 #include "Discord/Snowflake.hpp"
-#include "Core/Result.hpp"
+#include "Strawberry/Core/Result.hpp"
 #include "nlohmann/json.hpp"
 #include "Discord/Error.hpp"
 

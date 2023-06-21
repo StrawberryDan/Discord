@@ -3,7 +3,7 @@
 
 
 #include "Channel.hpp"
-#include "Core/Result.hpp"
+#include "Strawberry/Core/Result.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 #include "nlohmann/json.hpp"

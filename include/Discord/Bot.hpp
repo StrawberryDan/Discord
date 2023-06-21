@@ -10,8 +10,8 @@
 
 
 
-#include "Core/Mutex.hpp"
-#include "Core/Net/HTTP/Client.hpp"
+#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Net/HTTP/Client.hpp"
 #include "Discord/Gateway/Gateway.hpp"
 #include "Intent.hpp"
 #include "Behaviour.hpp"
