@@ -38,10 +38,10 @@ add_library(StrawberryDiscord STATIC
         src/Snowflake.cpp
         src/Voice/Connection.cpp
         src/Voice/Heartbeat.cpp src/EventListener.cpp)
-target_include_directories(Strawberry_Discord PUBLIC include)
-target_link_libraries(Strawberry_Discord PUBLIC Strawberry_Codec Strawberry_Core)
+target_include_directories(StrawberryDiscord PUBLIC include)
+target_link_libraries(StrawberryDiscord PUBLIC StrawberryCodec StrawberryCore)
 
 
-add_executable(Strawberry_Discord_Test
+add_executable(StrawberryDiscordTest
         test/Main.cpp)
-target_link_libraries(Strawberry_Discord_Test PRIVATE Strawberry_Discord)
+target_link_libraries(StrawberryDiscordTest PRIVATE StrawberryDiscord)
