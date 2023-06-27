@@ -1,5 +1,6 @@
 #include <utility>
 
+#include "Strawberry/Core/Log.hpp"
 #include "Discord/Bot.hpp"
 #include "Discord/Event/GuildCreate.hpp"
 
@@ -36,7 +37,7 @@ namespace Strawberry::Discord
 			{
 				if (gatewayMessage->GetOpcode() == Core::Net::Websocket::Message::Opcode::Close)
 				{
-					std::cerr << "Websocket server closed with: " << gatewayMessage->GetCloseStatusCode() << std::endl;
+					Core::Logging::Info("Websocket server closed with: {}", gatewayMessage->GetCloseStatusCode());
 				}
 
 				if (!OnGatewayMessage(*gatewayMessage))
@@ -107,13 +108,12 @@ namespace Strawberry::Discord
 				else if (json["t"] == "VOICE_STATE_UPDATE")
 				{
 					// Print for later debugging purposes.
-					std::cout << "Voice State Update" << std::endl;
-					std::cout << json["d"].dump('\t') << std::endl;
+					Core::Logging::Debug("Voice State Update:\n{}", json["d"].dump(1, '\t'));
 					return true;
 				}
 				else
 				{
-					std::cout << json.dump(1, '\t') << std::endl;
+					Core::Logging::Debug("Unhandled Discord Websocket update event:\n{}", json.dump(1, '\t'));
 					return false;
 				}
 
@@ -127,7 +127,7 @@ namespace Strawberry::Discord
 				return true;
 
 			default:
-				std::cout << std::setw(4) << json << std::endl;
+				Core::Logging::Warning("Unhandled Discord Websocket OpCode:\n{}", json.dump(1, '\t'));
 				return false;
 		}
 	}
