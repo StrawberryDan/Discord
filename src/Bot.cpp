@@ -291,6 +291,7 @@ namespace Strawberry::Discord
 
 	void Bot::RegisterEventListener(EventListener* listener)
 	{
+		Assert(!listener->mRegistry);
 		listener->mRegistry = this->mEventListenerRegistry;
 		mEventListenerRegistry.Lock()->insert(listener);
 	}
@@ -299,6 +300,7 @@ namespace Strawberry::Discord
 
 	void Bot::DeregisterEventListener(EventListener* listener)
 	{
+		Assert(listener->mRegistry);
 		auto eventListeners = mEventListenerRegistry.Lock();
 		if (eventListeners->contains(listener))
 		{
