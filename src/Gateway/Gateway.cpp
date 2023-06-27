@@ -49,7 +49,7 @@ namespace Strawberry::Discord::Gateway
 			{
 				case Core::Net::Websocket::Error::NoMessage:
 				case Core::Net::Websocket::Error::Closed:
-				case Core::Net::Websocket::Error::BadOp:
+				case Core::Net::Websocket::Error::ProtocolError:
 					return msg.Err();
 				default:
 					Core::Unreachable();
