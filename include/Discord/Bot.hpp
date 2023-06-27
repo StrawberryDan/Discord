@@ -2,31 +2,41 @@
 
 
 
-#include <string>
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
+// C++ Standard Library
+#include <concepts>
 #include <optional>
 #include <set>
+#include <string>
 #include <unordered_set>
-#include <concepts>
 
-
-
+// Project Specific Libraries
+#include "Behaviour.hpp"
+#include "Discord/Gateway/Gateway.hpp"
+#include "Discord/Voice/Connection.hpp"
+#include "Event/EventBase.hpp"
+#include "EventListener.hpp"
+#include "Intent.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/HTTP/Client.hpp"
-#include "Discord/Gateway/Gateway.hpp"
-#include "Intent.hpp"
-#include "Behaviour.hpp"
-#include "EventListener.hpp"
-#include "Event/EventBase.hpp"
-#include "Discord/Voice/Connection.hpp"
 
 
 
 namespace Strawberry::Discord
 {
+	//==================================================================================================================
+	//  Type Aliases
+	//------------------------------------------------------------------------------------------------------------------
 	using GuildList		= std::unordered_map<Snowflake, Core::Option<Entity::Guild>>;
 	using ChannelList	= std::unordered_map<Snowflake, Core::Option<Entity::Channel>>;
 
 
+
+	//==================================================================================================================
+	//  Class Declaration
+	//------------------------------------------------------------------------------------------------------------------
 	class Bot
 	{
 	public:
