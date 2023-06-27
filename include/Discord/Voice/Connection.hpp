@@ -15,6 +15,7 @@
 
 namespace Strawberry::Discord::Voice
 {
+	/// Class for representing a voice connection for a discord bot.
 	class Connection
 	{
 	public:
@@ -24,15 +25,15 @@ namespace Strawberry::Discord::Voice
 				   Snowflake channelId,
 				   Snowflake userId);
 
+		/// Only move construction allowed.
 		Connection(const Connection&)				= delete;
 		Connection(Connection&&)					= default;
 		Connection& operator=(const Connection&)	= delete;
 		Connection& operator=(Connection&&)			= delete;
-
 		~Connection();
 
 
-
+		/// Setters for state that is sent from the gateway after construction.
 		void SetEndpoint(std::string endpoint);
 		void SetToken(std::string token);
 		void SetSessionId(std::string id);
@@ -43,6 +44,7 @@ namespace Strawberry::Discord::Voice
 
 
 	private:
+		// Key is a 32 byte date slice
 		using Key = std::array<uint8_t, 32>;
 		
 		

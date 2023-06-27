@@ -25,6 +25,8 @@ namespace Strawberry::Discord::Voice
 		using nlohmann::json;
 		using namespace Core::Net::Websocket;
 
+		auto gatewayLock = mGateway.Lock();
+
 		json request;
 		request["op"]				= 4;
 		request["d"]["guild_id"]	= mGuild.AsString();
@@ -33,7 +35,31 @@ namespace Strawberry::Discord::Voice
 		request["d"]["self_deaf"]	= false;
 
 		Message msg(request.dump());
-		mGateway.Lock()->Send(msg).Unwrap();
+		gatewayLock->Send(msg).Unwrap();
+
+		while (true)
+		{
+			auto message = gatewayLock->Receive(false).Unwrap();
+			auto messageAsJsonResult = message.AsJSON();
+			if (!messageAsJsonResult)
+			{
+				gatewayLock->BufferMessage(std::move(message));
+			}
+
+			auto json = messageAsJsonResult.Unwrap();
+			if (json["t"] == "VOICE_SERVER_UPDATE")
+			{
+				SetEndpoint(json["d"]["endpoint"]);
+				SetToken(json["d"]["token"]);
+				Core::Assert(IsReady());
+				Start();
+				break;
+			}
+			else
+			{
+				gatewayLock->BufferMessage(std::move(message));
+			}
+		}
 	}
 
 
@@ -58,6 +84,7 @@ namespace Strawberry::Discord::Voice
 
 	void Connection::SetEndpoint(std::string endpoint)
 	{
+        // Erase port number
 		endpoint.erase(endpoint.find(":"), endpoint.size());
 		mEndpoint = endpoint;
 	}
