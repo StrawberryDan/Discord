@@ -129,7 +129,7 @@ namespace Strawberry::Discord
 			result.insert(id);
 		}
 
-		return std::move(result);
+		return result;
 	}
 
 
