@@ -1,12 +1,10 @@
 #include "Discord/Gateway/Gateway.hpp"
 
 
-
 namespace Strawberry::Discord::Gateway
 {
-	Gateway::Gateway(std::string endpoint, std::string token, Intent intent)
-		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
-		, mHeartbeat()
+	Gateway::Gateway(const std::string &endpoint, const std::string &token, Intent intent)
+			: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap()), mHeartbeat()
 	{
 		auto hello = Receive().Unwrap().AsJSON().Unwrap();
 		Core::Assert(hello["op"] == 10);
@@ -23,9 +21,16 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-
-	Core::Result<Core::Net::Websocket::Message, Core::Net::Websocket::Error> Gateway::Receive()
+	Gateway::ReceiveResult Gateway::Receive(bool checkBuffer)
 	{
+		// Early return if we can just take a message from the buffer.
+		if (checkBuffer && BufferedMessageCount() > 0)
+		{
+			auto message = std::move(mMessageBuffer.front());
+			mMessageBuffer.pop();
+			return message;
+		}
+
 		auto msg = mWSS.Lock()->ReadMessage();
 
 		if (msg)
@@ -53,9 +58,20 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-
-	Core::Result<int, Core::Net::Websocket::Error> Gateway::Send(const Core::Net::Websocket::Message& msg)
+	Gateway::SendResult Gateway::Send(const Core::Net::Websocket::Message &msg)
 	{
 		return mWSS.Lock()->SendMessage(msg);
+	}
+
+
+	size_t Gateway::BufferedMessageCount()
+	{
+		return mMessageBuffer.size();
+	}
+
+
+	void Gateway::BufferMessage(Core::Net::Websocket::Message message)
+	{
+		mMessageBuffer.emplace(std::move(message));
 	}
 }
