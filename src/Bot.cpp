@@ -324,8 +324,8 @@ namespace Strawberry::Discord
 
 		auto http = mHTTPS.Lock();
 		http->SendRequest(request);
-		HTTP::Response response = http->Receive();
 
+		HTTP::Response response = http->Receive();
 		switch (response.GetStatus())
 		{
 			case 200:
@@ -335,7 +335,7 @@ namespace Strawberry::Discord
 				}
 				catch (std::exception e)
 				{
-					return {};
+					Core::Unreachable();
 				}
 			case 429:
 			{
