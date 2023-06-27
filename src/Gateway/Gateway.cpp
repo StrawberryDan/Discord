@@ -6,9 +6,17 @@ namespace Strawberry::Discord::Gateway
 	Gateway::Gateway(const std::string &endpoint, const std::string &token, Intent intent)
 			: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap()), mHeartbeat()
 	{
-		auto hello = Receive().Unwrap().AsJSON().Unwrap();
-		Core::Assert(hello["op"] == 10);
-		mHeartbeat.Emplace(mWSS, static_cast<double>(hello["d"]["heartbeat_interval"]) / 1000.0);
+		auto helloMessage = Receive();
+		while (!helloMessage && helloMessage.Err() == Core::Net::Websocket::Error::NoMessage)
+		{
+			std::this_thread::yield();
+			helloMessage = Receive();
+		}
+
+		auto helloJson = helloMessage.Unwrap().AsJSON().Unwrap();
+
+		Core::Assert(helloJson["op"] == 10);
+		mHeartbeat.Emplace(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
 		nlohmann::json identifier;
 		identifier["op"]                         = 2;
