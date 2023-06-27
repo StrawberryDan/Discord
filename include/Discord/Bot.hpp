@@ -95,8 +95,8 @@ namespace Strawberry::Discord
 		template<>
 		Core::Option<nlohmann::json>	GetEntity(const std::string& endpoint);
 
-		// Callback when a gateway message is received.
-		void							OnGatewayMessage(const Core::Net::Websocket::Message& message);
+		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
+		bool							OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
 		void							DispatchEvent(const Event::EventBase& event) const;
 		// Gets the gateway URL from HTTP.

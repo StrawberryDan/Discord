@@ -30,7 +30,8 @@ namespace Strawberry::Discord
 		mRunning = true;
 		while (mRunning)
 		{
-			auto gatewayMessage = mGateway.Lock()->Receive();
+			auto gateway = mGateway.Lock();
+			auto gatewayMessage = gateway->Receive();
 			if (gatewayMessage)
 			{
 				if (gatewayMessage->GetOpcode() == Core::Net::Websocket::Message::Opcode::Close)
@@ -38,7 +39,10 @@ namespace Strawberry::Discord
 					std::cerr << "Websocket server closed with: " << gatewayMessage->GetCloseStatusCode() << std::endl;
 				}
 
-				OnGatewayMessage(gatewayMessage.Unwrap());
+				if (!OnGatewayMessage(*gatewayMessage))
+				{
+					gateway->BufferMessage(*gatewayMessage);
+				}
 			}
 			else
 			{
@@ -56,6 +60,75 @@ namespace Strawberry::Discord
 						Unreachable();
 				}
 			}
+		}
+	}
+
+
+
+	bool Bot::OnGatewayMessage(const Websocket::Message& message)
+	{
+		auto json = message.AsJSON().UnwrapOr({});
+		if (json.is_null())
+		{
+			return false;
+		}
+
+		switch (static_cast<int>(json["op"]))
+		{
+			case 0: // Update Event
+			{
+				const std::string type = json["t"];
+				if (type == "READY")
+				{
+					Event::Ready event = Event::Ready::Parse(json).Unwrap();
+					mUserId			= event.GetUserId();
+					mSessionId		= event.GetSessionId();
+					if (mBehaviour) mBehaviour->OnReady(event);
+					DispatchEvent(event);
+					return true;
+				}
+				else if (json["t"] == "GUILD_CREATE")
+				{
+					auto event = Event::GuildCreate::Parse(json).Unwrap();
+
+					// Cache guilds and Channels
+					mGuilds.insert_or_assign(event.GetGuild().GetId(), event.GetGuild());
+
+					// Action event
+					if (mBehaviour) mBehaviour->OnGuildCreate(event);
+					DispatchEvent(event);
+
+					return true;
+				}
+				else if (json["t"] == "VOICE_SERVER_UPDATE")
+				{
+					return false;
+				}
+				else if (json["t"] == "VOICE_STATE_UPDATE")
+				{
+					// Print for later debugging purposes.
+					std::cout << "Voice State Update" << std::endl;
+					std::cout << json["d"].dump('\t') << std::endl;
+					return true;
+				}
+				else
+				{
+					std::cout << json.dump(1, '\t') << std::endl;
+					return false;
+				}
+
+				break;
+			}
+
+			case 4:
+
+
+			case 11: // Heartbeat Acknowledge
+				return true;
+
+			default:
+				std::cout << std::setw(4) << json << std::endl;
+				return false;
 		}
 	}
 
@@ -89,11 +162,11 @@ namespace Strawberry::Discord
 	}
 
 
-
 	void Bot::DisconnectFromVoice()
 	{
 		mVoiceConnection.Reset();
 	}
+
 
 
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
@@ -277,78 +350,6 @@ namespace Strawberry::Discord
 
 		}
 
-	}
-
-
-
-	void Bot::OnGatewayMessage(const Websocket::Message& message)
-	{
-		auto json = message.AsJSON().UnwrapOr({});
-		if (json.is_null())
-		{
-			return;
-		}
-
-		switch (static_cast<int>(json["op"]))
-		{
-			case 0: // Update Event
-			{
-				const std::string type = json["t"];
-				if (type == "READY")
-				{
-					Event::Ready event = Event::Ready::Parse(json).Unwrap();
-					mUserId			= event.GetUserId();
-					mSessionId		= event.GetSessionId();
-					if (mBehaviour) mBehaviour->OnReady(event);
-					DispatchEvent(event);
-				}
-				else if (json["t"] == "GUILD_CREATE")
-				{
-					auto event = Event::GuildCreate::Parse(json).Unwrap();
-
-					// Cache guilds and Channels
-					mGuilds.insert_or_assign(event.GetGuild().GetId(), event.GetGuild());
-
-					// Action event
-					if (mBehaviour) mBehaviour->OnGuildCreate(event);
-					DispatchEvent(event);
-				}
-				else if (json["t"] == "VOICE_SERVER_UPDATE")
-				{
-					if (mVoiceConnection)
-					{
-						mVoiceConnection->SetEndpoint(json["d"]["endpoint"]);
-						mVoiceConnection->SetToken(json["d"]["token"]);
-						if (mVoiceConnection->IsReady())
-						{
-							mVoiceConnection->Start();
-						}
-					}
-				}
-				else if (json["t"] == "VOICE_STATE_UPDATE")
-				{
-					// Print for later debugging purposes.
-					std::cout << "Voice State Update" << std::endl;
-					std::cout << json["d"].dump('\t') << std::endl;
-				}
-				else
-				{
-					std::cout << json.dump(1, '\t') << std::endl;
-				}
-
-				break;
-			}
-
-			case 4:
-
-
-			case 11: // Heartbeat Acknowledge
-				break;
-
-			default:
-				std::cout << std::setw(4) << json << std::endl;
-				break;
-		}
 	}
 
 
