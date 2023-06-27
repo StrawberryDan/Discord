@@ -39,26 +39,32 @@ namespace Strawberry::Discord::Voice
 
 		while (true)
 		{
-			auto message = gatewayLock->Receive(false).Unwrap();
-			auto messageAsJsonResult = message.AsJSON();
+			auto message = gatewayLock->Receive(false);
+			if (!message && message.Err() == Core::Net::Websocket::Error::NoMessage)
+			{
+				std::this_thread::yield();
+				continue;
+			}
+
+			auto messageAsJsonResult = message->AsJSON();
 			if (!messageAsJsonResult)
 			{
-				gatewayLock->BufferMessage(std::move(message));
+				gatewayLock->BufferMessage(std::move(*message));
+				continue;
 			}
 
 			auto json = messageAsJsonResult.Unwrap();
-			if (json["t"] == "VOICE_SERVER_UPDATE")
+			if (json["t"] != "VOICE_SERVER_UPDATE")
 			{
-				SetEndpoint(json["d"]["endpoint"]);
-				SetToken(json["d"]["token"]);
-				Core::Assert(IsReady());
-				Start();
-				break;
+				gatewayLock->BufferMessage(std::move(*message));
+				continue;
 			}
-			else
-			{
-				gatewayLock->BufferMessage(std::move(message));
-			}
+
+			SetEndpoint(json["d"]["endpoint"]);
+			SetToken(json["d"]["token"]);
+			Core::Assert(IsReady());
+			Start();
+			break;
 		}
 	}
 
