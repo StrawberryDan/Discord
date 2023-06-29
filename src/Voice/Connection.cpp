@@ -15,12 +15,12 @@ namespace Strawberry::Discord::Voice
 						   Snowflake guildId,
 						   Snowflake channelId,
 						   Snowflake userId)
-		: mGateway(gateway)
+		: mGateway(std::move(gateway))
 		, mWSS(nullptr)
 		, mGuild(guildId)
 		, mChannel(channelId)
 		, mUser(userId)
-		, mSessionId(sessionId)
+		, mSessionId(std::move(sessionId))
 	{
 		using nlohmann::json;
 		using namespace Core::Net::Websocket;
