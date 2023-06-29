@@ -20,7 +20,7 @@ namespace Strawberry::Discord::Voice
 	{
 	public:
 		Connection(Core::SharedMutex<Gateway::Gateway> gateway,
-				   std::string sessionId,
+				   const std::string& sessionId,
 				   Snowflake guildId,
 				   Snowflake channelId,
 				   Snowflake userId);
@@ -33,15 +33,6 @@ namespace Strawberry::Discord::Voice
 		~Connection();
 
 
-		/// Setters for state that is sent from the gateway after construction.
-		void SetEndpoint(std::string endpoint);
-		void SetToken(std::string token);
-		void SetSessionId(std::string id);
-
-		bool IsReady() const;
-		void Start();
-
-
 
 	private:
 		// Key is a 32 byte date slice
@@ -50,18 +41,22 @@ namespace Strawberry::Discord::Voice
 		
 		
 	private:
+		/// Connections
 		Core::SharedMutex<Gateway::Gateway>					mGateway;
-		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mWSS;
-		Core::Option<Heartbeat>								mHeartbeat;
-		Core::Option<Core::Net::Socket::UDPClient>			mUDP;
-		Core::Option<Key>									mKey;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mVoiceWSS;
+		Core::Option<Heartbeat>								mVoiceWSSHeartbeat;
+		Core::Option<Core::Net::Endpoint>					mUDPVoiceEndpoint;
+		Core::Option<Core::Net::Socket::UDPClient>			mUDPVoiceConnection;
+		Core::Option<Key>									mSodiumEncryptionKey;
 
+		/// Current Voice Channels and User
 		Snowflake											mGuild;
 		Snowflake											mChannel;
 		Snowflake											mUser;
-		Core::Option<std::string>							mEndpoint;
-		Core::Option<std::string>							mToken;
-		std::string											mSessionId;
+
+		/// SSRC for our RTP Connection
 		Core::Option<uint32_t>								mSSRC;
+
+		bool												mIsSpeaking = false;
 	};
 }
