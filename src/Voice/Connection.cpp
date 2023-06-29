@@ -144,6 +144,7 @@ namespace Strawberry::Discord::Voice
 		// Receive Voice Ready
 		auto ready = wss->WaitMessage().Unwrap().AsJSON().Unwrap();
 		Core::Assert(ready["op"] == 2);
+		mSSRC = ready["d"]["ssrc"];
 		auto addr = Strawberry::Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap();
 		uint16_t port = ready["d"]["port"];
 		std::vector<std::string> modes = ready["d"]["modes"];

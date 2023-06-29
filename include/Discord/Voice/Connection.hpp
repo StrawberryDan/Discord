@@ -62,5 +62,6 @@ namespace Strawberry::Discord::Voice
 		Core::Option<std::string>							mEndpoint;
 		Core::Option<std::string>							mToken;
 		std::string											mSessionId;
+		Core::Option<uint32_t>								mSSRC;
 	};
 }
