@@ -27,15 +27,14 @@ namespace Strawberry::Discord::Voice
 
 		auto gatewayLock = mGateway.Lock();
 
-		json request;
-		request["op"]				= 4;
-		request["d"]["guild_id"]	= mGuild.AsString();
-		request["d"]["channel_id"]	= mChannel.AsString();
-		request["d"]["self_mute"]	= false;
-		request["d"]["self_deaf"]	= false;
-
-		Message msg(request.dump());
-		gatewayLock->Send(msg).Unwrap();
+        // Send the voice state update to tell discord we're joining a channel.
+		json voiceStateUpdate;
+        voiceStateUpdate["op"]				= 4;
+        voiceStateUpdate["d"]["guild_id"]	= mGuild.AsString();
+        voiceStateUpdate["d"]["channel_id"]	= mChannel.AsString();
+        voiceStateUpdate["d"]["self_mute"]	= false;
+        voiceStateUpdate["d"]["self_deaf"]	= false;
+		gatewayLock->Send(voiceStateUpdate).Unwrap();
 
 		while (true)
 		{
