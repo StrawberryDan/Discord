@@ -25,7 +25,7 @@ namespace Strawberry::Discord::Gateway
 		identifier["d"]["properties"]["os"]      = "windows";
 		identifier["d"]["properties"]["browser"] = "strawberry";
 		identifier["d"]["properties"]["device"]  = "strawberry";
-		Send(Core::Net::Websocket::Message(identifier.dump())).Unwrap();
+		Send(identifier).Unwrap();
 	}
 
 
