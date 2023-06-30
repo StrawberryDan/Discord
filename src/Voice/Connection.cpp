@@ -7,6 +7,7 @@
 #include "Strawberry/Core/Net/Address.hpp"
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
+#include "Strawberry/Core/Logging.hpp"
 /// Standard Library
 #include <utility>
 
@@ -24,6 +25,7 @@ namespace Strawberry::Discord::Voice
 		, mGuild(guildId)
 		, mChannel(channelId)
 		, mUser(userId)
+		, mVoicePacketBuffer()
 	{
 		using nlohmann::json;
 		using namespace Core::Net::Websocket;
@@ -83,6 +85,7 @@ namespace Strawberry::Discord::Voice
 
 			// Receive Voice Ready Message
 			auto ready = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
+			Core::Logging::Debug("Received voice ready message:\n{}", ready.dump(1, '\t'));
 			Core::Assert(ready["op"] == 2);
 			// Parse SSRC
 			mSSRC = ready["d"]["ssrc"];
@@ -108,6 +111,7 @@ namespace Strawberry::Discord::Voice
 
 			// Receive session description
 			auto sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
+			Core::Logging::Debug("Voice Session Description Update:\n{}", sessionDescription.dump(1, '\t'));
 			Core::Assert(sessionDescription["op"] == 4);
 			Core::Assert(sessionDescription["d"]["mode"] == voiceMode);
 			mSodiumEncrypter.Emplace(sessionDescription["d"]["secret_key"]);
@@ -118,6 +122,7 @@ namespace Strawberry::Discord::Voice
 		*mVoiceSendingThreadShouldRun.Lock() = true;
 		mVoiceSendingThread.Emplace([this]()
 		{
+			mTimeSinceLastVoicePacketSent.Start();
 			while (*mVoiceSendingThreadShouldRun.Lock())
 			{
 				bool packetsAvailable = !mVoicePacketBuffer.Lock()->Empty();
@@ -136,10 +141,14 @@ namespace Strawberry::Discord::Voice
 					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
 					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
 
-					Core::Net::RTP::Packet rtpPacket(78, ++mLastSequenceNumber, (mLastTimestamp += 20), *mSSRC);
-					rtpPacket.SetPayload(packet.AsBytes());
+					Core::Net::RTP::Packet rtpPacket(78, ++mLastSequenceNumber, mLastTimestamp += 20, *mSSRC);
+					Codec::SodiumEncrypter::Nonce nonce;
+					auto rtpAsBytes = rtpPacket.AsBytes();
+					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packet).second);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
 					mTimeSinceLastVoicePacketSent.Restart();
+					Core::Logging::Debug("{}:{}\tSent Voice Packet!", __FILE__, __LINE__);
 				}
 			}
 		});

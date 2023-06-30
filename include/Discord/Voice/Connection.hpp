@@ -9,7 +9,7 @@
 #include "Discord/Gateway/Gateway.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
-#include "Strawberry/Core/IO/Circular.hpp"
+#include "Strawberry/Core/IO/CircularBuffer.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
@@ -71,16 +71,16 @@ namespace Strawberry::Discord::Voice
 		Core::Option<uint32_t>										mSSRC;
 
 		/// Whether the client is considered to be speaking. Corresponds to the speaking messaged in Discord API.
-		bool														mIsSpeaking = false;
+		bool													mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Core::Mutex<Core::IO::Circular<std::vector<Codec::Packet>>> mVoicePacketBuffer;
+		Core::Mutex<Core::IO::CircularBuffer<Codec::Packet>>	mVoicePacketBuffer;
 
 		/// Voice Sending Thread
-		Core::Clock													mTimeSinceLastVoicePacketSent;
-		Core::Option<std::thread>									mVoiceSendingThread;
-		Core::Mutex<bool>											mVoiceSendingThreadShouldRun;
-		uint32_t 													mLastSequenceNumber = 0;
-		uint32_t 													mLastTimestamp      = 0;
+		Core::Clock												mTimeSinceLastVoicePacketSent;
+		Core::Option<std::thread>								mVoiceSendingThread;
+		Core::Mutex<bool>										mVoiceSendingThreadShouldRun;
+		uint32_t 												mLastSequenceNumber = 0;
+		uint32_t 												mLastTimestamp      = 0;
 	};
 }
