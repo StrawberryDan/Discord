@@ -98,7 +98,7 @@ namespace Strawberry::Discord::Voice
 			const auto voiceMode = "xsalsa20_poly1305";
 			// Check that the mode we want is there
 			Core::Assert(std::find(modes.begin(), modes.end(), voiceMode) != modes.end());
-			mUDPVoiceConnection = Core::Net::Socket::UDPClient::Create().Unwrap();
+			mUDPVoiceConnection = Core::Net::Socket::UDPClient::CreateIPv4().Unwrap();
 
 			// Send protocol selection
 			nlohmann::json protocolSelect;
