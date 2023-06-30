@@ -63,7 +63,7 @@ namespace Strawberry::Discord::Voice
 			auto voiceWSSHost = Core::Net::Endpoint::Parse(voiceServerUpdate["d"]["endpoint"]).Unwrap();
 
 			// Start websocket
-			mVoiceWSS.Emplace(WSSClient::Connect(voiceWSSHost.GetHostname(), "/?v=4").Unwrap());
+			mVoiceWSS.Emplace(WSSClient::Connect(*voiceWSSHost.GetHostname(), "/?v=4").Unwrap());
 			// Identify with the voice server
 			json identification;
 			identification["op"]				= 0;
@@ -99,7 +99,7 @@ namespace Strawberry::Discord::Voice
 			nlohmann::json protocolSelect;
 			protocolSelect["op"] = 1;
 			protocolSelect["d"]["protocol"] = "udp";
-			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress().AsString();
+			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress()->AsString();
 			protocolSelect["d"]["data"]["port"] = mUDPVoiceEndpoint->GetPort();
 			protocolSelect["d"]["data"]["mode"] = voiceMode;
 			voiceWSS->SendMessage(protocolSelect).Unwrap();
