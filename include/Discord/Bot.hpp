@@ -58,9 +58,11 @@ namespace Strawberry::Discord
 
 
 		// Connects the bot to the given channel in the given guild.
-		void							ConnectToVoice(Snowflake guild, Snowflake channel);
+		void								ConnectToVoice(Snowflake guild, Snowflake channel);
 		// Disconnects the bot from any voice channel.
-		void 							DisconnectFromVoice();
+		void 								DisconnectFromVoice();
+		// Accessor for the voice connection.
+		Core::Option<Voice::Connection>&	GetVoiceConnection() { return mVoiceConnection; }
 
 
 		// Retrieves the list of known guilds this bot is a member of.
