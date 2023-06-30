@@ -110,7 +110,7 @@ namespace Strawberry::Discord::Voice
 			auto sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
 			Core::Assert(sessionDescription["op"] == 4);
 			Core::Assert(sessionDescription["d"]["mode"] == voiceMode);
-			mSodiumEncryptionKey = sessionDescription["d"]["secret_key"];
+			mSodiumEncrypter.Emplace(sessionDescription["d"]["secret_key"]);
 
 			break;
 		}

@@ -1,8 +1,11 @@
 #pragma once
 
-
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
 /// Strawberry Libraries
 #include "Codec/Packet.hpp"
+#include "Codec/SodiumEncrypter.hpp"
 #include "Discord/Gateway/Gateway.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
@@ -56,7 +59,8 @@ namespace Strawberry::Discord::Voice
 		Core::Option<Heartbeat>										mVoiceWSSHeartbeat;
 		Core::Option<Core::Net::Endpoint>							mUDPVoiceEndpoint;
 		Core::Option<Core::Net::Socket::UDPClient>					mUDPVoiceConnection;
-		Core::Option<Key>											mSodiumEncryptionKey;
+		Core::Option<Codec::SodiumEncrypter>						mSodiumEncrypter;
+
 
 		/// Current Voice Channels and User
 		Snowflake													mGuild;
