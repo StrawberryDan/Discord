@@ -1,12 +1,14 @@
-#include <utility>
-
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
 #include "Discord/Voice/Connection.hpp"
-
-
-
+/// Strawberry Libraries
 #include "nlohmann/json.hpp"
 #include "Strawberry/Core/Net/Address.hpp"
 #include "Strawberry/Core/Net/Endpoint.hpp"
+#include "Strawberry/Core/Net/RTP/Packet.hpp"
+/// Standard Library
+#include <utility>
 
 
 
@@ -112,6 +114,35 @@ namespace Strawberry::Discord::Voice
 
 			break;
 		}
+
+		*mVoiceSendingThreadShouldRun.Lock() = true;
+		mVoiceSendingThread.Emplace([this]()
+		{
+			while (*mVoiceSendingThreadShouldRun.Lock())
+			{
+				bool packetsAvailable = !mVoicePacketBuffer.Lock()->Empty();
+				if (!packetsAvailable)
+				{
+					if (!mIsSpeaking)
+					{
+						SetSpeaking(false);
+					}
+
+					std::this_thread::yield();
+					continue;
+				}
+
+				if (*mTimeSinceLastVoicePacketSent > (0.0020 * 0.95)) {
+					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
+					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
+
+					Core::Net::RTP::Packet rtpPacket(78, ++mLastSequenceNumber, (mLastTimestamp += 20), *mSSRC);
+					rtpPacket.SetPayload(packet.AsBytes());
+					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
+					mTimeSinceLastVoicePacketSent.Restart();
+				}
+			}
+		});
 	}
 
 
@@ -130,8 +161,50 @@ namespace Strawberry::Discord::Voice
 
 		Message msg(request.dump());
 		mGateway.Lock()->Send(msg).Unwrap();
+
+		if (mVoiceSendingThread)
+		{
+			*mVoiceSendingThreadShouldRun.Lock() = false;
+			mVoiceSendingThread->join();
+		}
+	}
+
+
+	void Connection::SendAudioPacket(const Codec::Packet &packet)
+	{
+		if (!mIsSpeaking) SetSpeaking(true);
+
+		mVoicePacketBuffer.Lock()->Push(packet);
+	}
+
+
+	void Connection::SetSpeaking(bool speaking)
+	{
+		if (speaking && !mIsSpeaking)
+		{
+			nlohmann::json speaking;
+			speaking["op"]            = 5;
+			speaking["d"]["speaking"] = 1;
+			speaking["d"]["delay"]    = 0;
+			speaking["d"]["ssrc"]     = *mSSRC;
+			mVoiceWSS.Lock()->SendMessage(speaking).Unwrap();
+		}
+		else if (!speaking && mIsSpeaking)
+		{
+			nlohmann::json speaking;
+			speaking["op"]            = 5;
+			speaking["d"]["speaking"] = 0;
+			speaking["d"]["delay"]    = 0;
+			speaking["d"]["ssrc"]     = *mSSRC;
+			mVoiceWSS.Lock()->SendMessage(speaking).Unwrap();
+		}
+
+		mIsSpeaking = speaking;
+	}
+
+
+	void Connection::ClearAudioPackets()
+	{
+		mVoicePacketBuffer.Lock()->Clear();
 	}
 }
-
-
-
