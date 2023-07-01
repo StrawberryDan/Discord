@@ -32,13 +32,13 @@ namespace Strawberry::Discord::Voice
 
 		auto gatewayLock = mGateway.Lock();
 
-        // Send the voice state update to tell discord we're joining a channel.
+		// Send the voice state update to tell discord we're joining a channel.
 		json voiceStateUpdate;
-        voiceStateUpdate["op"]				= 4;
-        voiceStateUpdate["d"]["guild_id"]	= mGuild.AsString();
-        voiceStateUpdate["d"]["channel_id"]	= mChannel.AsString();
-        voiceStateUpdate["d"]["self_mute"]	= false;
-        voiceStateUpdate["d"]["self_deaf"]	= false;
+		voiceStateUpdate["op"]				= 4;
+		voiceStateUpdate["d"]["guild_id"]	= mGuild.AsString();
+		voiceStateUpdate["d"]["channel_id"]	= mChannel.AsString();
+		voiceStateUpdate["d"]["self_mute"]	= false;
+		voiceStateUpdate["d"]["self_deaf"]	= false;
 		gatewayLock->Send(voiceStateUpdate).Unwrap();
 
 		while (true)
@@ -147,7 +147,6 @@ namespace Strawberry::Discord::Voice
 					Core::Assert(rtpAsBytes[0] == 0x80);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
 					mTimeSinceLastVoicePacketSent.Restart();
-					Core::Logging::Debug("{}:{}\tSent Voice Packet!", __FILE__, __LINE__);
 				}
 			}
 		});
