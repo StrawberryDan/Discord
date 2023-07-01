@@ -179,7 +179,7 @@ namespace Strawberry::Discord::Voice
 	}
 
 
-	void Connection::SendAudioPacket(const Codec::Packet &packet)
+	void Connection::SendAudioPacket(const Codec::Packet& packet)
 	{
 		if (!mIsSpeaking) SetSpeaking(true);
 
@@ -197,6 +197,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["delay"]    = 0;
 			speaking["d"]["ssrc"]     = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(speaking).Unwrap();
+			Core::Logging::Trace("{}:{}\tSent Start Speaking Message", __FILE__, __LINE__);
 		}
 		else if (!speaking && mIsSpeaking)
 		{
@@ -206,6 +207,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["delay"]    = 0;
 			speaking["d"]["ssrc"]     = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(speaking).Unwrap();
+			Core::Logging::Trace("{}:{}\tSent Stop Speaking Message", __FILE__, __LINE__);
 		}
 
 		mIsSpeaking = speaking;
