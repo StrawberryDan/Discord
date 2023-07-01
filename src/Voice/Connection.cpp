@@ -129,13 +129,18 @@ namespace Strawberry::Discord::Voice
 		mVoiceSendingThread.Emplace([this]()
 		{
 			mTimeSinceLastVoicePacketSent.Start();
-			Core::Clock mTimeStampClock;
+			double secondsAhead = 0.0;
 			while (*mVoiceSendingThreadShouldRun.Lock())
 			{
 				auto clock = *mTimeSinceLastVoicePacketSent;
-				if (clock >= 0.02)
+				if (clock >= (0.02 + secondsAhead) * 0.5)
 				{
 					mTimeSinceLastVoicePacketSent.Restart();
+					secondsAhead += 0.02 - clock;
+					if (secondsAhead >= 0.02)
+					{
+						Core::Logging::Warning("{}:{}\tVoice Transmission Seconds Ahead = {}", __FILE__, __LINE__, secondsAhead);
+					}
 
 					auto packetBuffer = mVoicePacketBuffer.Lock();
 					bool packetsAvailable = !packetBuffer->Empty();
