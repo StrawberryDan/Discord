@@ -145,6 +145,7 @@ namespace Strawberry::Discord::Voice
 				{
 					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
 					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
+					Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
 
 					const uint32_t timeStamp(48000.0 * *mTimeStampClock);
 					Core::Logging::Trace("{}:{}\tSending RTP Voice packet\n\tSequence Number:\t{}\n\tTime Stamp:\t\t{}",
@@ -153,7 +154,7 @@ namespace Strawberry::Discord::Voice
 					Codec::SodiumEncrypter::Nonce nonce{};
 					auto rtpAsBytes = rtpPacket.AsBytes();
 					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
-					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packet).second);
+					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
 					Core::Assert(rtpAsBytes[0] == 0x80);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
 					mTimeSinceLastVoicePacketSent.Restart();
