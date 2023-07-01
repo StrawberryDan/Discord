@@ -128,10 +128,7 @@ namespace Strawberry::Discord::Voice
 				bool packetsAvailable = !mVoicePacketBuffer.Lock()->Empty();
 				if (!packetsAvailable)
 				{
-					if (!mIsSpeaking)
-					{
-						SetSpeaking(false);
-					}
+					SetSpeaking(false);
 
 					std::this_thread::yield();
 					continue;
