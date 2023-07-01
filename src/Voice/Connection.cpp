@@ -132,32 +132,23 @@ namespace Strawberry::Discord::Voice
 			Core::Clock mTimeStampClock;
 			while (*mVoiceSendingThreadShouldRun.Lock())
 			{
-				bool packetsAvailable = !mVoicePacketBuffer.Lock()->Empty();
-				if (!packetsAvailable)
+				auto clock = *mTimeSinceLastVoicePacketSent;
+				if (clock >= 0.02)
 				{
-					SetSpeaking(false);
-
-					std::this_thread::yield();
-					continue;
-				}
-
-				if (*mTimeSinceLastVoicePacketSent > (0.0200 * 0.8))
-				{
-					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
-					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
-					Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
-
-					const uint32_t timeStamp(48000.0 * *mTimeStampClock);
-					Core::Logging::Trace("{}:{}\tSending RTP Voice packet\n\tSequence Number:\t{}\n\tTime Stamp:\t\t{}",
-										 __FILE__, __LINE__, mLastSequenceNumber, timeStamp);
-					Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, timeStamp, *mSSRC);
-					Codec::SodiumEncrypter::Nonce nonce{};
-					auto rtpAsBytes = rtpPacket.AsBytes();
-					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
-					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
-					Core::Assert(rtpAsBytes[0] == 0x80);
-					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
 					mTimeSinceLastVoicePacketSent.Restart();
+
+					auto packetBuffer = mVoicePacketBuffer.Lock();
+					bool packetsAvailable = !packetBuffer->Empty();
+					if (!packetsAvailable)
+					{
+						SetSpeaking(false);
+						continue;
+					}
+
+					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
+					auto packet = packetBuffer->Pop().Unwrap().AsBytes();
+
+					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, packet).Unwrap();
 				}
 			}
 		});
@@ -169,6 +160,9 @@ namespace Strawberry::Discord::Voice
 	{
 		using nlohmann::json;
 		using namespace Core::Net::Websocket;
+
+		ClearAudioPackets();
+		SetSpeaking(false);
 
 		json request;
 		request["op"]				= 4;
@@ -192,7 +186,17 @@ namespace Strawberry::Discord::Voice
 	{
 		if (!mIsSpeaking) SetSpeaking(true);
 
-		mVoicePacketBuffer.Lock()->Push(packet);
+		Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
+		Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
+		mLastTimestamp += packet->duration;
+		Codec::SodiumEncrypter::Nonce nonce{};
+		auto rtpAsBytes = rtpPacket.AsBytes();
+		for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+		rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
+		rtpAsBytes = rtpPacket.AsBytes();
+		Core::Assert(rtpAsBytes[0] == 0x80);
+
+		mVoicePacketBuffer.Lock()->Push(rtpPacket);
 	}
 
 

@@ -14,6 +14,7 @@
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Option.hpp"
+#include "Strawberry/Core/Net/RTP/Packet.hpp"
 
 /// Standard Library
 #include <string>
@@ -74,7 +75,7 @@ namespace Strawberry::Discord::Voice
 		bool													mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Core::Mutex<Core::Collection::DynamicCircularBuffer<Codec::Packet>>	mVoicePacketBuffer;
+		Core::Mutex<Core::Collection::DynamicCircularBuffer<Core::Net::RTP::Packet>>	mVoicePacketBuffer;
 
 		/// Voice Sending Thread
 		Core::Clock												mTimeSinceLastVoicePacketSent;
