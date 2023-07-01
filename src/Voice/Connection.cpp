@@ -146,6 +146,7 @@ namespace Strawberry::Discord::Voice
 					auto rtpAsBytes = rtpPacket.AsBytes();
 					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
 					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packet).second);
+					Core::Assert(rtpAsBytes[0] == 0x80);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
 					mTimeSinceLastVoicePacketSent.Restart();
 					Core::Logging::Debug("{}:{}\tSent Voice Packet!", __FILE__, __LINE__);
