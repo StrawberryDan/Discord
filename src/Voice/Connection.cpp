@@ -12,7 +12,6 @@
 #include <utility>
 
 
-
 namespace Strawberry::Discord::Voice
 {
 	Connection::Connection(Core::SharedMutex<Gateway::Gateway> gateway,
@@ -109,10 +108,17 @@ namespace Strawberry::Discord::Voice
 			protocolSelect["d"]["data"]["mode"] = voiceMode;
 			voiceWSS->SendMessage(protocolSelect).Unwrap();
 
+
 			// Receive session description
 			auto sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
-			Core::Logging::Debug("Voice Session Description Update:\n{}", sessionDescription.dump(1, '\t'));
+			while (sessionDescription["op"] != 4)
+			{
+				sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
+			}
+
+
 			Core::Assert(sessionDescription["op"] == 4);
+			Core::Logging::Debug("Voice Session Description Update:\n{}", sessionDescription.dump(1, '\t'));
 			Core::Assert(sessionDescription["d"]["mode"] == voiceMode);
 			mSodiumEncrypter.Emplace(sessionDescription["d"]["secret_key"]);
 
@@ -123,6 +129,7 @@ namespace Strawberry::Discord::Voice
 		mVoiceSendingThread.Emplace([this]()
 		{
 			mTimeSinceLastVoicePacketSent.Start();
+			Core::Clock mTimeStampClock;
 			while (*mVoiceSendingThreadShouldRun.Lock())
 			{
 				bool packetsAvailable = !mVoicePacketBuffer.Lock()->Empty();
@@ -134,15 +141,18 @@ namespace Strawberry::Discord::Voice
 					continue;
 				}
 
-				if (*mTimeSinceLastVoicePacketSent > (0.0020 * 0.95)) {
+				if (*mTimeSinceLastVoicePacketSent > (0.0200 * 0.8))
+				{
 					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
 					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
 
-					Core::Net::RTP::Packet rtpPacket(0x78, ++mLastSequenceNumber, mLastTimestamp += 20, *mSSRC);
-					Codec::SodiumEncrypter::Nonce nonce;
+					const uint32_t timeStamp(48000.0 * *mTimeStampClock);
+					Core::Logging::Trace("{}:{}\tSending RTP Voice packet\n\tSequence Number:\t{}\n\tTime Stamp:\t\t{}",
+										 __FILE__, __LINE__, mLastSequenceNumber, timeStamp);
+					Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, timeStamp, *mSSRC);
+					Codec::SodiumEncrypter::Nonce nonce{};
 					auto rtpAsBytes = rtpPacket.AsBytes();
 					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
-					for (int i = 12; i < 24; i++) nonce[i] = 0;
 					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packet).second);
 					Core::Assert(rtpAsBytes[0] == 0x80);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
