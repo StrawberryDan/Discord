@@ -147,7 +147,6 @@ namespace Strawberry::Discord::Voice
 
 					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
 					auto packet = packetBuffer->Pop().Unwrap().AsBytes();
-
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, packet).Unwrap();
 				}
 			}
