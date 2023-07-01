@@ -9,7 +9,7 @@
 #include "Discord/Gateway/Gateway.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
-#include "Strawberry/Core/IO/CircularBuffer.hpp"
+#include "Strawberry/Core/Collection/CircularBuffer.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
@@ -74,7 +74,7 @@ namespace Strawberry::Discord::Voice
 		bool													mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Core::Mutex<Core::IO::CircularBuffer<Codec::Packet>>	mVoicePacketBuffer;
+		Core::Mutex<Core::Collection::DynamicCircularBuffer<Codec::Packet>>	mVoicePacketBuffer;
 
 		/// Voice Sending Thread
 		Core::Clock												mTimeSinceLastVoicePacketSent;
