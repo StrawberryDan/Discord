@@ -348,6 +348,7 @@ namespace Strawberry::Discord
 			}
 
 			default:
+                Core::Logging::Error("{}", response.GetPayload().AsString());
 				Core::Unreachable();
 
 		}
