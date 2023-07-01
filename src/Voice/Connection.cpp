@@ -138,10 +138,11 @@ namespace Strawberry::Discord::Voice
 					Core::Assert(!mVoicePacketBuffer.Lock()->Empty());
 					auto packet = mVoicePacketBuffer.Lock()->Pop().Unwrap();
 
-					Core::Net::RTP::Packet rtpPacket(78, ++mLastSequenceNumber, mLastTimestamp += 20, *mSSRC);
+					Core::Net::RTP::Packet rtpPacket(0x78, ++mLastSequenceNumber, mLastTimestamp += 20, *mSSRC);
 					Codec::SodiumEncrypter::Nonce nonce;
 					auto rtpAsBytes = rtpPacket.AsBytes();
 					for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+					for (int i = 12; i < 24; i++) nonce[i] = 0;
 					rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packet).second);
 					Core::Assert(rtpAsBytes[0] == 0x80);
 					mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpPacket.AsBytes()).Unwrap();
