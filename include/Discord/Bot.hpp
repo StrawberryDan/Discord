@@ -91,7 +91,7 @@ namespace Strawberry::Discord
 		template <typename... Ts> requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
 		inline Core::Option<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
 		{
-			return GetEntity(fmt::format(endpoint, std::forward<Ts>(args)...));
+			return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
 		}
 		// Base case for GetEntity which actuall does the request.
 		template<>
