@@ -4,6 +4,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 /// Strawberry Libraries
+#include "Codec/Audio/Mixer.hpp"
 #include "Codec/Packet.hpp"
 #include "Codec/SodiumEncrypter.hpp"
 #include "Discord/Gateway/Gateway.hpp"
@@ -11,14 +12,13 @@
 #include "Discord/Voice/Heartbeat.hpp"
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
 #include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Option.hpp"
-#include "Strawberry/Core/Net/RTP/Packet.hpp"
-
 /// Standard Library
 #include <string>
-
+#include <Codec/Audio/Encoder.hpp>
 
 
 namespace Strawberry::Discord::Voice
@@ -41,9 +41,11 @@ namespace Strawberry::Discord::Voice
 		~Connection();
 
 
+		std::shared_ptr<Codec::Audio::Mixer::InputChannel> CreateInputChannel();
+
+
+	protected:
 		void SetSpeaking(bool speaking);
-		void SendAudioPacket(const Codec::Packet& packet);
-		void ClearAudioPackets();
 
 
 
@@ -75,7 +77,8 @@ namespace Strawberry::Discord::Voice
 		bool													mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Core::Mutex<Core::Collection::DynamicCircularBuffer<Core::Net::RTP::Packet>>	mVoicePacketBuffer;
+		Codec::Audio::Mixer   mAudioMixer;
+		Codec::Audio::Encoder mOpusEncoder;
 
 		/// Voice Sending Thread
 		Core::Clock												mTimeSinceLastVoicePacketSent;
