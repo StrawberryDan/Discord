@@ -61,33 +61,33 @@ namespace Strawberry::Discord::Voice
 	private:
 		static constexpr double kAllowedAheadTime = 0.02;
 		/// Connections
-		Core::SharedMutex<Gateway::Gateway>							mGateway;
-		Core::SharedMutex<Core::Net::Websocket::WSSClient>			mVoiceWSS;
-		Core::Option<Heartbeat>										mVoiceWSSHeartbeat;
-		Core::Option<Core::Net::Endpoint>							mUDPVoiceEndpoint;
-		Core::Option<Core::Net::Socket::UDPClient>					mUDPVoiceConnection;
-		Core::Option<Codec::SodiumEncrypter>						mSodiumEncrypter;
+		Core::SharedMutex<Gateway::Gateway>					mGateway;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mVoiceWSS;
+		Core::Option<Heartbeat>								mVoiceWSSHeartbeat;
+		Core::Option<Core::Net::Endpoint>					mUDPVoiceEndpoint;
+		Core::Option<Core::Net::Socket::UDPClient>			mUDPVoiceConnection;
+		Core::Option<Codec::SodiumEncrypter>				mSodiumEncrypter;
 
 
 		/// Current Voice Channels and User
-		Snowflake													mGuild;
-		Snowflake													mChannel;
-		Snowflake													mUser;
+		Snowflake											mGuild;
+		Snowflake											mChannel;
+		Snowflake											mUser;
 
 		/// SSRC for our RTP Connection
-		Core::Option<uint32_t>										mSSRC;
+		Core::Option<uint32_t>								mSSRC;
 
 		/// Whether the client is considered to be speaking. Corresponds to the speaking messaged in Discord API.
-		bool													mIsSpeaking = false;
+		bool												mIsSpeaking = false;
 
 		/// Voice Packet Buffer
 		Codec::Audio::Mixer   mAudioMixer;
 		Codec::Audio::Encoder mOpusEncoder;
 
 		/// Voice Sending Thread
-		Core::Clock												mTimeSinceLastVoicePacketSent;
-		Core::Option<Core::LoopingThread>						mVoiceSendingThread;
-		uint32_t 												mLastSequenceNumber = 0;
-		uint32_t 												mLastTimestamp      = 0;
+		Core::Clock											mTimeSinceLastVoicePacketSent;
+		Core::Option<Core::LoopingThread>					mVoiceSendingThread;
+		uint32_t 											mLastSequenceNumber = 0;
+		uint32_t 											mLastTimestamp      = 0;
 	};
 }
