@@ -13,7 +13,7 @@ namespace Strawberry::Discord::Gateway
 			: mWSS(std::move(wss))
 			, mInterval(interval)
 	{
-		auto startUp = [this]() mutable
+		auto startUp = [this](Core::LoopingThread* thread) mutable
 		{
 			std::random_device rd;
 			std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
@@ -21,7 +21,7 @@ namespace Strawberry::Discord::Gateway
 			double jitter = jitterDist(rng);
 
 			mClock.Restart();
-			while (mClock.Read() < jitter)
+			while (mClock.Read() < jitter && thread->IsRunning())
 			{
 				std::this_thread::yield();
 			}
