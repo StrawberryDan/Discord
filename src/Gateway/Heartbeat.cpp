@@ -13,7 +13,7 @@ namespace Strawberry::Discord::Gateway
 			: mWSS(std::move(wss))
 			, mInterval(interval)
 	{
-		mStartUp = std::async( std::launch::async, [this]()
+		auto startUp = [this]() mutable
 		{
 			std::random_device rd;
 			std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
@@ -25,19 +25,13 @@ namespace Strawberry::Discord::Gateway
 			{
 				std::this_thread::yield();
 			}
+		};
 
-			mThread.Emplace([this, count = uint32_t(0)] () mutable { Run(count); });
-		});
+		mThread.Emplace([this, count = uint32_t(0)] () mutable { Tick(count); }, startUp);
 	}
 
 
-	Heartbeat::~Heartbeat()
-	{
-		mStartUp.wait();
-	}
-
-
-	void Heartbeat::Run(uint32_t& count)
+	void Heartbeat::Tick(uint32_t& count)
 	{
 		if (mClock.Read() > 0.9 * mInterval || count == 0)
 		{

@@ -18,7 +18,6 @@ namespace Strawberry::Discord::Gateway
 	{
 	public:
 		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
-		~Heartbeat();
 
 
 		void UpdateSequenceNumber(size_t value);
@@ -29,13 +28,13 @@ namespace Strawberry::Discord::Gateway
 
 
 	private:
-		void Run(uint32_t& count);
+		void Tick(uint32_t& count);
+
 
 		const double                                       mInterval;
 		Core::Clock                                        mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
 		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
-		std::future<void>                                  mStartUp;
 		Core::Option<Core::LoopingThread>                  mThread;
 	};
 }
