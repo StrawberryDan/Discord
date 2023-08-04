@@ -93,7 +93,7 @@ namespace Strawberry::Discord
 		{
 			return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
 		}
-		// Base case for GetEntity which actuall does the request.
+		// Base case for GetEntity which actually does the request.
 		template<>
 		Core::Option<nlohmann::json>	GetEntity(const std::string& endpoint);
 
