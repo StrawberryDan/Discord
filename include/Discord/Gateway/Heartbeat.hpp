@@ -1,12 +1,12 @@
 #pragma once
 
 
-
-#include <thread>
-
-
-
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
+// Core
 #include "Strawberry/Core/Clock.hpp"
+#include "Strawberry/Core/LoopingThread.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 
@@ -20,6 +20,7 @@ namespace Strawberry::Discord::Gateway
 		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
 		~Heartbeat();
 
+
 		void UpdateSequenceNumber(size_t value);
 
 
@@ -28,13 +29,13 @@ namespace Strawberry::Discord::Gateway
 
 
 	private:
-		void Run();
+		void Run(uint32_t& count);
 
-		std::thread                                                mThread;
-		const double                                               mInterval;
-		Core::Clock                                            mClock;
-		Core::Mutex<bool>                                      mShouldStop;
+		const double                                       mInterval;
+		Core::Clock                                        mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
 		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
+		std::future<void>                                  mStartUp;
+		Core::Option<Core::LoopingThread>                  mThread;
 	};
 }
