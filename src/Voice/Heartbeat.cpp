@@ -3,67 +3,59 @@
 
 
 #include <random>
+#include <utility>
 
 
 
 namespace Strawberry::Discord::Voice
 {
 	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
-			: mWSS(wss)
+			: mWSS(std::move(wss))
 			, mInterval(interval)
-			, mShouldStop(false)
-			, mThread(std::make_unique<std::thread>(&Heartbeat::Run, this))
-	{}
-
-
-
-	Heartbeat::~Heartbeat()
+			, mRandomDevice(std::make_unique<std::random_device>())
 	{
-		(*mShouldStop.Lock()) = true;
-		mThread->join();
+		auto startUp = [this]() mutable
+		{
+			std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
+			std::mt19937_64 rng((*mRandomDevice)());
+			double jitter = jitterDist(rng);
+
+			mClock.Restart();
+			while (mClock.Read() < jitter)
+			{
+				std::this_thread::yield();
+			}
+		};
+
+		mThread.Emplace([this, count = uint32_t(0)]() mutable { Tick(count); }, startUp);
 	}
 
 
 
-	void Heartbeat::Run()
+	void Heartbeat::Tick(uint32_t& count)
 	{
-		std::random_device rd;
-		std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
-		std::mt19937_64 rng(rd());
-		double jitter = jitterDist(rng);
-
-		mClock.Restart();
-		while (mClock.Read() < jitter && !*mShouldStop.Lock())
+		if (mClock.Read() > 0.9 * mInterval || count == 0)
 		{
-			std::this_thread::yield();
-		}
+			nlohmann::json message;
+			message["op"] = 3;
+			uint64_t nonce = (*mRandomDevice)();
+			message["d"] = nonce;
+			Core::Net::Websocket::Message wssMessage(to_string(message));
 
-		int count = 0;
-		while (!*mShouldStop.Lock())
-		{
-			if (mClock.Read() > 0.9 * mInterval || count == 0)
+			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
+			if (!sendResult && sendResult.Err() == Core::Net::Websocket::Error::Closed)
 			{
-				nlohmann::json message;
-				message["op"] = 3;
-				uint64_t nonce = rd();
-				message["d"] = nonce;
-				Core::Net::Websocket::Message wssMessage(to_string(message));
-
-				auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
-				if (!sendResult && sendResult.Err() == Core::Net::Websocket::Error::Closed)
-				{
-					return;
-				}
-				else
-				{
-					sendResult.Unwrap();
-				}
-
-				count += 1;
-				mClock.Restart();
+				return;
+			}
+			else
+			{
+				sendResult.Unwrap();
 			}
 
-			std::this_thread::yield();
+			count += 1;
+			mClock.Restart();
 		}
+
+		std::this_thread::yield();
 	}
 }

@@ -10,6 +10,7 @@
 #include "Strawberry/Core/Clock.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/LoopingThread.hpp"
 
 
 
@@ -20,20 +21,18 @@ namespace Strawberry::Discord::Voice
 	public:
 		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
 		Heartbeat(const Heartbeat&)				= delete;
-		Heartbeat(Heartbeat&&)					= default;
+		Heartbeat(Heartbeat&&)					= delete;
 		Heartbeat& operator=(const Heartbeat&)	= delete;
 		Heartbeat& operator=(Heartbeat&&)		= delete;
-		~Heartbeat();
-
 
 
 	private:
-		void Run();
+		void Tick(uint32_t& count);
 
-		const double										mInterval;
-		Core::Clock											mClock;
-		Core::Mutex<bool>									mShouldStop;
-		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mWSS;
-		std::unique_ptr<std::thread>						mThread;
+		std::unique_ptr<std::random_device>                 mRandomDevice;
+		const double                                        mInterval;
+		Core::Clock                                         mClock;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient>  mWSS;
+		Core::Option<Core::LoopingThread>                   mThread;
 	};
 }
