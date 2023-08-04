@@ -38,7 +38,7 @@ namespace Strawberry::Discord::Voice
 
 		/// Only move construction allowed.
 		Connection(const Connection&)				= delete;
-		Connection(Connection&&)					= default;
+		Connection(Connection&&)					= delete;
 		Connection& operator=(const Connection&)	= delete;
 		Connection& operator=(Connection&&)			= delete;
 		~Connection();
