@@ -126,61 +126,57 @@ namespace Strawberry::Discord::Voice
 			break;
 		}
 
-		*mVoiceSendingThreadShouldRun.Lock() = true;
-		mVoiceSendingThread.Emplace([this]()
-		{
-			mTimeSinceLastVoicePacketSent.Start();
-			double secondsAhead = 0.0;
-			uint8_t silentSamplesSent = 0;
-			constexpr double kAllowedAheadTime = 0.02;
-			while (*mVoiceSendingThreadShouldRun.Lock())
-			{
-				auto clock = *mTimeSinceLastVoicePacketSent;
-				if (clock >= (kAllowedAheadTime + secondsAhead) * 0.5)
-				{
-					mTimeSinceLastVoicePacketSent.Restart();
-					secondsAhead += kAllowedAheadTime - clock;
 
-					Core::Option<Codec::Audio::Frame> frame;
-					if (mAudioMixer.IsEmpty())
+		mTimeSinceLastVoicePacketSent.Start();
+		mVoiceSendingThread.Emplace([this, secondsAhead = 0.0, silentSamplesSent = 0]() mutable
+		{
+			auto clock = *mTimeSinceLastVoicePacketSent;
+			if (clock >= (kAllowedAheadTime + secondsAhead) * 0.5)
+			{
+				mTimeSinceLastVoicePacketSent.Restart();
+				secondsAhead += kAllowedAheadTime - clock;
+
+				Core::Option<Codec::Audio::Frame> frame;
+				if (mAudioMixer.IsEmpty())
+				{
+					if (silentSamplesSent < 5)
 					{
-						if (silentSamplesSent < 5)
-						{
-							frame = Codec::Audio::Frame::Silence({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO}, 960);
-							silentSamplesSent += 1;
-						}
-						else
-						{
-							SetSpeaking(false);
-						}
+						frame = Codec::Audio::Frame::Silence({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO},
+															 960);
+						silentSamplesSent += 1;
 					}
 					else
 					{
-						SetSpeaking(true);
-						silentSamplesSent = 0;
-						frame = mAudioMixer.ReadFrame();
+						SetSpeaking(false);
 					}
+				}
+				else
+				{
+					SetSpeaking(true);
+					silentSamplesSent = 0;
+					frame = mAudioMixer.ReadFrame();
+				}
 
 
-					if (frame)
+				if (frame)
+				{
+					Core::Assert(mIsSpeaking);
+					for (auto packet: mOpusEncoder.Encode(*frame))
 					{
-						Core::Assert(mIsSpeaking);
-						for (auto packet: mOpusEncoder.Encode(*frame))
-						{
-							Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
-							Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
-							mLastTimestamp += packet->duration;
-							Codec::SodiumEncrypter::Nonce nonce{};
-							auto rtpAsBytes = rtpPacket.AsBytes();
-							for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
-							rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
-							rtpAsBytes = rtpPacket.AsBytes();
-							Core::Assert(rtpAsBytes[0] == 0x80);
-							mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
-						}
+						Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
+						Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
+						mLastTimestamp += packet->duration;
+						Codec::SodiumEncrypter::Nonce nonce{};
+						auto rtpAsBytes = rtpPacket.AsBytes();
+						for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+						rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
+						rtpAsBytes = rtpPacket.AsBytes();
+						Core::Assert(rtpAsBytes[0] == 0x80);
+						mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
 					}
 				}
 			}
+
 		});
 	}
 
@@ -202,12 +198,6 @@ namespace Strawberry::Discord::Voice
 
 		Message msg(request.dump());
 		mGateway.Lock()->Send(msg).Unwrap();
-
-		if (mVoiceSendingThread)
-		{
-			*mVoiceSendingThreadShouldRun.Lock() = false;
-			mVoiceSendingThread->join();
-		}
 	}
 
 

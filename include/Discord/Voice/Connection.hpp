@@ -3,20 +3,23 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
-/// Strawberry Libraries
+// Codec
 #include "Codec/Audio/Mixer.hpp"
 #include "Codec/Packet.hpp"
 #include "Codec/SodiumEncrypter.hpp"
+// Discord
 #include "Discord/Gateway/Gateway.hpp"
 #include "Discord/Snowflake.hpp"
 #include "Discord/Voice/Heartbeat.hpp"
+// Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
+#include "Strawberry/Core/LoopingThread.hpp"
 #include "Strawberry/Core/Mutex.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Option.hpp"
-/// Standard Library
+// Standard Library
 #include <string>
 #include <Codec/Audio/Encoder.hpp>
 
@@ -56,6 +59,7 @@ namespace Strawberry::Discord::Voice
 
 
 	private:
+		static constexpr double kAllowedAheadTime = 0.02;
 		/// Connections
 		Core::SharedMutex<Gateway::Gateway>							mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient>			mVoiceWSS;
@@ -82,8 +86,7 @@ namespace Strawberry::Discord::Voice
 
 		/// Voice Sending Thread
 		Core::Clock												mTimeSinceLastVoicePacketSent;
-		Core::Option<std::thread>								mVoiceSendingThread;
-		Core::Mutex<bool>										mVoiceSendingThreadShouldRun;
+		Core::Option<Core::LoopingThread>						mVoiceSendingThread;
 		uint32_t 												mLastSequenceNumber = 0;
 		uint32_t 												mLastTimestamp      = 0;
 	};
