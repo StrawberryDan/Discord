@@ -139,7 +139,7 @@ namespace Strawberry::Discord::Voice
 				Core::Option<Codec::Audio::Frame> frame;
 				if (mAudioMixer.IsEmpty())
 				{
-					if (silentSamplesSent < 5)
+					if (mIsSpeaking && silentSamplesSent < 5)
 					{
 						frame = Codec::Audio::Frame::Silence({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO},
 															 960);
