@@ -47,6 +47,11 @@ namespace Strawberry::Discord::Voice
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> CreateInputChannel();
 
 
+		Snowflake GetGuild()   const { return mGuild; }
+		Snowflake GetChannel() const { return mChannel; }
+		Snowflake GetUser()    const { return mUser; }
+
+
 	protected:
 		void SetSpeaking(bool speaking);
 
@@ -70,9 +75,9 @@ namespace Strawberry::Discord::Voice
 
 
 		/// Current Voice Channels and User
-		Snowflake											mGuild;
-		Snowflake											mChannel;
-		Snowflake											mUser;
+		const Snowflake										mGuild;
+		const Snowflake										mChannel;
+		const Snowflake										mUser;
 
 		/// SSRC for our RTP Connection
 		Core::Option<uint32_t>								mSSRC;
