@@ -116,8 +116,6 @@ namespace Strawberry::Discord
 					Core::Logging::Debug("Unhandled Discord Websocket update event:\n{}", json.dump(1, '\t'));
 					return true;
 				}
-
-				break;
 			}
 
 			case 4:
