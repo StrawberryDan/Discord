@@ -129,7 +129,7 @@ namespace Strawberry::Discord::Voice
 		}
 
 
-		mVoiceSendingThread.Emplace([this, clock = Core::Metronome(0.02, 0.06), silentSamplesSent = 0]() mutable
+		mVoiceSendingThread.Emplace([this, clock = Core::Metronome(0.02, 0.50), silentSamplesSent = 0]() mutable
 		{
 			if (clock)
 			{
