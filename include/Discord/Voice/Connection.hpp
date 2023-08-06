@@ -64,7 +64,6 @@ namespace Strawberry::Discord::Voice
 
 
 	private:
-		static constexpr double kAllowedAheadTime = 0.02;
 		/// Connections
 		Core::SharedMutex<Gateway::Gateway>					mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mVoiceWSS;
@@ -89,8 +88,7 @@ namespace Strawberry::Discord::Voice
 		Codec::Audio::Mixer   mAudioMixer;
 		Codec::Audio::Encoder mOpusEncoder;
 
-		/// Voice Sending Thread
-		Core::Clock											mTimeSinceLastVoicePacketSent;
+
 		Core::Option<Core::LoopingThread>					mVoiceSendingThread;
 		uint32_t 											mLastSequenceNumber = 0;
 		uint32_t 											mLastTimestamp      = 0;

@@ -3,11 +3,13 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "Discord/Voice/Connection.hpp"
 /// Strawberry Libraries
-#include "nlohmann/json.hpp"
 #include "Strawberry/Core/Net/Address.hpp"
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Util/Logging.hpp"
+#include "Strawberry/Core/Util/Metronome.hpp"
+// Json
+#include "nlohmann/json.hpp"
 /// Standard Library
 #include <utility>
 
@@ -127,14 +129,11 @@ namespace Strawberry::Discord::Voice
 		}
 
 
-		mTimeSinceLastVoicePacketSent.Start();
-		mVoiceSendingThread.Emplace([this, secondsAhead = 0.0, silentSamplesSent = 0]() mutable
+		mVoiceSendingThread.Emplace([this, clock = Core::Metronome(0.02, 2.0), silentSamplesSent = 0]() mutable
 		{
-			auto clock = *mTimeSinceLastVoicePacketSent;
-			if (clock >= (kAllowedAheadTime + secondsAhead) * 0.5)
+			if (clock)
 			{
-				mTimeSinceLastVoicePacketSent.Restart();
-				secondsAhead += kAllowedAheadTime - clock;
+				clock.Tick();
 
 				Core::Option<Codec::Audio::Frame> frame;
 				if (mAudioMixer.IsEmpty())
