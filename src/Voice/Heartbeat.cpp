@@ -27,7 +27,7 @@ namespace Strawberry::Discord::Voice
 			}
 		};
 
-		mThread.Emplace([this, count = uint32_t(0)]() mutable { Tick(count); }, startUp);
+		mThread.Emplace(startUp, [this, count = uint32_t(0)]() mutable { Tick(count); });
 	}
 
 
