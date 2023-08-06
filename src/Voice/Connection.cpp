@@ -7,7 +7,7 @@
 #include "Strawberry/Core/Net/Address.hpp"
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
-#include "Strawberry/Core/Logging.hpp"
+#include "Strawberry/Core/Util/Logging.hpp"
 /// Standard Library
 #include <utility>
 

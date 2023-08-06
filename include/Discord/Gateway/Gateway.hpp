@@ -2,7 +2,7 @@
 
 
 
-#include "Strawberry/Core/Result.hpp"
+#include "Strawberry/Core/Util/Result.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Heartbeat.hpp"
 #include "Discord/Intent.hpp"

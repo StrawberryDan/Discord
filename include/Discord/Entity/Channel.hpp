@@ -3,8 +3,8 @@
 
 
 #include "nlohmann/json.hpp"
-#include "Strawberry/Core/Result.hpp"
-#include "Strawberry/Core/Option.hpp"
+#include "Strawberry/Core/Util/Result.hpp"
+#include "Strawberry/Core/Util/Option.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 

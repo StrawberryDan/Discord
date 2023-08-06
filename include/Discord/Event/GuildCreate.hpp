@@ -7,7 +7,7 @@
 #include "Discord/Error.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "EventBase.hpp"
-#include "Strawberry/Core/Result.hpp"
+#include "Strawberry/Core/Util/Result.hpp"
 
 
 

@@ -1,6 +1,6 @@
 #include <utility>
 
-#include "Strawberry/Core/Logging.hpp"
+#include "Strawberry/Core/Util/Logging.hpp"
 #include "Discord/Bot.hpp"
 #include "Discord/Event/GuildCreate.hpp"
 

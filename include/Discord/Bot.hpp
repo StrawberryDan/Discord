@@ -19,7 +19,7 @@
 #include "Event/EventBase.hpp"
 #include "EventListener.hpp"
 #include "Intent.hpp"
-#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/HTTP/Client.hpp"
 
 

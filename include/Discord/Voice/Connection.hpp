@@ -13,12 +13,12 @@
 #include "Discord/Voice/Heartbeat.hpp"
 // Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
-#include "Strawberry/Core/LoopingThread.hpp"
-#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Thread/LoopingThread.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
-#include "Strawberry/Core/Option.hpp"
+#include "Strawberry/Core/Util/Option.hpp"
 // Standard Library
 #include <string>
 #include <Codec/Audio/Encoder.hpp>

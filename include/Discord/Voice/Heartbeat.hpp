@@ -7,10 +7,10 @@
 
 
 
-#include "Strawberry/Core/Clock.hpp"
-#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Util/Clock.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
-#include "Strawberry/Core/LoopingThread.hpp"
+#include "Strawberry/Core/Thread/LoopingThread.hpp"
 
 
 

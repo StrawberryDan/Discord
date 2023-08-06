@@ -3,7 +3,7 @@
 
 
 #include "Event/EventBase.hpp"
-#include "Strawberry/Core/Mutex.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
 #include <set>
 
 
