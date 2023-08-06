@@ -13,7 +13,7 @@
 #include "Discord/Voice/Heartbeat.hpp"
 // Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
-#include "Strawberry/Core/Thread/LoopingThread.hpp"
+#include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
@@ -89,7 +89,7 @@ namespace Strawberry::Discord::Voice
 		Codec::Audio::Encoder mOpusEncoder;
 
 
-		Core::Option<Core::LoopingThread>					mVoiceSendingThread;
+		Core::Option<Core::RepeatingTask>					mVoiceSendingThread;
 		uint32_t 											mLastSequenceNumber = 0;
 		uint32_t 											mLastTimestamp      = 0;
 	};

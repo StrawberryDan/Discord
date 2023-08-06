@@ -10,7 +10,7 @@
 #include "Strawberry/Core/Util/Clock.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
-#include "Strawberry/Core/Thread/LoopingThread.hpp"
+#include "Strawberry/Core/Thread/RepeatingTask.hpp"
 
 
 
@@ -33,6 +33,6 @@ namespace Strawberry::Discord::Voice
 		const double                                        mInterval;
 		Core::Clock                                         mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient>  mWSS;
-		Core::Option<Core::LoopingThread>                   mThread;
+		Core::Option<Core::RepeatingTask>                   mThread;
 	};
 }
