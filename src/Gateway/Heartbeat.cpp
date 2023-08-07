@@ -67,7 +67,7 @@ namespace Strawberry::Discord::Gateway
 		}
 		else
 		{
-			mLastSequenceNumber = value;
+			*mLastSequenceNumber = Core::Mutex(value);
 		}
 	}
 }
