@@ -23,14 +23,16 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		inline const Snowflake&					GetId() const { return mGuildId; }
-		inline const std::string&				GetName() const { return mGuildName; }
+		inline const Snowflake&					GetId()          const { return mID; }
+		inline const std::string&				GetName()        const { return mName; }
+		inline std::uintmax_t					GetPermissions() const { return mPermissions; }
 
 
 
 
 	private:
-		Snowflake								mGuildId;
-		std::string								mGuildName;
+		Snowflake								mID;
+		std::string								mName;
+		std::uintmax_t							mPermissions;
 	};
 }
