@@ -25,7 +25,7 @@ namespace Strawberry::Discord::Entity
 	public:
 		inline const Snowflake&					GetId()          const { return mID; }
 		inline const std::string&				GetName()        const { return mName; }
-		inline std::uintmax_t					GetPermissions() const { return mPermissions; }
+		inline Core::Option<std::uintmax_t>		GetPermissions() const { return mPermissions; }
 
 
 
@@ -33,6 +33,6 @@ namespace Strawberry::Discord::Entity
 	private:
 		Snowflake								mID;
 		std::string								mName;
-		std::uintmax_t							mPermissions;
+		Core::Option<std::uintmax_t>			mPermissions;
 	};
 }
