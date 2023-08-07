@@ -37,7 +37,9 @@ add_library(StrawberryDiscord STATIC
         src/Gateway/Heartbeat.cpp
         src/Snowflake.cpp
         src/Voice/Connection.cpp
-        src/Voice/Heartbeat.cpp src/EventListener.cpp)
+        src/Voice/Heartbeat.cpp src/EventListener.cpp
+		src/Entities/PermissionOverwrite.cpp
+		include/Discord/Entity/PermissionOverwrite.hpp)
 target_include_directories(StrawberryDiscord PUBLIC include)
 target_link_libraries(StrawberryDiscord PUBLIC StrawberryCodec StrawberryCore)
 
