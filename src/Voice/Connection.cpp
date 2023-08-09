@@ -160,7 +160,8 @@ namespace Strawberry::Discord::Voice
 				if (frame)
 				{
 					Core::Assert(mIsSpeaking);
-					for (auto packet: mOpusEncoder.Encode(*frame))
+					mOpusEncoder.Send(frame.Unwrap());
+					for (auto packet: mOpusEncoder.Receive())
 					{
 						Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
 						Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
