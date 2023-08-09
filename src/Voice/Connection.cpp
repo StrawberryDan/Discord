@@ -129,8 +129,10 @@ namespace Strawberry::Discord::Voice
 		}
 
 
-		mVoiceSendingThread.Emplace([this, clock = Core::Metronome(0.02, 0.06), silentSamplesSent = 0]() mutable
-		{
+		mVoiceSendingThread.Emplace([
+			this,
+			clock = Core::Metronome(0.02, 0.01), silentSamplesSent = 0
+		] () mutable {
 			if (clock)
 			{
 				clock.Tick();
@@ -173,6 +175,7 @@ namespace Strawberry::Discord::Voice
 						rtpAsBytes = rtpPacket.AsBytes();
 						Core::Assert(rtpAsBytes[0] == 0x80);
 						mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
+						std::this_thread::yield();
 					}
 				}
 			}
