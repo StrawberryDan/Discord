@@ -19,4 +19,4 @@ namespace Strawberry::Discord
 
 		virtual void OnGuildCreate(const Event::GuildCreate& event) {}
 	};
-}
+}// namespace Strawberry::Discord

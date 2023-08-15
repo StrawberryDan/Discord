@@ -5,10 +5,10 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Core
-#include "Strawberry/Core/Util/Clock.hpp"
-#include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
+#include "Strawberry/Core/Thread/RepeatingTask.hpp"
+#include "Strawberry/Core/Util/Clock.hpp"
 
 
 namespace Strawberry::Discord::Gateway
@@ -29,10 +29,10 @@ namespace Strawberry::Discord::Gateway
 		void Tick(uint32_t& count);
 
 
-		const double mInterval;
-		Core::Clock mClock;
+		const double                                       mInterval;
+		Core::Clock                                        mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Core::Mutex<size_t>> mLastSequenceNumber;
-		Core::Option<Core::RepeatingTask> mThread;
+		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
+		Core::Option<Core::RepeatingTask>                  mThread;
 	};
-}
+}// namespace Strawberry::Discord::Gateway

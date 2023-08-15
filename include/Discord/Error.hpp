@@ -10,22 +10,24 @@ namespace Strawberry::Discord
 	{
 	public:
 		enum class Type;
-		using Payload = std::variant
-			<
-				std::monostate
-			>;
+		using Payload = std::variant<
+			std::monostate>;
 
 
 	public:
 		explicit Error(Type type)
 			: mType(type)
-			  , mPayload() {}
+			, mPayload()
+		{
+		}
 
 
-		template<typename T>
+		template <typename T>
 		Error(Type type, T data)
 			: mType(type)
-			  , mPayload(data) {}
+			, mPayload(data)
+		{
+		}
 
 
 		[[nodiscard]] Type GetType() const
@@ -34,7 +36,7 @@ namespace Strawberry::Discord
 		}
 
 
-		template<typename T>
+		template <typename T>
 		T GetData()
 		{
 			return std::get<T>(mPayload);
@@ -42,7 +44,7 @@ namespace Strawberry::Discord
 
 
 	private:
-		Type mType;
+		Type    mType;
 		Payload mPayload;
 	};
 
@@ -51,4 +53,4 @@ namespace Strawberry::Discord
 	{
 		InvalidJSON,
 	};
-}
+}// namespace Strawberry::Discord

@@ -1,12 +1,12 @@
 #pragma once
 
 
-#include "nlohmann/json.hpp"
-#include "Strawberry/Core/Util/Result.hpp"
-#include "Strawberry/Core/Util/Option.hpp"
 #include "Discord/Error.hpp"
-#include "PermissionOverwrite.hpp"
 #include "Discord/Snowflake.hpp"
+#include "PermissionOverwrite.hpp"
+#include "Strawberry/Core/Util/Option.hpp"
+#include "Strawberry/Core/Util/Result.hpp"
+#include "nlohmann/json.hpp"
 
 
 namespace Strawberry::Discord::Entity
@@ -17,8 +17,7 @@ namespace Strawberry::Discord::Entity
 
 
 	public:
-		enum class Type
-			: uint8_t;
+		enum class Type : uint8_t;
 
 
 	public:
@@ -42,29 +41,28 @@ namespace Strawberry::Discord::Entity
 
 
 	private:
-		Snowflake mId;
-		std::string mName;
-		Type mType;
-		size_t mPosition;
-		Core::Option<Snowflake> mGuildId;
+		Snowflake                        mId;
+		std::string                      mName;
+		Type                             mType;
+		size_t                           mPosition;
+		Core::Option<Snowflake>          mGuildId;
 		std::vector<PermissionOverwrite> mPermissionOverwrites;
 	};
 
 
-	enum class Channel::Type
-		: uint8_t
+	enum class Channel::Type : uint8_t
 	{
-		GUILD_TEXT = 0,
-		DM = 1,
-		GUILD_VOICE = 2,
-		GROUP_DM = 3,
-		GUILD_CATEGORY = 4,
-		GUILD_ANNOUNCEMENT = 5,
+		GUILD_TEXT          = 0,
+		DM                  = 1,
+		GUILD_VOICE         = 2,
+		GROUP_DM            = 3,
+		GUILD_CATEGORY      = 4,
+		GUILD_ANNOUNCEMENT  = 5,
 		ANNOUNCEMENT_THREAD = 10,
-		PUBLIC_THREAD = 11,
-		PRIVATE_THREAD = 12,
-		GUILD_STAGE_VOICE = 13,
-		GUILD_DIRECTORY = 14,
-		GUILD_FORUM = 15,
+		PUBLIC_THREAD       = 11,
+		PRIVATE_THREAD      = 12,
+		GUILD_STAGE_VOICE   = 13,
+		GUILD_DIRECTORY     = 14,
+		GUILD_FORUM         = 15,
 	};
-}
+}// namespace Strawberry::Discord::Entity

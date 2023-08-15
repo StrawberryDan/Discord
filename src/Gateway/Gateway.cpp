@@ -4,7 +4,8 @@
 namespace Strawberry::Discord::Gateway
 {
 	Gateway::Gateway(const std::string& endpoint, const std::string& token, Intent intent)
-		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap()), mHeartbeat()
+		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
+		, mHeartbeat()
 	{
 		auto helloMessage = Receive();
 		while (!helloMessage && helloMessage.Err() == Core::Net::Websocket::Error::NoMessage)
@@ -19,12 +20,12 @@ namespace Strawberry::Discord::Gateway
 		mHeartbeat.Emplace(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
 		nlohmann::json identifier;
-		identifier["op"] = 2;
-		identifier["d"]["token"] = token;
-		identifier["d"]["intents"] = std::to_underlying(intent);
-		identifier["d"]["properties"]["os"] = "windows";
+		identifier["op"]                         = 2;
+		identifier["d"]["token"]                 = token;
+		identifier["d"]["intents"]               = std::to_underlying(intent);
+		identifier["d"]["properties"]["os"]      = "windows";
 		identifier["d"]["properties"]["browser"] = "strawberry";
-		identifier["d"]["properties"]["device"] = "strawberry";
+		identifier["d"]["properties"]["device"]  = "strawberry";
 		Send(Core::Net::Websocket::Message(identifier)).Unwrap();
 	}
 
@@ -82,4 +83,4 @@ namespace Strawberry::Discord::Gateway
 	{
 		mMessageBuffer.emplace(std::move(message));
 	}
-}
+}// namespace Strawberry::Discord::Gateway

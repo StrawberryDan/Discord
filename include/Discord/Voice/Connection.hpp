@@ -13,15 +13,15 @@
 #include "Discord/Voice/Heartbeat.hpp"
 // Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
-#include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/Net/Socket/UDPClient.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
+#include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Util/Option.hpp"
 // Standard Library
-#include <string>
 #include <Codec/Audio/Encoder.hpp>
+#include <string>
 
 
 namespace Strawberry::Discord::Voice
@@ -30,17 +30,13 @@ namespace Strawberry::Discord::Voice
 	class Connection
 	{
 	public:
-		Connection(Core::SharedMutex<Gateway::Gateway> gateway,
-				   const std::string& sessionId,
-				   Snowflake guildId,
-				   Snowflake channelId,
-				   Snowflake userId);
+		Connection(Core::SharedMutex<Gateway::Gateway> gateway, const std::string& sessionId, Snowflake guildId, Snowflake channelId, Snowflake userId);
 
 		/// Only move construction allowed.
-		Connection(const Connection&) = delete;
-		Connection(Connection&&) = delete;
+		Connection(const Connection&)            = delete;
+		Connection(Connection&&)                 = delete;
 		Connection& operator=(const Connection&) = delete;
-		Connection& operator=(Connection&&) = delete;
+		Connection& operator=(Connection&&)      = delete;
 		~Connection();
 
 
@@ -67,12 +63,12 @@ namespace Strawberry::Discord::Voice
 
 	private:
 		/// Connections
-		Core::SharedMutex<Gateway::Gateway> mGateway;
+		Core::SharedMutex<Gateway::Gateway>                mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mVoiceWSS;
-		Core::Option<Heartbeat> mVoiceWSSHeartbeat;
-		Core::Option<Core::Net::Endpoint> mUDPVoiceEndpoint;
-		Core::Option<Core::Net::Socket::UDPClient> mUDPVoiceConnection;
-		Core::Option<Codec::SodiumEncrypter> mSodiumEncrypter;
+		Core::Option<Heartbeat>                            mVoiceWSSHeartbeat;
+		Core::Option<Core::Net::Endpoint>                  mUDPVoiceEndpoint;
+		Core::Option<Core::Net::Socket::UDPClient>         mUDPVoiceConnection;
+		Core::Option<Codec::SodiumEncrypter>               mSodiumEncrypter;
 
 
 		/// Current Voice Channels and User
@@ -87,12 +83,12 @@ namespace Strawberry::Discord::Voice
 		bool mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Codec::Audio::Mixer mAudioMixer;
+		Codec::Audio::Mixer   mAudioMixer;
 		Codec::Audio::Encoder mOpusEncoder;
 
 
 		Core::Option<Core::RepeatingTask> mVoiceSendingThread;
-		uint32_t mLastSequenceNumber = 0;
-		uint32_t mLastTimestamp = 0;
+		uint32_t                          mLastSequenceNumber = 0;
+		uint32_t                          mLastTimestamp      = 0;
 	};
-}
+}// namespace Strawberry::Discord::Voice

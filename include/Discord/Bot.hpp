@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
@@ -19,8 +18,8 @@
 #include "Event/EventBase.hpp"
 #include "EventListener.hpp"
 #include "Intent.hpp"
-#include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Net/HTTP/Client.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
 
 
 namespace Strawberry::Discord
@@ -28,7 +27,7 @@ namespace Strawberry::Discord
 	//==================================================================================================================
 	//  Type Aliases
 	//------------------------------------------------------------------------------------------------------------------
-	using GuildList = std::unordered_map<Snowflake, Core::Option<Entity::Guild>>;
+	using GuildList   = std::unordered_map<Snowflake, Core::Option<Entity::Guild>>;
 	using ChannelList = std::unordered_map<Snowflake, Core::Option<Entity::Channel>>;
 
 
@@ -70,14 +69,14 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> FetchGuilds();
 		std::unordered_set<Snowflake> GetGuilds() const;
 		// Retrieves guild data from server or from cache.
-		const Entity::Guild* FetchGuild(const Snowflake& id);
-		const Entity::Guild* GetGuild(const Snowflake& id) const;
+		const Entity::Guild*          FetchGuild(const Snowflake& id);
+		const Entity::Guild*          GetGuild(const Snowflake& id) const;
 		// Retrieves the channels in the given guild.
 		std::unordered_set<Snowflake> FetchChannels(const Snowflake& guildId);
 		std::unordered_set<Snowflake> GetChannels(const Snowflake& guildId) const;
 		// Get the channel with the given ID.
-		const Entity::Channel* FetchChannel(const Snowflake& id);
-		const Entity::Channel* GetChannel(const Snowflake& id) const;
+		const Entity::Channel*        FetchChannel(const Snowflake& id);
+		const Entity::Channel*        GetChannel(const Snowflake& id) const;
 
 		// Register an EventListener with this bot.
 		void RegisterEventListener(EventListener* listener);
@@ -87,7 +86,7 @@ namespace Strawberry::Discord
 
 	private:
 		// Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
-		template<typename... Ts>
+		template <typename... Ts>
 		requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
 		inline Core::Option<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
 		{
@@ -96,34 +95,34 @@ namespace Strawberry::Discord
 
 
 		// Base case for GetEntity which actually does the request.
-		template<>
+		template <>
 		Core::Option<nlohmann::json> GetEntity(const std::string& endpoint);
 
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
-		bool OnGatewayMessage(const Core::Net::Websocket::Message& message);
+		bool        OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
-		void DispatchEvent(const Event::EventBase& event) const;
+		void        DispatchEvent(const Event::EventBase& event) const;
 		// Gets the gateway URL from HTTP.
 		std::string GetGatewayEndpoint();
 
 
 	private:
 		// General Utility State
-		bool mRunning;
-		Token mToken;
-		Intent mIntents;
+		bool                                            mRunning;
+		Token                                           mToken;
+		Intent                                          mIntents;
 		Core::SharedMutex<Core::Net::HTTP::HTTPSClient> mHTTPS;
-		Core::SharedMutex<Gateway::Gateway> mGateway;
-		std::unique_ptr<Behaviour> mBehaviour;
-		Core::SharedMutex<std::set<EventListener*>> mEventListenerRegistry;
-		Core::Option<Snowflake> mUserId;
-		Core::Option<std::string> mSessionId;
+		Core::SharedMutex<Gateway::Gateway>             mGateway;
+		std::unique_ptr<Behaviour>                      mBehaviour;
+		Core::SharedMutex<std::set<EventListener*>>     mEventListenerRegistry;
+		Core::Option<Snowflake>                         mUserId;
+		Core::Option<std::string>                       mSessionId;
 
 		// Voice State Info
 		Core::Option<Voice::Connection> mVoiceConnection;
 
 		// Caches
-		GuildList mGuilds;
+		GuildList   mGuilds;
 		ChannelList mChannels;
 	};
-}
+}// namespace Strawberry::Discord

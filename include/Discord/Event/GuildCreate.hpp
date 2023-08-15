@@ -1,12 +1,12 @@
 #pragma once
 
 
-#include <nlohmann/json.hpp>
-#include "Discord/Snowflake.hpp"
-#include "Discord/Error.hpp"
 #include "Discord/Entity/Guild.hpp"
+#include "Discord/Error.hpp"
+#include "Discord/Snowflake.hpp"
 #include "EventBase.hpp"
 #include "Strawberry/Core/Util/Result.hpp"
+#include <nlohmann/json.hpp>
 
 
 namespace Strawberry::Discord::Event
@@ -29,4 +29,4 @@ namespace Strawberry::Discord::Event
 	private:
 		Entity::Guild mGuild;
 	};
-}
+}// namespace Strawberry::Discord::Event

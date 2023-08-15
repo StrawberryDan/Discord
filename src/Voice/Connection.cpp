@@ -16,18 +16,14 @@
 
 namespace Strawberry::Discord::Voice
 {
-	Connection::Connection(Core::SharedMutex<Gateway::Gateway> gateway,
-						   const std::string& sessionId,
-						   Snowflake guildId,
-						   Snowflake channelId,
-						   Snowflake userId)
+	Connection::Connection(Core::SharedMutex<Gateway::Gateway> gateway, const std::string& sessionId, Snowflake guildId, Snowflake channelId, Snowflake userId)
 		: mGateway(std::move(gateway))
-		  , mVoiceWSS(nullptr)
-		  , mGuild(guildId)
-		  , mChannel(channelId)
-		  , mUser(userId)
-		  , mAudioMixer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
-		  , mOpusEncoder(AV_CODEC_ID_OPUS, AV_CHANNEL_LAYOUT_STEREO)
+		, mVoiceWSS(nullptr)
+		, mGuild(guildId)
+		, mChannel(channelId)
+		, mUser(userId)
+		, mAudioMixer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mOpusEncoder(AV_CODEC_ID_OPUS, AV_CHANNEL_LAYOUT_STEREO)
 	{
 		using nlohmann::json;
 		using namespace Core::Net::Websocket;
@@ -36,11 +32,11 @@ namespace Strawberry::Discord::Voice
 
 		// Send the voice state update to tell discord we're joining a channel.
 		json voiceStateUpdate;
-		voiceStateUpdate["op"] = 4;
-		voiceStateUpdate["d"]["guild_id"] = mGuild.AsString();
+		voiceStateUpdate["op"]              = 4;
+		voiceStateUpdate["d"]["guild_id"]   = mGuild.AsString();
 		voiceStateUpdate["d"]["channel_id"] = mChannel.AsString();
-		voiceStateUpdate["d"]["self_mute"] = false;
-		voiceStateUpdate["d"]["self_deaf"] = false;
+		voiceStateUpdate["d"]["self_mute"]  = false;
+		voiceStateUpdate["d"]["self_deaf"]  = false;
 		gatewayLock->Send(Core::Net::Websocket::Message(voiceStateUpdate)).Unwrap();
 
 		while (true)
@@ -72,16 +68,16 @@ namespace Strawberry::Discord::Voice
 			mVoiceWSS.Emplace(WSSClient::Connect(*voiceWSSHost.GetHostname(), "/?v=4").Unwrap());
 			// Identify with the voice server
 			json identification;
-			identification["op"] = 0;
-			identification["d"]["server_id"] = mGuild.AsString();
-			identification["d"]["user_id"] = mUser.AsString();
+			identification["op"]              = 0;
+			identification["d"]["server_id"]  = mGuild.AsString();
+			identification["d"]["user_id"]    = mUser.AsString();
 			identification["d"]["session_id"] = sessionId;
-			identification["d"]["token"] = voiceServerUpdate["d"]["token"];
-			auto voiceWSS = mVoiceWSS.Lock();
+			identification["d"]["token"]      = voiceServerUpdate["d"]["token"];
+			auto voiceWSS                     = mVoiceWSS.Lock();
 			voiceWSS->SendMessage(Core::Net::Websocket::Message(identification)).Unwrap();
 
 			// Receive Hello
-			auto helloMessage = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
+			auto helloMessage      = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
 			auto heartbeatInterval = static_cast<double>(helloMessage["d"]["heartbeat_interval"]) / 1000.0;
 			mVoiceWSSHeartbeat.Emplace(mVoiceWSS, heartbeatInterval);
 
@@ -96,19 +92,19 @@ namespace Strawberry::Discord::Voice
 				Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap(),
 				ready["d"]["port"]);
 			// Get list of available modes
-			std::vector<std::string> modes = ready["d"]["modes"];
-			const auto voiceMode = "xsalsa20_poly1305";
+			std::vector<std::string> modes     = ready["d"]["modes"];
+			const auto               voiceMode = "xsalsa20_poly1305";
 			// Check that the mode we want is there
 			Core::Assert(std::find(modes.begin(), modes.end(), voiceMode) != modes.end());
 			mUDPVoiceConnection = Core::Net::Socket::UDPClient::CreateIPv4().Unwrap();
 
 			// Send protocol selection
 			nlohmann::json protocolSelect;
-			protocolSelect["op"] = 1;
-			protocolSelect["d"]["protocol"] = "udp";
+			protocolSelect["op"]                   = 1;
+			protocolSelect["d"]["protocol"]        = "udp";
 			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress()->AsString();
-			protocolSelect["d"]["data"]["port"] = mUDPVoiceEndpoint->GetPort();
-			protocolSelect["d"]["data"]["mode"] = voiceMode;
+			protocolSelect["d"]["data"]["port"]    = mUDPVoiceEndpoint->GetPort();
+			protocolSelect["d"]["data"]["mode"]    = voiceMode;
 			voiceWSS->SendMessage(Core::Net::Websocket::Message(protocolSelect)).Unwrap();
 
 
@@ -129,11 +125,8 @@ namespace Strawberry::Discord::Voice
 		}
 
 
-		mVoiceSendingThread.Emplace([
-										this,
-										clock = Core::Metronome(0.02, 0.01), silentSamplesSent = 0
-									]() mutable
-									{
+		mVoiceSendingThread.Emplace([this,
+									 clock = Core::Metronome(0.02, 0.01), silentSamplesSent = 0]() mutable {
 										if (clock)
 										{
 											clock.Tick();
@@ -184,8 +177,7 @@ namespace Strawberry::Discord::Voice
 													std::this_thread::yield();
 												}
 											}
-										}
-									});
+										} });
 	}
 
 
@@ -197,11 +189,11 @@ namespace Strawberry::Discord::Voice
 		SetSpeaking(false);
 
 		json request;
-		request["op"] = 4;
-		request["d"]["guild_id"] = mGuild.AsString();
+		request["op"]              = 4;
+		request["d"]["guild_id"]   = mGuild.AsString();
 		request["d"]["channel_id"] = {};
-		request["d"]["self_mute"] = false;
-		request["d"]["self_deaf"] = false;
+		request["d"]["self_mute"]  = false;
+		request["d"]["self_deaf"]  = false;
 
 		Message msg(request.dump());
 		mGateway.Lock()->Send(msg).Unwrap();
@@ -219,24 +211,24 @@ namespace Strawberry::Discord::Voice
 		if (speaking && !mIsSpeaking)
 		{
 			nlohmann::json speaking;
-			speaking["op"] = 5;
+			speaking["op"]            = 5;
 			speaking["d"]["speaking"] = 1;
-			speaking["d"]["delay"] = 0;
-			speaking["d"]["ssrc"] = *mSSRC;
+			speaking["d"]["delay"]    = 0;
+			speaking["d"]["ssrc"]     = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(Core::Net::Websocket::Message(speaking)).Unwrap();
 			Core::Logging::Trace("{}:{}\tSent Start Speaking Message", __FILE__, __LINE__);
 		}
 		else if (!speaking && mIsSpeaking)
 		{
 			nlohmann::json speaking;
-			speaking["op"] = 5;
+			speaking["op"]            = 5;
 			speaking["d"]["speaking"] = 0;
-			speaking["d"]["delay"] = 0;
-			speaking["d"]["ssrc"] = *mSSRC;
+			speaking["d"]["delay"]    = 0;
+			speaking["d"]["ssrc"]     = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(Core::Net::Websocket::Message(speaking)).Unwrap();
 			Core::Logging::Trace("{}:{}\tSent Stop Speaking Message", __FILE__, __LINE__);
 		}
 
 		mIsSpeaking = speaking;
 	}
-}
+}// namespace Strawberry::Discord::Voice

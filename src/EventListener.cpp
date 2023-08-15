@@ -42,4 +42,4 @@ namespace Strawberry::Discord
 			registry->erase(this);
 		}
 	}
-}
+}// namespace Strawberry::Discord

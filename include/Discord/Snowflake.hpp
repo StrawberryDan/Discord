@@ -21,8 +21,8 @@ namespace Strawberry::Discord
 
 	public:
 		// Operators
-		bool operator==(const Snowflake& rhs) const;
-		bool operator!=(const Snowflake& rhs) const;
+		bool     operator==(const Snowflake& rhs) const;
+		bool     operator!=(const Snowflake& rhs) const;
 		uint64_t operator*() const;
 
 
@@ -34,10 +34,10 @@ namespace Strawberry::Discord
 		// Members
 		uint64_t mSnowflake;
 	};
-}
+}// namespace Strawberry::Discord
 
 
-template<>
+template <>
 struct std::hash<Strawberry::Discord::Snowflake>
 {
 	std::size_t operator()(const Strawberry::Discord::Snowflake& v) const noexcept

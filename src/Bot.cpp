@@ -1,8 +1,8 @@
 #include <utility>
 
-#include "Strawberry/Core/Util/Logging.hpp"
 #include "Discord/Bot.hpp"
 #include "Discord/Event/GuildCreate.hpp"
+#include "Strawberry/Core/Util/Logging.hpp"
 
 
 using namespace Strawberry::Core::Net;
@@ -15,10 +15,12 @@ namespace Strawberry::Discord
 {
 	Bot::Bot(Token token, Intent intents)
 		: mRunning(true)
-		  , mToken(std::move(token))
-		  , mIntents(intents)
-		  , mHTTPS("discord.com")
-		  , mGateway(GetGatewayEndpoint(), mToken, mIntents) {}
+		, mToken(std::move(token))
+		, mIntents(intents)
+		, mHTTPS("discord.com")
+		, mGateway(GetGatewayEndpoint(), mToken, mIntents)
+	{
+	}
 
 
 	void Bot::Run()
@@ -26,7 +28,7 @@ namespace Strawberry::Discord
 		mRunning = true;
 		while (mRunning)
 		{
-			auto gateway = mGateway.Lock();
+			auto gateway        = mGateway.Lock();
 			auto gatewayMessage = gateway->Receive();
 			if (gatewayMessage)
 			{
@@ -70,14 +72,14 @@ namespace Strawberry::Discord
 
 		switch (static_cast<int>(json["op"]))
 		{
-			case 0: // Update Event
+			case 0:// Update Event
 			{
 				const std::string type = json["t"];
 				if (type == "READY")
 				{
 					Event::Ready event = Event::Ready::Parse(json).Unwrap();
-					mUserId = event.GetUserId();
-					mSessionId = event.GetSessionId();
+					mUserId            = event.GetUserId();
+					mSessionId         = event.GetSessionId();
 					if (mBehaviour) mBehaviour->OnReady(event);
 					DispatchEvent(event);
 					return true;
@@ -115,7 +117,7 @@ namespace Strawberry::Discord
 			case 4:
 
 
-			case 11: // Heartbeat Acknowledge
+			case 11:// Heartbeat Acknowledge
 				return true;
 
 			default:
@@ -159,10 +161,10 @@ namespace Strawberry::Discord
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
 	{
 		std::unordered_set<Snowflake> result;
-		nlohmann::json responseJSON = GetEntity("/users/@me/guilds").Unwrap();
+		nlohmann::json                responseJSON = GetEntity("/users/@me/guilds").Unwrap();
 		Core::Assert(responseJSON.is_array());
 		// Add to list of known guilds.
-		for (const auto& guildJSON: responseJSON)
+		for (const auto& guildJSON : responseJSON)
 		{
 			auto guild = Entity::Guild::Parse(guildJSON).Unwrap();
 			result.insert(guild.GetId());
@@ -183,7 +185,7 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> result;
 		result.reserve(mGuilds.size());
 
-		for (auto& [id, data]: mGuilds)
+		for (auto& [id, data] : mGuilds)
 		{
 			result.insert(id);
 		}
@@ -214,10 +216,10 @@ namespace Strawberry::Discord
 	std::unordered_set<Snowflake> Bot::FetchChannels(const Strawberry::Discord::Snowflake& guildId)
 	{
 		std::unordered_set<Snowflake> result;
-		nlohmann::json responseJSON = GetEntity("/guilds/{}/channels", guildId.AsString()).Unwrap();
+		nlohmann::json                responseJSON = GetEntity("/guilds/{}/channels", guildId.AsString()).Unwrap();
 		Core::Assert(responseJSON.is_array());
 		// Add to lise of known guilds.
-		for (const auto& channelJSON: responseJSON)
+		for (const auto& channelJSON : responseJSON)
 		{
 			auto channel = Entity::Channel::Parse(channelJSON).Unwrap();
 			result.insert(channel.GetId());
@@ -238,7 +240,7 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> result;
 		result.reserve(mGuilds.size());
 
-		for (auto& [id, data]: mChannels)
+		for (auto& [id, data] : mChannels)
 		{
 			result.insert(id);
 		}
@@ -288,7 +290,7 @@ namespace Strawberry::Discord
 	}
 
 
-	template<>
+	template <>
 	Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
 	{
 		using namespace Strawberry::Core::Net;
@@ -318,7 +320,7 @@ namespace Strawberry::Discord
 				}
 			case 429:
 			{
-				float waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
+				float                        waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
 				std::chrono::duration<float> timeToWait(waitTime);
 				std::this_thread::sleep_for(timeToWait);
 				return GetEntity(endpoint);
@@ -327,16 +329,14 @@ namespace Strawberry::Discord
 			default:
 				Core::Logging::Error("{}", response.GetPayload().AsString());
 				Core::Unreachable();
-
 		}
-
 	}
 
 
 	void Bot::DispatchEvent(const Event::EventBase& event) const
 	{
 		auto eventListeners = mEventListenerRegistry.Lock();
-		for (auto listener: *eventListeners)
+		for (auto listener : *eventListeners)
 		{
 			listener->ProcessEvent(event);
 		}
@@ -346,8 +346,8 @@ namespace Strawberry::Discord
 	std::string Bot::GetGatewayEndpoint()
 	{
 		auto json = GetEntity("/gateway/bot").Unwrap();
-		auto url = static_cast<std::string>(json["url"]);
+		auto url  = static_cast<std::string>(json["url"]);
 		url.erase(0, 6);
 		return url;
 	}
-}
+}// namespace Strawberry::Discord

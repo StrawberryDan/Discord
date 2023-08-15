@@ -2,9 +2,9 @@
 
 
 #include "Channel.hpp"
-#include "Strawberry/Core/Util/Result.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
+#include "Strawberry/Core/Util/Result.hpp"
 #include "nlohmann/json.hpp"
 
 #include <string>
@@ -30,8 +30,8 @@ namespace Strawberry::Discord::Entity
 
 
 	private:
-		Snowflake mID;
-		std::string mName;
+		Snowflake                    mID;
+		std::string                  mName;
 		Core::Option<std::uintmax_t> mPermissions;
 	};
-}
+}// namespace Strawberry::Discord::Entity

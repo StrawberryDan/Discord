@@ -1,11 +1,11 @@
 #pragma once
 
 
-#include "EventBase.hpp"
+#include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
+#include "EventBase.hpp"
 #include "Strawberry/Core/Util/Result.hpp"
 #include "nlohmann/json.hpp"
-#include "Discord/Error.hpp"
 
 
 namespace Strawberry::Discord::Event
@@ -18,12 +18,12 @@ namespace Strawberry::Discord::Event
 
 
 	public:
-		[[nodiscard]] Snowflake GetUserId() const;
+		[[nodiscard]] Snowflake   GetUserId() const;
 		[[nodiscard]] std::string GetSessionId() const;
 
 
 	private:
-		Snowflake mUserId;
+		Snowflake   mUserId;
 		std::string mSessionId;
 	};
-}
+}// namespace Strawberry::Discord::Event

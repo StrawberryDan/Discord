@@ -9,14 +9,14 @@ namespace Strawberry::Discord::Gateway
 {
 	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
 		: mWSS(std::move(wss))
-		  , mInterval(interval)
+		, mInterval(interval)
 	{
 		auto startUp = [this](Core::RepeatingTask* thread) mutable
 		{
-			std::random_device rd;
+			std::random_device                     rd;
 			std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
-			std::mt19937_64 rng(rd());
-			double jitter = jitterDist(rng);
+			std::mt19937_64                        rng(rd());
+			double                                 jitter = jitterDist(rng);
 
 			mClock.Restart();
 			while (mClock.Read() < jitter && thread->IsRunning())
@@ -35,7 +35,7 @@ namespace Strawberry::Discord::Gateway
 		{
 			nlohmann::json message;
 			message["op"] = 1;
-			message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
+			message["d"]  = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
 			Core::Net::Websocket::Message wssMessage(to_string(message));
 
 			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
@@ -67,4 +67,4 @@ namespace Strawberry::Discord::Gateway
 			mLastSequenceNumber = Core::Mutex(value);
 		}
 	}
-}
+}// namespace Strawberry::Discord::Gateway

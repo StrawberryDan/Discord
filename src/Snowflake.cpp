@@ -7,11 +7,15 @@
 namespace Strawberry::Discord
 {
 	Snowflake::Snowflake()
-		: mSnowflake(0) {}
+		: mSnowflake(0)
+	{
+	}
 
 
 	Snowflake::Snowflake(uint64_t snowflake)
-		: mSnowflake(snowflake) {}
+		: mSnowflake(snowflake)
+	{
+	}
 
 
 	Snowflake::Snowflake(const std::string& snowflake)
@@ -44,4 +48,4 @@ namespace Strawberry::Discord
 	{
 		return mSnowflake;
 	}
-}
+}// namespace Strawberry::Discord
