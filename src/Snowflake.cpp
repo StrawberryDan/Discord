@@ -1,23 +1,17 @@
 #include "Discord/Snowflake.hpp"
 
 
-
 #include <sstream>
-
 
 
 namespace Strawberry::Discord
 {
 	Snowflake::Snowflake()
-		: mSnowflake(0)
-	{}
-
+		: mSnowflake(0) {}
 
 
 	Snowflake::Snowflake(uint64_t snowflake)
-		: mSnowflake(snowflake)
-	{}
-
+		: mSnowflake(snowflake) {}
 
 
 	Snowflake::Snowflake(const std::string& snowflake)
@@ -28,12 +22,10 @@ namespace Strawberry::Discord
 	}
 
 
-
 	std::string Snowflake::AsString() const
 	{
 		return std::to_string(mSnowflake);
 	}
-
 
 
 	bool Snowflake::operator==(const Snowflake& rhs) const
@@ -42,12 +34,10 @@ namespace Strawberry::Discord
 	}
 
 
-
 	bool Snowflake::operator!=(const Snowflake& rhs) const
 	{
 		return mSnowflake == rhs.mSnowflake;
 	}
-
 
 
 	uint64_t Snowflake::operator*() const

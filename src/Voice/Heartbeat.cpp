@@ -1,18 +1,16 @@
 #include "Discord/Voice/Heartbeat.hpp"
 
 
-
 #include <random>
 #include <utility>
-
 
 
 namespace Strawberry::Discord::Voice
 {
 	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
-			: mWSS(std::move(wss))
-			, mInterval(interval)
-			, mRandomDevice(std::make_unique<std::random_device>())
+		: mWSS(std::move(wss))
+		  , mInterval(interval)
+		  , mRandomDevice(std::make_unique<std::random_device>())
 	{
 		auto startUp = [this](Core::RepeatingTask* thread) mutable
 		{
@@ -29,7 +27,6 @@ namespace Strawberry::Discord::Voice
 
 		mThread.Emplace(startUp, [this, count = uint32_t(0)]() mutable { Tick(count); });
 	}
-
 
 
 	void Heartbeat::Tick(uint32_t& count)

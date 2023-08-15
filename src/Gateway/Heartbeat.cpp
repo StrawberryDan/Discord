@@ -1,17 +1,15 @@
 #include "Discord/Gateway/Heartbeat.hpp"
 
 
-
 #include <random>
 #include <utility>
-
 
 
 namespace Strawberry::Discord::Gateway
 {
 	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
-			: mWSS(std::move(wss))
-			, mInterval(interval)
+		: mWSS(std::move(wss))
+		  , mInterval(interval)
 	{
 		auto startUp = [this](Core::RepeatingTask* thread) mutable
 		{
@@ -27,7 +25,7 @@ namespace Strawberry::Discord::Gateway
 			}
 		};
 
-		mThread.Emplace(startUp, [this, count = uint32_t(0)] () mutable { Tick(count); });
+		mThread.Emplace(startUp, [this, count = uint32_t(0)]() mutable { Tick(count); });
 	}
 
 
@@ -56,7 +54,6 @@ namespace Strawberry::Discord::Gateway
 
 		std::this_thread::yield();
 	}
-
 
 
 	void Heartbeat::UpdateSequenceNumber(size_t value)

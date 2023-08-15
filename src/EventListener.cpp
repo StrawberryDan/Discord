@@ -1,7 +1,6 @@
 #include "Discord/EventListener.hpp"
 
 
-
 namespace Strawberry::Discord
 {
 	EventListener::EventListener()
@@ -10,8 +9,7 @@ namespace Strawberry::Discord
 	}
 
 
-
-	EventListener::EventListener(EventListener&& other)
+	EventListener::EventListener(EventListener&& other) noexcept
 		: mRegistry(std::move(other.mRegistry))
 	{
 		auto registry = mRegistry.Lock();
@@ -20,8 +18,7 @@ namespace Strawberry::Discord
 	}
 
 
-
-	EventListener& EventListener::operator=(EventListener&& other)
+	EventListener& EventListener::operator=(EventListener&& other) noexcept
 	{
 		if (this != &other)
 		{
@@ -35,7 +32,6 @@ namespace Strawberry::Discord
 
 		return *this;
 	}
-
 
 
 	EventListener::~EventListener()

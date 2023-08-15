@@ -1,9 +1,7 @@
 #pragma once
 
 
-
 #include <variant>
-
 
 
 namespace Strawberry::Discord
@@ -13,31 +11,27 @@ namespace Strawberry::Discord
 	public:
 		enum class Type;
 		using Payload = std::variant
-		<
-			std::monostate
-		>;
-
+			<
+				std::monostate
+			>;
 
 
 	public:
-		Error(Type type)
+		explicit Error(Type type)
 			: mType(type)
-			, mPayload()
-		{}
+			  , mPayload() {}
+
 
 		template<typename T>
 		Error(Type type, T data)
 			: mType(type)
-			, mPayload(data)
-		{}
+			  , mPayload(data) {}
 
 
-
-		Type GetType() const
+		[[nodiscard]] Type GetType() const
 		{
 			return mType;
 		}
-
 
 
 		template<typename T>
@@ -47,12 +41,10 @@ namespace Strawberry::Discord
 		}
 
 
-
 	private:
 		Type mType;
 		Payload mPayload;
 	};
-
 
 
 	enum class Error::Type

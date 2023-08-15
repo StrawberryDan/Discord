@@ -1,10 +1,8 @@
 #pragma once
 
 
-
 #include <cstdint>
 #include <string>
-
 
 
 namespace Strawberry::Discord
@@ -18,7 +16,7 @@ namespace Strawberry::Discord
 		explicit Snowflake(const std::string& snowflake);
 
 		// Methods
-		std::string AsString() const;
+		[[nodiscard]] std::string AsString() const;
 
 
 	public:
@@ -28,10 +26,8 @@ namespace Strawberry::Discord
 		uint64_t operator*() const;
 
 
-
 	public:
-		friend struct  std::hash<Snowflake>;
-
+		friend struct std::hash<Snowflake>;
 
 
 	private:
@@ -41,8 +37,7 @@ namespace Strawberry::Discord
 }
 
 
-
-template <>
+template<>
 struct std::hash<Strawberry::Discord::Snowflake>
 {
 	std::size_t operator()(const Strawberry::Discord::Snowflake& v) const noexcept

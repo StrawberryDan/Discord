@@ -11,7 +11,6 @@
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 
 
-
 namespace Strawberry::Discord::Gateway
 {
 	class Heartbeat
@@ -26,15 +25,14 @@ namespace Strawberry::Discord::Gateway
 		[[nodiscard]] double GetInterval() const { return mInterval; }
 
 
-
 	private:
 		void Tick(uint32_t& count);
 
 
-		const double                                       mInterval;
-		Core::Clock                                        mClock;
+		const double mInterval;
+		Core::Clock mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
-		Core::Option<Core::RepeatingTask>                  mThread;
+		Core::Option<Core::Mutex<size_t>> mLastSequenceNumber;
+		Core::Option<Core::RepeatingTask> mThread;
 	};
 }

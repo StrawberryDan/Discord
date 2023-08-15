@@ -1,7 +1,6 @@
 #include "Discord/Entity/Guild.hpp"
 
 
-
 namespace Strawberry::Discord::Entity
 {
 	Core::Result<Guild, Error> Guild::Parse(const nlohmann::json& json)

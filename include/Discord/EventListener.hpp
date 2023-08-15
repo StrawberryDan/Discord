@@ -1,11 +1,9 @@
 #pragma once
 
 
-
 #include "Event/EventBase.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include <set>
-
 
 
 namespace Strawberry::Discord
@@ -14,10 +12,11 @@ namespace Strawberry::Discord
 	{
 		friend class Bot;
 
+
 	public:
 		EventListener();
-		EventListener(EventListener&& other);
-		EventListener& operator=(EventListener&& other);
+		EventListener(EventListener&& other) noexcept;
+		EventListener& operator=(EventListener&& other) noexcept;
 		virtual ~EventListener();
 
 		virtual void ProcessEvent(const Event::EventBase& event) = 0;

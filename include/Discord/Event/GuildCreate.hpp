@@ -1,14 +1,12 @@
 #pragma once
 
 
-
 #include <nlohmann/json.hpp>
 #include "Discord/Snowflake.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "EventBase.hpp"
 #include "Strawberry/Core/Util/Result.hpp"
-
 
 
 namespace Strawberry::Discord::Event
@@ -21,14 +19,11 @@ namespace Strawberry::Discord::Event
 		static Core::Result<GuildCreate, Error> Parse(const nlohmann::json& json);
 
 
-
-		const Entity::Guild& GetGuild() const;
-
+		[[nodiscard]] const Entity::Guild& GetGuild() const;
 
 
 	private:
 		GuildCreate() = default;
-
 
 
 	private:

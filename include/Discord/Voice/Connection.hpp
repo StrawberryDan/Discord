@@ -37,24 +37,27 @@ namespace Strawberry::Discord::Voice
 				   Snowflake userId);
 
 		/// Only move construction allowed.
-		Connection(const Connection&)				= delete;
-		Connection(Connection&&)					= delete;
-		Connection& operator=(const Connection&)	= delete;
-		Connection& operator=(Connection&&)			= delete;
+		Connection(const Connection&) = delete;
+		Connection(Connection&&) = delete;
+		Connection& operator=(const Connection&) = delete;
+		Connection& operator=(Connection&&) = delete;
 		~Connection();
 
 
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> CreateInputChannel();
 
 
-		Snowflake GetGuild()   const { return mGuild; }
+		Snowflake GetGuild() const { return mGuild; }
+
+
 		Snowflake GetChannel() const { return mChannel; }
-		Snowflake GetUser()    const { return mUser; }
+
+
+		Snowflake GetUser() const { return mUser; }
 
 
 	protected:
 		void SetSpeaking(bool speaking);
-
 
 
 	private:
@@ -62,35 +65,34 @@ namespace Strawberry::Discord::Voice
 		using Key = std::array<uint8_t, 32>;
 
 
-
 	private:
 		/// Connections
-		Core::SharedMutex<Gateway::Gateway>					mGateway;
-		Core::SharedMutex<Core::Net::Websocket::WSSClient>	mVoiceWSS;
-		Core::Option<Heartbeat>								mVoiceWSSHeartbeat;
-		Core::Option<Core::Net::Endpoint>					mUDPVoiceEndpoint;
-		Core::Option<Core::Net::Socket::UDPClient>			mUDPVoiceConnection;
-		Core::Option<Codec::SodiumEncrypter>				mSodiumEncrypter;
+		Core::SharedMutex<Gateway::Gateway> mGateway;
+		Core::SharedMutex<Core::Net::Websocket::WSSClient> mVoiceWSS;
+		Core::Option<Heartbeat> mVoiceWSSHeartbeat;
+		Core::Option<Core::Net::Endpoint> mUDPVoiceEndpoint;
+		Core::Option<Core::Net::Socket::UDPClient> mUDPVoiceConnection;
+		Core::Option<Codec::SodiumEncrypter> mSodiumEncrypter;
 
 
 		/// Current Voice Channels and User
-		const Snowflake										mGuild;
-		const Snowflake										mChannel;
-		const Snowflake										mUser;
+		const Snowflake mGuild;
+		const Snowflake mChannel;
+		const Snowflake mUser;
 
 		/// SSRC for our RTP Connection
-		Core::Option<uint32_t>								mSSRC;
+		Core::Option<uint32_t> mSSRC;
 
 		/// Whether the client is considered to be speaking. Corresponds to the speaking messaged in Discord API.
-		bool												mIsSpeaking = false;
+		bool mIsSpeaking = false;
 
 		/// Voice Packet Buffer
-		Codec::Audio::Mixer   mAudioMixer;
+		Codec::Audio::Mixer mAudioMixer;
 		Codec::Audio::Encoder mOpusEncoder;
 
 
-		Core::Option<Core::RepeatingTask>					mVoiceSendingThread;
-		uint32_t 											mLastSequenceNumber = 0;
-		uint32_t 											mLastTimestamp      = 0;
+		Core::Option<Core::RepeatingTask> mVoiceSendingThread;
+		uint32_t mLastSequenceNumber = 0;
+		uint32_t mLastTimestamp = 0;
 	};
 }
