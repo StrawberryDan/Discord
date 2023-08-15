@@ -14,8 +14,7 @@ namespace Strawberry::Discord::Entity
 		, mType(type)
 		, mAllowed(allow)
 		, mDenied(deny)
-	{
-	}
+	{}
 
 
 	const Snowflake& PermissionOverwrite::GetId() const

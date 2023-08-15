@@ -5,8 +5,7 @@ namespace Strawberry::Discord
 {
 	EventListener::EventListener()
 		: mRegistry(nullptr)
-	{
-	}
+	{}
 
 
 	EventListener::EventListener(EventListener&& other) noexcept

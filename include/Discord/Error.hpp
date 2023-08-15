@@ -18,16 +18,14 @@ namespace Strawberry::Discord
 		explicit Error(Type type)
 			: mType(type)
 			, mPayload()
-		{
-		}
+		{}
 
 
 		template <typename T>
 		Error(Type type, T data)
 			: mType(type)
 			, mPayload(data)
-		{
-		}
+		{}
 
 
 		[[nodiscard]] Type GetType() const

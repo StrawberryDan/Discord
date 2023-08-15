@@ -19,8 +19,7 @@ namespace Strawberry::Discord
 		, mIntents(intents)
 		, mHTTPS("discord.com")
 		, mGateway(GetGatewayEndpoint(), mToken, mIntents)
-	{
-	}
+	{}
 
 
 	void Bot::Run()

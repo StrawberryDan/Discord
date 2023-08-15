@@ -8,14 +8,12 @@ namespace Strawberry::Discord
 {
 	Snowflake::Snowflake()
 		: mSnowflake(0)
-	{
-	}
+	{}
 
 
 	Snowflake::Snowflake(uint64_t snowflake)
 		: mSnowflake(snowflake)
-	{
-	}
+	{}
 
 
 	Snowflake::Snowflake(const std::string& snowflake)
