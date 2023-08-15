@@ -36,4 +36,4 @@ namespace Strawberry::Discord
 	{
 		return static_cast<Intent>(std::to_underlying(a) | std::to_underlying(b));
 	}
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

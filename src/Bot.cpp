@@ -71,7 +71,7 @@ namespace Strawberry::Discord
 
 		switch (static_cast<int>(json["op"]))
 		{
-			case 0:// Update Event
+			case 0: // Update Event
 			{
 				const std::string type = json["t"];
 				if (type == "READY")
@@ -116,7 +116,7 @@ namespace Strawberry::Discord
 			case 4:
 
 
-			case 11:// Heartbeat Acknowledge
+			case 11: // Heartbeat Acknowledge
 				return true;
 
 			default:
@@ -312,8 +312,7 @@ namespace Strawberry::Discord
 				try
 				{
 					return nlohmann::json::parse(response.GetPayload().AsString());
-				}
-				catch (const std::exception& e)
+				} catch (const std::exception& e)
 				{
 					Core::Unreachable();
 				}
@@ -349,4 +348,4 @@ namespace Strawberry::Discord
 		url.erase(0, 6);
 		return url;
 	}
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

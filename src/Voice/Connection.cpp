@@ -231,4 +231,4 @@ namespace Strawberry::Discord::Voice
 
 		mIsSpeaking = speaking;
 	}
-}// namespace Strawberry::Discord::Voice
+} // namespace Strawberry::Discord::Voice

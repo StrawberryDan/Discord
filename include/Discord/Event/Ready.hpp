@@ -26,4 +26,4 @@ namespace Strawberry::Discord::Event
 		Snowflake   mUserId;
 		std::string mSessionId;
 	};
-}// namespace Strawberry::Discord::Event
+} // namespace Strawberry::Discord::Event

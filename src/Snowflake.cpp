@@ -46,4 +46,4 @@ namespace Strawberry::Discord
 	{
 		return mSnowflake;
 	}
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

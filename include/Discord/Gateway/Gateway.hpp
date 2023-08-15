@@ -50,4 +50,4 @@ namespace Strawberry::Discord::Gateway
 		Core::Option<Heartbeat>                            mHeartbeat;
 		std::queue<Core::Net::Websocket::Message>          mMessageBuffer;
 	};
-}// namespace Strawberry::Discord::Gateway
+} // namespace Strawberry::Discord::Gateway

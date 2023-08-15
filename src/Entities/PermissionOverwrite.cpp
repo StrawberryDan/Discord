@@ -39,4 +39,4 @@ namespace Strawberry::Discord::Entity
 	{
 		return mDenied;
 	}
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity

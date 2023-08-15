@@ -32,4 +32,4 @@ namespace Strawberry::Discord::Voice
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
 		Core::Option<Core::RepeatingTask>                  mThread;
 	};
-}// namespace Strawberry::Discord::Voice
+} // namespace Strawberry::Discord::Voice

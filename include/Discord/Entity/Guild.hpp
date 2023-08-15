@@ -34,4 +34,4 @@ namespace Strawberry::Discord::Entity
 		std::string                  mName;
 		Core::Option<std::uintmax_t> mPermissions;
 	};
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity

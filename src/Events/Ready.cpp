@@ -22,4 +22,4 @@ namespace Strawberry::Discord::Event
 	{
 		return mSessionId;
 	}
-}// namespace Strawberry::Discord::Event
+} // namespace Strawberry::Discord::Event

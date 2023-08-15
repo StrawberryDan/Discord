@@ -29,4 +29,4 @@ namespace Strawberry::Discord::Entity
 
 		return channel;
 	}
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity

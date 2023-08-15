@@ -29,4 +29,4 @@ namespace Strawberry::Discord::Event
 	private:
 		Entity::Guild mGuild;
 	};
-}// namespace Strawberry::Discord::Event
+} // namespace Strawberry::Discord::Event

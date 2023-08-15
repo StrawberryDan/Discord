@@ -51,4 +51,4 @@ namespace Strawberry::Discord
 	{
 		InvalidJSON,
 	};
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

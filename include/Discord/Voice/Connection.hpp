@@ -91,4 +91,4 @@ namespace Strawberry::Discord::Voice
 		uint32_t                          mLastSequenceNumber = 0;
 		uint32_t                          mLastTimestamp      = 0;
 	};
-}// namespace Strawberry::Discord::Voice
+} // namespace Strawberry::Discord::Voice

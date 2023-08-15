@@ -83,4 +83,4 @@ namespace Strawberry::Discord::Gateway
 	{
 		mMessageBuffer.emplace(std::move(message));
 	}
-}// namespace Strawberry::Discord::Gateway
+} // namespace Strawberry::Discord::Gateway

@@ -11,8 +11,7 @@ namespace Strawberry::Discord::Gateway
 		: mWSS(std::move(wss))
 		, mInterval(interval)
 	{
-		auto startUp = [this](Core::RepeatingTask* thread) mutable
-		{
+		auto startUp = [this](Core::RepeatingTask* thread) mutable {
 			std::random_device                     rd;
 			std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
 			std::mt19937_64                        rng(rd());
@@ -67,4 +66,4 @@ namespace Strawberry::Discord::Gateway
 			mLastSequenceNumber = Core::Mutex(value);
 		}
 	}
-}// namespace Strawberry::Discord::Gateway
+} // namespace Strawberry::Discord::Gateway

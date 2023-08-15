@@ -35,4 +35,4 @@ namespace Strawberry::Discord::Gateway
 		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
 		Core::Option<Core::RepeatingTask>                  mThread;
 	};
-}// namespace Strawberry::Discord::Gateway
+} // namespace Strawberry::Discord::Gateway

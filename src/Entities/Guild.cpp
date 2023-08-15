@@ -14,4 +14,4 @@ namespace Strawberry::Discord::Entity
 
 		return guild;
 	}
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity

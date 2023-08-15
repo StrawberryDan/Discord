@@ -24,4 +24,4 @@ namespace Strawberry::Discord
 	private:
 		Core::SharedMutex<std::set<EventListener*>> mRegistry;
 	};
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

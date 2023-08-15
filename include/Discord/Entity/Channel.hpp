@@ -65,4 +65,4 @@ namespace Strawberry::Discord::Entity
 		GUILD_DIRECTORY     = 14,
 		GUILD_FORUM         = 15,
 	};
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity

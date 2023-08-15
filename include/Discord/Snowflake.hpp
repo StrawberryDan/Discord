@@ -34,12 +34,11 @@ namespace Strawberry::Discord
 		// Members
 		uint64_t mSnowflake;
 	};
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord
 
 
 template <>
-struct std::hash<Strawberry::Discord::Snowflake>
-{
+struct std::hash<Strawberry::Discord::Snowflake> {
 	std::size_t operator()(const Strawberry::Discord::Snowflake& v) const noexcept
 	{
 		return v.operator*();

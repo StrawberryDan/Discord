@@ -26,7 +26,7 @@ namespace Strawberry::Discord::Event
 		Core::Option<const T*> Cast() const
 			requires (std::derived_from<T, EventBase>);
 	};
-}// namespace Strawberry::Discord::Event
+} // namespace Strawberry::Discord::Event
 
 
 namespace Strawberry::Discord::Event
@@ -69,4 +69,4 @@ namespace Strawberry::Discord::Event
 			return {};
 		}
 	}
-}// namespace Strawberry::Discord::Event
+} // namespace Strawberry::Discord::Event

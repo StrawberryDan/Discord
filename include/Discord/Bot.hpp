@@ -125,4 +125,4 @@ namespace Strawberry::Discord
 		GuildList   mGuilds;
 		ChannelList mChannels;
 	};
-}// namespace Strawberry::Discord
+} // namespace Strawberry::Discord

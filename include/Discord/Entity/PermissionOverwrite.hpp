@@ -33,4 +33,4 @@ namespace Strawberry::Discord::Entity
 		std::uintmax_t     mAllowed;
 		std::uintmax_t     mDenied;
 	};
-}// namespace Strawberry::Discord::Entity
+} // namespace Strawberry::Discord::Entity
