@@ -30,7 +30,11 @@ namespace Strawberry::Discord
 		[[nodiscard]] Type GetType() const { return mType; }
 
 
-		template <typename T> T GetData() { return std::get<T>(mPayload); }
+		template <typename T>
+		T GetData()
+		{
+			return std::get<T>(mPayload);
+		}
 
 
 	private:

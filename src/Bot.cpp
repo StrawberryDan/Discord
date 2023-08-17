@@ -117,10 +117,16 @@ namespace Strawberry::Discord
 	}
 
 
-	void Bot::Stop() { mRunning = false; }
+	void Bot::Stop()
+	{
+		mRunning = false;
+	}
 
 
-	bool Bot::IsRunning() const { return mRunning; }
+	bool Bot::IsRunning() const
+	{
+		return mRunning;
+	}
 
 
 	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
@@ -130,10 +136,16 @@ namespace Strawberry::Discord
 	}
 
 
-	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel) { mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId); }
+	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
+	{
+		mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId);
+	}
 
 
-	void Bot::DisconnectFromVoice() { mVoiceConnection.Reset(); }
+	void Bot::DisconnectFromVoice()
+	{
+		mVoiceConnection.Reset();
+	}
 
 
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
@@ -247,7 +259,8 @@ namespace Strawberry::Discord
 	}
 
 
-	template <> Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
+	template <>
+	Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
 	{
 		using namespace Strawberry::Core::Net;
 

@@ -186,7 +186,10 @@ namespace Strawberry::Discord::Voice
 	}
 
 
-	std::shared_ptr<Codec::Audio::Mixer::InputChannel> Connection::CreateInputChannel() { return mAudioMixer.CreateInputChannel(); }
+	std::shared_ptr<Codec::Audio::Mixer::InputChannel> Connection::CreateInputChannel()
+	{
+		return mAudioMixer.CreateInputChannel();
+	}
 
 
 	void Connection::SetSpeaking(bool speaking)

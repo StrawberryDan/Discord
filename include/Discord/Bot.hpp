@@ -86,7 +86,8 @@ namespace Strawberry::Discord
 
 	private:
 		// Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
-		template <typename... Ts> requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
+		template <typename... Ts>
+			requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
 		inline Core::Option<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
 		{
 			return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
@@ -94,7 +95,8 @@ namespace Strawberry::Discord
 
 
 		// Base case for GetEntity which actually does the request.
-		template <> Core::Option<nlohmann::json> GetEntity(const std::string& endpoint);
+		template <>
+		Core::Option<nlohmann::json> GetEntity(const std::string& endpoint);
 
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
 		bool        OnGatewayMessage(const Core::Net::Websocket::Message& message);

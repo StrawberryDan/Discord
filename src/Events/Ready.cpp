@@ -12,8 +12,14 @@ namespace Strawberry::Discord::Event
 	}
 
 
-	Snowflake Strawberry::Discord::Event::Ready::GetUserId() const { return mUserId; }
+	Snowflake Strawberry::Discord::Event::Ready::GetUserId() const
+	{
+		return mUserId;
+	}
 
 
-	std::string Ready::GetSessionId() const { return mSessionId; }
+	std::string Ready::GetSessionId() const
+	{
+		return mSessionId;
+	}
 } // namespace Strawberry::Discord::Event

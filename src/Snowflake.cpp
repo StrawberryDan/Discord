@@ -24,14 +24,26 @@ namespace Strawberry::Discord
 	}
 
 
-	std::string Snowflake::AsString() const { return std::to_string(mSnowflake); }
+	std::string Snowflake::AsString() const
+	{
+		return std::to_string(mSnowflake);
+	}
 
 
-	bool Snowflake::operator==(const Snowflake& rhs) const { return mSnowflake == rhs.mSnowflake; }
+	bool Snowflake::operator==(const Snowflake& rhs) const
+	{
+		return mSnowflake == rhs.mSnowflake;
+	}
 
 
-	bool Snowflake::operator!=(const Snowflake& rhs) const { return mSnowflake == rhs.mSnowflake; }
+	bool Snowflake::operator!=(const Snowflake& rhs) const
+	{
+		return mSnowflake == rhs.mSnowflake;
+	}
 
 
-	uint64_t Snowflake::operator*() const { return mSnowflake; }
+	uint64_t Snowflake::operator*() const
+	{
+		return mSnowflake;
+	}
 } // namespace Strawberry::Discord
