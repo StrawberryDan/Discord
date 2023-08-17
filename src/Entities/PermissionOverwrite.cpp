@@ -17,26 +17,14 @@ namespace Strawberry::Discord::Entity
 	{}
 
 
-	const Snowflake& PermissionOverwrite::GetId() const
-	{
-		return mID;
-	}
+	const Snowflake& PermissionOverwrite::GetId() const { return mID; }
 
 
-	int PermissionOverwrite::GetType() const
-	{
-		return mType;
-	}
+	int PermissionOverwrite::GetType() const { return mType; }
 
 
-	uintmax_t PermissionOverwrite::GetAllowed() const
-	{
-		return mAllowed;
-	}
+	uintmax_t PermissionOverwrite::GetAllowed() const { return mAllowed; }
 
 
-	uintmax_t PermissionOverwrite::GetDenied() const
-	{
-		return mDenied;
-	}
+	uintmax_t PermissionOverwrite::GetDenied() const { return mDenied; }
 } // namespace Strawberry::Discord::Entity

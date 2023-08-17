@@ -9,8 +9,7 @@ namespace Strawberry::Discord::Entity
 		guild.mID   = Snowflake(static_cast<std::string>(json["id"]));
 		guild.mName = static_cast<std::string>(json["name"]);
 
-		if (json.contains("permissions"))
-			guild.mPermissions = std::stoull(std::string(json["permissions"]));
+		if (json.contains("permissions")) guild.mPermissions = std::stoull(std::string(json["permissions"]));
 
 		return guild;
 	}

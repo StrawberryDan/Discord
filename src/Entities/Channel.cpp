@@ -11,10 +11,7 @@ namespace Strawberry::Discord::Entity
 		channel.mType     = static_cast<Type>(json["type"]);
 		channel.mPosition = static_cast<size_t>(json["position"]);
 
-		if (json.contains("guild_id"))
-		{
-			channel.mGuildId.Emplace(static_cast<std::string>(json["guild_id"]));
-		}
+		if (json.contains("guild_id")) { channel.mGuildId.Emplace(static_cast<std::string>(json["guild_id"])); }
 
 		if (json.contains("permission_overwrites"))
 		{

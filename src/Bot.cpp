@@ -36,10 +36,7 @@ namespace Strawberry::Discord
 					Core::Logging::Info("Websocket server closed with: {}", gatewayMessage->GetCloseStatusCode());
 				}
 
-				if (!OnGatewayMessage(*gatewayMessage))
-				{
-					gateway->BufferMessage(*gatewayMessage);
-				}
+				if (!OnGatewayMessage(*gatewayMessage)) { gateway->BufferMessage(*gatewayMessage); }
 			}
 			else
 			{
@@ -64,10 +61,7 @@ namespace Strawberry::Discord
 	bool Bot::OnGatewayMessage(const Websocket::Message& message)
 	{
 		auto json = message.AsJSON().UnwrapOr({});
-		if (json.is_null())
-		{
-			return false;
-		}
+		if (json.is_null()) { return false; }
 
 		switch (static_cast<int>(json["op"]))
 		{
@@ -96,10 +90,7 @@ namespace Strawberry::Discord
 
 					return true;
 				}
-				else if (json["t"] == "VOICE_SERVER_UPDATE")
-				{
-					return false;
-				}
+				else if (json["t"] == "VOICE_SERVER_UPDATE") { return false; }
 				else if (json["t"] == "VOICE_STATE_UPDATE")
 				{
 					// Print for later debugging purposes.
@@ -126,16 +117,10 @@ namespace Strawberry::Discord
 	}
 
 
-	void Bot::Stop()
-	{
-		mRunning = false;
-	}
+	void Bot::Stop() { mRunning = false; }
 
 
-	bool Bot::IsRunning() const
-	{
-		return mRunning;
-	}
+	bool Bot::IsRunning() const { return mRunning; }
 
 
 	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
@@ -145,16 +130,10 @@ namespace Strawberry::Discord
 	}
 
 
-	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
-	{
-		mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId);
-	}
+	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel) { mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId); }
 
 
-	void Bot::DisconnectFromVoice()
-	{
-		mVoiceConnection.Reset();
-	}
+	void Bot::DisconnectFromVoice() { mVoiceConnection.Reset(); }
 
 
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
@@ -169,10 +148,7 @@ namespace Strawberry::Discord
 			result.insert(guild.GetId());
 
 			// Cache guild id.
-			if (!mGuilds.contains(guild.GetId()))
-			{
-				mGuilds.insert({guild.GetId(), guild});
-			}
+			if (!mGuilds.contains(guild.GetId())) { mGuilds.insert({guild.GetId(), guild}); }
 		}
 
 		return result;
@@ -184,10 +160,7 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> result;
 		result.reserve(mGuilds.size());
 
-		for (auto& [id, data] : mGuilds)
-		{
-			result.insert(id);
-		}
+		for (auto& [id, data] : mGuilds) { result.insert(id); }
 
 		return result;
 	}
@@ -203,10 +176,7 @@ namespace Strawberry::Discord
 
 	const Entity::Guild* Bot::GetGuild(const Snowflake& id) const
 	{
-		if (mGuilds.contains(id))
-		{
-			return mGuilds.at(id).AsPtr().UnwrapOr(nullptr);
-		}
+		if (mGuilds.contains(id)) { return mGuilds.at(id).AsPtr().UnwrapOr(nullptr); }
 
 		return nullptr;
 	}
@@ -224,10 +194,7 @@ namespace Strawberry::Discord
 			result.insert(channel.GetId());
 
 			// Cache guild id.
-			if (!mChannels.contains(channel.GetId()))
-			{
-				mChannels.insert({channel.GetId(), channel});
-			}
+			if (!mChannels.contains(channel.GetId())) { mChannels.insert({channel.GetId(), channel}); }
 		}
 
 		return result;
@@ -239,10 +206,7 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> result;
 		result.reserve(mGuilds.size());
 
-		for (auto& [id, data] : mChannels)
-		{
-			result.insert(id);
-		}
+		for (auto& [id, data] : mChannels) { result.insert(id); }
 
 		return std::move(result);
 	}
@@ -258,14 +222,8 @@ namespace Strawberry::Discord
 
 	const Entity::Channel* Bot::GetChannel(const Snowflake& id) const
 	{
-		if (mChannels.contains(id))
-		{
-			return mChannels.at(id).AsPtr().UnwrapOr(nullptr);
-		}
-		else
-		{
-			return nullptr;
-		}
+		if (mChannels.contains(id)) { return mChannels.at(id).AsPtr().UnwrapOr(nullptr); }
+		else { return nullptr; }
 	}
 
 
@@ -289,8 +247,7 @@ namespace Strawberry::Discord
 	}
 
 
-	template <>
-	Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
+	template <> Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
 	{
 		using namespace Strawberry::Core::Net;
 
@@ -334,10 +291,7 @@ namespace Strawberry::Discord
 	void Bot::DispatchEvent(const Event::EventBase& event) const
 	{
 		auto eventListeners = mEventListenerRegistry.Lock();
-		for (auto listener : *eventListeners)
-		{
-			listener->ProcessEvent(event);
-		}
+		for (auto listener : *eventListeners) { listener->ProcessEvent(event); }
 	}
 
 

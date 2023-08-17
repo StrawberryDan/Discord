@@ -32,8 +32,5 @@ namespace Strawberry::Discord
 	};
 
 
-	inline constexpr Intent operator|(Intent a, Intent b)
-	{
-		return static_cast<Intent>(std::to_underlying(a) | std::to_underlying(b));
-	}
+	inline constexpr Intent operator|(Intent a, Intent b) { return static_cast<Intent>(std::to_underlying(a) | std::to_underlying(b)); }
 } // namespace Strawberry::Discord

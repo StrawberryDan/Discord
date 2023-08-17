@@ -45,10 +45,7 @@ namespace Strawberry::Discord::Gateway
 		if (msg)
 		{
 			auto json = msg->AsJSON();
-			if (mHeartbeat && json && json->at("s").is_number())
-			{
-				mHeartbeat->UpdateSequenceNumber(json.Unwrap()["s"]);
-			}
+			if (mHeartbeat && json && json->at("s").is_number()) { mHeartbeat->UpdateSequenceNumber(json.Unwrap()["s"]); }
 
 			return msg;
 		}
@@ -67,20 +64,11 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-	Gateway::SendResult Gateway::Send(const Core::Net::Websocket::Message& msg)
-	{
-		return mWSS.Lock()->SendMessage(msg);
-	}
+	Gateway::SendResult Gateway::Send(const Core::Net::Websocket::Message& msg) { return mWSS.Lock()->SendMessage(msg); }
 
 
-	size_t Gateway::BufferedMessageCount()
-	{
-		return mMessageBuffer.size();
-	}
+	size_t Gateway::BufferedMessageCount() { return mMessageBuffer.size(); }
 
 
-	void Gateway::BufferMessage(Core::Net::Websocket::Message message)
-	{
-		mMessageBuffer.emplace(std::move(message));
-	}
+	void Gateway::BufferMessage(Core::Net::Websocket::Message message) { mMessageBuffer.emplace(std::move(message)); }
 } // namespace Strawberry::Discord::Gateway

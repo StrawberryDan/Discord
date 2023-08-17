@@ -5,10 +5,7 @@ namespace Strawberry::Discord::Event
 {
 	Core::Result<GuildCreate, Error> GuildCreate::Parse(const nlohmann::json& json)
 	{
-		if (json["op"] != 0 || json["t"] != "GUILD_CREATE")
-		{
-			return Error(Error::Type::InvalidJSON);
-		}
+		if (json["op"] != 0 || json["t"] != "GUILD_CREATE") { return Error(Error::Type::InvalidJSON); }
 
 		const auto& info = json["d"];
 
@@ -20,7 +17,4 @@ namespace Strawberry::Discord::Event
 } // namespace Strawberry::Discord::Event
 
 
-const Strawberry::Discord::Entity::Guild& Strawberry::Discord::Event::GuildCreate::GetGuild() const
-{
-	return mGuild;
-}
+const Strawberry::Discord::Entity::Guild& Strawberry::Discord::Event::GuildCreate::GetGuild() const { return mGuild; }

@@ -11,8 +11,7 @@
 
 namespace Strawberry::Discord::Event
 {
-	class GuildCreate
-		: public EventBase
+	class GuildCreate : public EventBase
 	{
 	public:
 		// Constructors

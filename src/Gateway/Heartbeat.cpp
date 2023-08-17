@@ -18,10 +18,7 @@ namespace Strawberry::Discord::Gateway
 			double                                 jitter = jitterDist(rng);
 
 			mClock.Restart();
-			while (mClock.Read() < jitter && thread->IsRunning())
-			{
-				std::this_thread::yield();
-			}
+			while (mClock.Read() < jitter && thread->IsRunning()) { std::this_thread::yield(); }
 		};
 
 		mThread.Emplace(startUp, [this, count = uint32_t(0)]() mutable { Tick(count); });
@@ -38,14 +35,8 @@ namespace Strawberry::Discord::Gateway
 			Core::Net::Websocket::Message wssMessage(to_string(message));
 
 			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
-			if (!sendResult && sendResult.Err() == Core::Net::Websocket::Error::Closed)
-			{
-				return;
-			}
-			else
-			{
-				sendResult.Unwrap();
-			}
+			if (!sendResult && sendResult.Err() == Core::Net::Websocket::Error::Closed) { return; }
+			else { sendResult.Unwrap(); }
 
 			count += 1;
 			mClock.Restart();
@@ -57,13 +48,7 @@ namespace Strawberry::Discord::Gateway
 
 	void Heartbeat::UpdateSequenceNumber(size_t value)
 	{
-		if (mLastSequenceNumber)
-		{
-			(*mLastSequenceNumber->Lock()) = value;
-		}
-		else
-		{
-			mLastSequenceNumber = Core::Mutex(value);
-		}
+		if (mLastSequenceNumber) { (*mLastSequenceNumber->Lock()) = value; }
+		else { mLastSequenceNumber = Core::Mutex(value); }
 	}
 } // namespace Strawberry::Discord::Gateway

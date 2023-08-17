@@ -10,8 +10,7 @@ namespace Strawberry::Discord
 	{
 	public:
 		enum class Type;
-		using Payload = std::variant<
-			std::monostate>;
+		using Payload = std::variant<std::monostate>;
 
 
 	public:
@@ -28,17 +27,10 @@ namespace Strawberry::Discord
 		{}
 
 
-		[[nodiscard]] Type GetType() const
-		{
-			return mType;
-		}
+		[[nodiscard]] Type GetType() const { return mType; }
 
 
-		template <typename T>
-		T GetData()
-		{
-			return std::get<T>(mPayload);
-		}
+		template <typename T> T GetData() { return std::get<T>(mPayload); }
 
 
 	private:

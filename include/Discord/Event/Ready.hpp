@@ -10,8 +10,7 @@
 
 namespace Strawberry::Discord::Event
 {
-	class Ready
-		: public EventBase
+	class Ready : public EventBase
 	{
 	public:
 		static Core::Result<Ready, Error> Parse(const nlohmann::json& json);

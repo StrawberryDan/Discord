@@ -88,9 +88,7 @@ namespace Strawberry::Discord::Voice
 			// Parse SSRC
 			mSSRC = ready["d"]["ssrc"];
 			// Parse UDP Endpoint
-			mUDPVoiceEndpoint.Emplace(
-				Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap(),
-				ready["d"]["port"]);
+			mUDPVoiceEndpoint.Emplace(Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap(), ready["d"]["port"]);
 			// Get list of available modes
 			std::vector<std::string> modes     = ready["d"]["modes"];
 			const auto               voiceMode = "xsalsa20_poly1305";
@@ -110,10 +108,7 @@ namespace Strawberry::Discord::Voice
 
 			// Receive session description
 			auto sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
-			while (sessionDescription["op"] != 4)
-			{
-				sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
-			}
+			while (sessionDescription["op"] != 4) { sessionDescription = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap(); }
 
 
 			Core::Assert(sessionDescription["op"] == 4);
@@ -125,59 +120,50 @@ namespace Strawberry::Discord::Voice
 		}
 
 
-		mVoiceSendingThread.Emplace([this,
-									 clock = Core::Metronome(0.02, 0.01), silentSamplesSent = 0]() mutable {
-										if (clock)
-										{
-											clock.Tick();
+		mVoiceSendingThread.Emplace([this, clock = Core::Metronome(0.02, 0.01), silentSamplesSent = 0]() mutable {
+			if (clock)
+			{
+				clock.Tick();
 
-											Core::Option<Codec::Audio::Frame> frame;
-											if (mAudioMixer.IsEmpty())
-											{
-												if (mIsSpeaking && silentSamplesSent < 5)
-												{
-													frame = Codec::Audio::Frame::Silence(
-														{48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO},
-														960);
-													silentSamplesSent += 1;
-												}
-												else
-												{
-													SetSpeaking(false);
-												}
-											}
-											else
-											{
-												SetSpeaking(true);
-												silentSamplesSent = 0;
-												frame = mAudioMixer.ReadFrame();
-											}
+				Core::Option<Codec::Audio::Frame> frame;
+				if (mAudioMixer.IsEmpty())
+				{
+					if (mIsSpeaking && silentSamplesSent < 5)
+					{
+						frame              = Codec::Audio::Frame::Silence({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO}, 960);
+						silentSamplesSent += 1;
+					}
+					else { SetSpeaking(false); }
+				}
+				else
+				{
+					SetSpeaking(true);
+					silentSamplesSent = 0;
+					frame             = mAudioMixer.ReadFrame();
+				}
 
 
-											if (frame)
-											{
-												Core::Assert(mIsSpeaking);
-												mOpusEncoder.Send(frame.Unwrap());
-												for (auto packet: mOpusEncoder.Receive())
-												{
-													Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
-													Core::Net::RTP::Packet rtpPacket(0x78, mLastSequenceNumber++,
-																					 mLastTimestamp, *mSSRC);
-													mLastTimestamp += packet->duration;
-													Codec::SodiumEncrypter::Nonce nonce{};
-													auto rtpAsBytes = rtpPacket.AsBytes();
-													for (int i = 0;
-														 i < sizeof(Core::Net::RTP::Packet::Header); i++)
-														nonce[i] = rtpAsBytes[i];
-													rtpPacket.SetPayload(
-														mSodiumEncrypter->Encrypt(nonce, packetData).second);
-													rtpAsBytes = rtpPacket.AsBytes();
-													Core::Assert(rtpAsBytes[0] == 0x80);
-													mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
-													std::this_thread::yield();
-												}
-											}
-										} });
+				if (frame)
+				{
+					Core::Assert(mIsSpeaking);
+					mOpusEncoder.Send(frame.Unwrap());
+					for (auto packet : mOpusEncoder.Receive())
+					{
+						Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
+						Core::Net::RTP::Packet      rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
+						mLastTimestamp += packet->duration;
+						Codec::SodiumEncrypter::Nonce nonce{};
+						auto                          rtpAsBytes = rtpPacket.AsBytes();
+						for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+						rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
+						rtpAsBytes = rtpPacket.AsBytes();
+						Core::Assert(rtpAsBytes[0] == 0x80);
+						mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
+						std::this_thread::yield();
+					}
+				}
+			}
+		});
 	}
 
 
@@ -200,10 +186,7 @@ namespace Strawberry::Discord::Voice
 	}
 
 
-	std::shared_ptr<Codec::Audio::Mixer::InputChannel> Connection::CreateInputChannel()
-	{
-		return mAudioMixer.CreateInputChannel();
-	}
+	std::shared_ptr<Codec::Audio::Mixer::InputChannel> Connection::CreateInputChannel() { return mAudioMixer.CreateInputChannel(); }
 
 
 	void Connection::SetSpeaking(bool speaking)
