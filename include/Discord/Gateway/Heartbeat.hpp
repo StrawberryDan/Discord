@@ -32,7 +32,7 @@ namespace Strawberry::Discord::Gateway
 		const double                                       mInterval;
 		Core::Clock                                        mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Core::Mutex<size_t>>                  mLastSequenceNumber;
-		Core::Option<Core::RepeatingTask>                  mThread;
+		Core::Optional<Core::Mutex<size_t>>                mLastSequenceNumber;
+		Core::Optional<Core::RepeatingTask>                mThread;
 	};
 } // namespace Strawberry::Discord::Gateway

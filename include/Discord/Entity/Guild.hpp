@@ -25,13 +25,12 @@ namespace Strawberry::Discord::Entity
 
 		[[nodiscard]] inline const std::string& GetName() const { return mName; }
 
-
-		[[nodiscard]] inline Core::Option<std::uintmax_t> GetPermissions() const { return mPermissions; }
+		[[nodiscard]] inline Core::Optional<std::uintmax_t> GetPermissions() const { return mPermissions; }
 
 
 	private:
 		Snowflake                    mID;
 		std::string                  mName;
-		Core::Option<std::uintmax_t> mPermissions;
+		Core::Optional<std::uintmax_t> mPermissions;
 	};
 } // namespace Strawberry::Discord::Entity

@@ -4,7 +4,7 @@
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 #include "PermissionOverwrite.hpp"
-#include "Strawberry/Core/Util/Option.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 #include "Strawberry/Core/Util/Result.hpp"
 #include "nlohmann/json.hpp"
 
@@ -45,7 +45,7 @@ namespace Strawberry::Discord::Entity
 		std::string                      mName;
 		Type                             mType;
 		size_t                           mPosition;
-		Core::Option<Snowflake>          mGuildId;
+		Core::Optional<Snowflake>        mGuildId;
 		std::vector<PermissionOverwrite> mPermissionOverwrites;
 	};
 

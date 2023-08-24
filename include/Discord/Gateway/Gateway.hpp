@@ -47,7 +47,7 @@ namespace Strawberry::Discord::Gateway
 
 	private:
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Heartbeat>                            mHeartbeat;
+		Core::Optional<Heartbeat>                          mHeartbeat;
 		std::queue<Core::Net::Websocket::Message>          mMessageBuffer;
 	};
 } // namespace Strawberry::Discord::Gateway

@@ -260,7 +260,7 @@ namespace Strawberry::Discord
 
 
 	template <>
-	Core::Option<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
+	Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
 	{
 		using namespace Strawberry::Core::Net;
 

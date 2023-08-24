@@ -27,9 +27,8 @@ namespace Strawberry::Discord
 	//==================================================================================================================
 	//  Type Aliases
 	//------------------------------------------------------------------------------------------------------------------
-	using GuildList   = std::unordered_map<Snowflake, Core::Option<Entity::Guild>>;
-	using ChannelList = std::unordered_map<Snowflake, Core::Option<Entity::Channel>>;
-
+	using GuildList   = std::unordered_map<Snowflake, Core::Optional<Entity::Guild>>;
+	using ChannelList = std::unordered_map<Snowflake, Core::Optional<Entity::Channel>>;
 
 	//==================================================================================================================
 	//  Class Declaration
@@ -61,8 +60,7 @@ namespace Strawberry::Discord
 
 
 		// Accessor for the voice connection.
-		Core::Option<Voice::Connection>& GetVoiceConnection() { return mVoiceConnection; }
-
+		Core::Optional<Voice::Connection>& GetVoiceConnection() { return mVoiceConnection; }
 
 		// Retrieves the list of known guilds this bot is a member of.
 		// Fetch indicates getting the list from the server, whilst Get means using the cache.
@@ -88,7 +86,7 @@ namespace Strawberry::Discord
 		// Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
 		template <typename... Ts>
 			requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
-		inline Core::Option<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
+		inline Core::Optional<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
 		{
 			return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
 		}
@@ -96,7 +94,7 @@ namespace Strawberry::Discord
 
 		// Base case for GetEntity which actually does the request.
 		template <>
-		Core::Option<nlohmann::json> GetEntity(const std::string& endpoint);
+		Core::Optional<nlohmann::json> GetEntity(const std::string& endpoint);
 
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
 		bool        OnGatewayMessage(const Core::Net::Websocket::Message& message);
@@ -115,11 +113,11 @@ namespace Strawberry::Discord
 		Core::SharedMutex<Gateway::Gateway>             mGateway;
 		std::unique_ptr<Behaviour>                      mBehaviour;
 		Core::SharedMutex<std::set<EventListener*>>     mEventListenerRegistry;
-		Core::Option<Snowflake>                         mUserId;
-		Core::Option<std::string>                       mSessionId;
+		Core::Optional<Snowflake>                       mUserId;
+		Core::Optional<std::string>                     mSessionId;
 
 		// Voice State Info
-		Core::Option<Voice::Connection> mVoiceConnection;
+		Core::Optional<Voice::Connection> mVoiceConnection;
 
 		// Caches
 		GuildList   mGuilds;

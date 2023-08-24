@@ -18,7 +18,7 @@
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Util/Option.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 // Standard Library
 #include <Codec/Audio/Encoder.hpp>
 #include <string>
@@ -65,10 +65,10 @@ namespace Strawberry::Discord::Voice
 		/// Connections
 		Core::SharedMutex<Gateway::Gateway>                mGateway;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mVoiceWSS;
-		Core::Option<Heartbeat>                            mVoiceWSSHeartbeat;
-		Core::Option<Core::Net::Endpoint>                  mUDPVoiceEndpoint;
-		Core::Option<Core::Net::Socket::UDPClient>         mUDPVoiceConnection;
-		Core::Option<Codec::SodiumEncrypter>               mSodiumEncrypter;
+		Core::Optional<Heartbeat>                          mVoiceWSSHeartbeat;
+		Core::Optional<Core::Net::Endpoint>                mUDPVoiceEndpoint;
+		Core::Optional<Core::Net::Socket::UDPClient>       mUDPVoiceConnection;
+		Core::Optional<Codec::SodiumEncrypter>             mSodiumEncrypter;
 
 
 		/// Current Voice Channels and User
@@ -77,7 +77,7 @@ namespace Strawberry::Discord::Voice
 		const Snowflake mUser;
 
 		/// SSRC for our RTP Connection
-		Core::Option<uint32_t> mSSRC;
+		Core::Optional<uint32_t> mSSRC;
 
 		/// Whether the client is considered to be speaking. Corresponds to the speaking messaged in Discord API.
 		bool mIsSpeaking = false;
@@ -87,7 +87,7 @@ namespace Strawberry::Discord::Voice
 		Codec::Audio::Encoder mOpusEncoder;
 
 
-		Core::Option<Core::RepeatingTask> mVoiceSendingThread;
+		Core::Optional<Core::RepeatingTask> mVoiceSendingThread;
 		uint32_t                          mLastSequenceNumber = 0;
 		uint32_t                          mLastTimestamp      = 0;
 	};

@@ -4,8 +4,7 @@
 #include <concepts>
 
 
-#include "Strawberry/Core/Util/Option.hpp"
-
+#include "Strawberry/Core/Util/Optional.hpp"
 
 namespace Strawberry::Discord::Event
 {
@@ -19,11 +18,11 @@ namespace Strawberry::Discord::Event
 			requires (std::derived_from<T, EventBase>);
 
 		template <typename T>
-		Core::Option<T*> Cast()
+		Core::Optional<T*> Cast()
 			requires (std::derived_from<T, EventBase>);
 
 		template <typename T>
-		Core::Option<const T*> Cast() const
+		Core::Optional<const T*> Cast() const
 			requires (std::derived_from<T, EventBase>);
 	};
 } // namespace Strawberry::Discord::Event
@@ -40,7 +39,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Core::Option<T*> EventBase::Cast()
+	Core::Optional<T*> EventBase::Cast()
 		requires (std::derived_from<T, EventBase>)
 	{
 		auto ptr = dynamic_cast<T*>(this);
@@ -50,7 +49,7 @@ namespace Strawberry::Discord::Event
 
 
 	template <typename T>
-	Core::Option<const T*> EventBase::Cast() const
+	Core::Optional<const T*> EventBase::Cast() const
 		requires (std::derived_from<T, EventBase>)
 	{
 		auto ptr = dynamic_cast<const T*>(this);

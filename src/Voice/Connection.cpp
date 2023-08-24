@@ -125,7 +125,7 @@ namespace Strawberry::Discord::Voice
 			{
 				clock.Tick();
 
-				Core::Option<Codec::Audio::Frame> frame;
+				Core::Optional<Codec::Audio::Frame> frame;
 				if (mAudioMixer.IsEmpty())
 				{
 					if (mIsSpeaking && silentSamplesSent < 5)

@@ -30,6 +30,6 @@ namespace Strawberry::Discord::Voice
 		const double                                       mInterval;
 		Core::Clock                                        mClock;
 		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Option<Core::RepeatingTask>                  mThread;
+		Core::Optional<Core::RepeatingTask>                mThread;
 	};
 } // namespace Strawberry::Discord::Voice
