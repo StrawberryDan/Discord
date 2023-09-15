@@ -20,6 +20,7 @@
 #include "Intent.hpp"
 #include "Strawberry/Core/Net/HTTP/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 
 
 namespace Strawberry::Discord
@@ -91,11 +92,6 @@ namespace Strawberry::Discord
 			return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
 		}
 
-
-		// Base case for GetEntity which actually does the request.
-		template <>
-		Core::Optional<nlohmann::json> GetEntity(const std::string& endpoint);
-
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
 		bool        OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
@@ -123,4 +119,9 @@ namespace Strawberry::Discord
 		GuildList   mGuilds;
 		ChannelList mChannels;
 	};
+
+
+	// Base case for GetEntity which actually does the request.
+	template <>
+	Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint);
 } // namespace Strawberry::Discord
