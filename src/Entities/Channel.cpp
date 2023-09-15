@@ -15,11 +15,11 @@ namespace Strawberry::Discord::Entity
 
 		if (json.contains("permission_overwrites"))
 		{
-			for (auto& overwriteJSON : json["permission_overwrites"])
+			for (const auto& overwriteJSON : json["permission_overwrites"])
 			{
 				std::uintmax_t      allowBits(std::stoull(std::string(overwriteJSON["allow"])));
 				std::uintmax_t      denyBits(std::stoull(std::string(overwriteJSON["deny"])));
-				PermissionOverwrite overwrite(Snowflake(std::string(overwriteJSON["id"])), overwriteJSON["type"], allowBits, denyBits);
+				PermissionOverwrite overwrite(Snowflake(std::string(overwriteJSON.at("id"))), overwriteJSON.at("type"), allowBits, denyBits);
 				channel.mPermissionOverwrites.emplace_back(overwrite);
 			}
 		}
