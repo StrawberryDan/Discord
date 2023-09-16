@@ -17,6 +17,7 @@ add_library(StrawberryDiscord STATIC
 		include/Discord/Bot.hpp
 		include/Discord/Entity/Channel.hpp
 		include/Discord/Entity/Guild.hpp
+		include/Discord/Entity/PermissionOverwrite.hpp
 		include/Discord/Error.hpp
 		include/Discord/Event/EventBase.hpp
 		include/Discord/Event/GuildCreate.hpp
@@ -30,6 +31,7 @@ add_library(StrawberryDiscord STATIC
 		src/Bot.cpp
 		src/Entities/Channel.cpp
 		src/Entities/Guild.cpp
+		src/Entities/PermissionOverwrite.cpp
 		src/EventListener.cpp
 		src/Events/GuildCreate.cpp
 		src/Events/Ready.cpp
@@ -37,11 +39,10 @@ add_library(StrawberryDiscord STATIC
 		src/Gateway/Heartbeat.cpp
 		src/Snowflake.cpp
 		src/Voice/Connection.cpp
-		src/Voice/Heartbeat.cpp src/EventListener.cpp
-		src/Entities/PermissionOverwrite.cpp
-		include/Discord/Entity/PermissionOverwrite.hpp)
+		src/Voice/Heartbeat.cpp
+		src/EventListener.cpp)
 target_include_directories(StrawberryDiscord PUBLIC include)
-target_link_libraries(StrawberryDiscord PUBLIC StrawberryCodec StrawberryCore)
+target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec)
 
 
 add_executable(StrawberryDiscordTest
