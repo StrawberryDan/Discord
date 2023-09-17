@@ -10,17 +10,36 @@ using Strawberry::Core::Assert;
 using Strawberry::Core::Unreachable;
 using Strawberry::Core::Net::HTTP::HTTPSClient;
 
-
 namespace Strawberry::Discord
 {
+	Core::Optional<Bot> Bot::Connect(Token token, Intent intents)
+	{
+		Bot bot(std::move(token), std::move(intents));
+
+		if (!bot.IsOk()) return Core::NullOpt;
+
+		return bot;
+	}
+
 	Bot::Bot(Token token, Intent intents)
 		: mRunning(true)
 		, mToken(std::move(token))
 		, mIntents(intents)
 		, mHTTPS("discord.com")
-		, mGateway(GetGatewayEndpoint(), mToken, mIntents)
-	{}
+		, mGateway(nullptr)
+	{
+		auto endpoint = GetGatewayEndpoint();
+		if (endpoint)
+		{
+			auto gateway = Gateway::Gateway::Connect(endpoint.Unwrap(), mToken, mIntents);
+			if (gateway) mGateway = Core::SharedMutex(gateway.Unwrap());
+		}
+	}
 
+	bool Bot::IsOk() const
+	{
+		return mGateway;
+	}
 
 	void Bot::Run()
 	{
@@ -56,7 +75,6 @@ namespace Strawberry::Discord
 			}
 		}
 	}
-
 
 	bool Bot::OnGatewayMessage(const Websocket::Message& message)
 	{
@@ -116,18 +134,15 @@ namespace Strawberry::Discord
 		}
 	}
 
-
 	void Bot::Shutdown()
 	{
 		mRunning = false;
 	}
 
-
 	bool Bot::IsRunning() const
 	{
 		return mRunning;
 	}
-
 
 	void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
 	{
@@ -135,18 +150,15 @@ namespace Strawberry::Discord
 		mBehaviour = std::move(behaviour);
 	}
 
-
 	void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
 	{
-		mVoiceConnection.Emplace(mGateway, *mSessionId, guild, channel, *mUserId);
+		mVoiceConnection.reset(new Voice::Connection(mGateway, *mSessionId, guild, channel, *mUserId));
 	}
-
 
 	void Bot::DisconnectFromVoice()
 	{
-		mVoiceConnection.Reset();
+		mVoiceConnection.reset();
 	}
-
 
 	std::unordered_set<Snowflake> Bot::FetchGuilds()
 	{
@@ -166,7 +178,6 @@ namespace Strawberry::Discord
 		return result;
 	}
 
-
 	std::unordered_set<Snowflake> Bot::GetGuilds() const
 	{
 		std::unordered_set<Snowflake> result;
@@ -177,7 +188,6 @@ namespace Strawberry::Discord
 		return result;
 	}
 
-
 	const Entity::Guild* Bot::FetchGuild(const Snowflake& id)
 	{
 		auto guildInfo = GetEntity("/guilds/{}", id.AsString()).Unwrap();
@@ -185,14 +195,12 @@ namespace Strawberry::Discord
 		return &*mGuilds.at(id);
 	}
 
-
 	const Entity::Guild* Bot::GetGuild(const Snowflake& id) const
 	{
 		if (mGuilds.contains(id)) { return mGuilds.at(id).AsPtr().UnwrapOr(nullptr); }
 
 		return nullptr;
 	}
-
 
 	std::unordered_set<Snowflake> Bot::FetchChannels(const Strawberry::Discord::Snowflake& guildId)
 	{
@@ -212,7 +220,6 @@ namespace Strawberry::Discord
 		return result;
 	}
 
-
 	std::unordered_set<Snowflake> Bot::GetChannels(const Strawberry::Discord::Snowflake& guildId) const
 	{
 		std::unordered_set<Snowflake> result;
@@ -223,7 +230,6 @@ namespace Strawberry::Discord
 		return std::move(result);
 	}
 
-
 	const Entity::Channel* Bot::FetchChannel(const Snowflake& id)
 	{
 		auto channelInfo = GetEntity("/channels/{}", id.AsString()).Unwrap();
@@ -231,13 +237,11 @@ namespace Strawberry::Discord
 		return &*mChannels.at(id);
 	}
 
-
 	const Entity::Channel* Bot::GetChannel(const Snowflake& id) const
 	{
 		if (mChannels.contains(id)) { return mChannels.at(id).AsPtr().UnwrapOr(nullptr); }
 		else { return nullptr; }
 	}
-
 
 	void Bot::RegisterEventListener(EventListener* listener)
 	{
@@ -245,7 +249,6 @@ namespace Strawberry::Discord
 		listener->mRegistry = this->mEventListenerRegistry;
 		mEventListenerRegistry.Lock()->insert(listener);
 	}
-
 
 	void Bot::DeregisterEventListener(EventListener* listener)
 	{
@@ -257,7 +260,6 @@ namespace Strawberry::Discord
 			listener->mRegistry = nullptr;
 		}
 	}
-
 
 	template <>
 	Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
@@ -286,6 +288,10 @@ namespace Strawberry::Discord
 				{
 					Core::Unreachable();
 				}
+
+			case 401:
+				return Core::NullOpt;
+
 			case 429:
 			{
 				float                        waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
@@ -300,18 +306,17 @@ namespace Strawberry::Discord
 		}
 	}
 
-
 	void Bot::DispatchEvent(const Event::EventBase& event) const
 	{
 		auto eventListeners = mEventListenerRegistry.Lock();
 		for (auto listener : *eventListeners) { listener->ProcessEvent(event); }
 	}
 
-
-	std::string Bot::GetGatewayEndpoint()
+	Core::Optional<std::string> Bot::GetGatewayEndpoint()
 	{
-		auto json = GetEntity("/gateway/bot").Unwrap();
-		auto url  = static_cast<std::string>(json["url"]);
+		auto json = GetEntity("/gateway/bot");
+		if (!json) return Core::NullOpt;
+		auto url = static_cast<std::string>(json.Value()["url"]);
 		url.erase(0, 6);
 		return url;
 	}

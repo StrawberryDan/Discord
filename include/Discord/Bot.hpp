@@ -22,7 +22,6 @@
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Util/Optional.hpp"
 
-
 namespace Strawberry::Discord
 {
 	//==================================================================================================================
@@ -40,17 +39,20 @@ namespace Strawberry::Discord
 		using Token = std::string;
 
 	public:
-		explicit Bot(Token token, Intent intents);
+		static Core::Optional<Bot> Connect(Token token, Intent intents);
 
+		Bot(Bot&&) = default;
 
-		// Runs the bot. Does not start a new thread. Can be called from another thread.
+		/// Returns whether the bot is okay to run.
+		bool IsOk() const;
+		/// Runs the bot. Does not start a new thread. Can be called from another thread.
 		void Run();
-		// Sets the flag so that Run will return as soon as possible.
+		/// Sets the flag so that Run will return as soon as possible.
 		void Shutdown();
-		// Returns whether the bot is running or not.
+		/// Returns whether the bot is running or not.
 		bool IsRunning() const;
-		// Set the behaviour to use whilst the Bot is running.
-		// This Must be called whilst the bot is not running.
+		/// Set the behaviour to use whilst the Bot is running.
+		/// This Must be called whilst the bot is not running.
 		void SetBehaviour(std::unique_ptr<Behaviour> behaviour);
 
 
@@ -59,9 +61,8 @@ namespace Strawberry::Discord
 		// Disconnects the bot from any voice channel.
 		void DisconnectFromVoice();
 
-
 		// Accessor for the voice connection.
-		Core::Optional<Voice::Connection>& GetVoiceConnection() { return mVoiceConnection; }
+		Core::Optional<Voice::Connection*> GetVoiceConnection() { return mVoiceConnection ? mVoiceConnection.get() : nullptr; }
 
 		// Retrieves the list of known guilds this bot is a member of.
 		// Fetch indicates getting the list from the server, whilst Get means using the cache.
@@ -84,6 +85,9 @@ namespace Strawberry::Discord
 
 
 	private:
+		// Private Constructor
+		explicit Bot(Token token, Intent intents);
+
 		// Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
 		template <typename... Ts>
 			requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
@@ -93,11 +97,11 @@ namespace Strawberry::Discord
 		}
 
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
-		bool        OnGatewayMessage(const Core::Net::Websocket::Message& message);
+		bool                        OnGatewayMessage(const Core::Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
-		void        DispatchEvent(const Event::EventBase& event) const;
+		void                        DispatchEvent(const Event::EventBase& event) const;
 		// Gets the gateway URL from HTTP.
-		std::string GetGatewayEndpoint();
+		Core::Optional<std::string> GetGatewayEndpoint();
 
 
 	private:
@@ -113,13 +117,12 @@ namespace Strawberry::Discord
 		Core::Optional<std::string>                     mSessionId;
 
 		// Voice State Info
-		Core::Optional<Voice::Connection> mVoiceConnection;
+		std::unique_ptr<Voice::Connection> mVoiceConnection;
 
 		// Caches
 		GuildList   mGuilds;
 		ChannelList mChannels;
 	};
-
 
 	// Base case for GetEntity which actually does the request.
 	template <>
