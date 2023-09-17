@@ -13,7 +13,6 @@
 /// Standard Library
 #include <utility>
 
-
 namespace Strawberry::Discord::Voice
 {
 	Connection::Connection(Core::SharedMutex<Gateway::Gateway> gateway, const std::string& sessionId, Snowflake guildId, Snowflake channelId, Snowflake userId)
@@ -79,7 +78,7 @@ namespace Strawberry::Discord::Voice
 			// Receive Hello
 			auto helloMessage      = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
 			auto heartbeatInterval = static_cast<double>(helloMessage["d"]["heartbeat_interval"]) / 1000.0;
-			mVoiceWSSHeartbeat.Emplace(mVoiceWSS, heartbeatInterval);
+			mVoiceWSSHeartbeat.reset(new Heartbeat(mVoiceWSS, heartbeatInterval));
 
 			// Receive Voice Ready Message
 			auto ready = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
@@ -185,12 +184,10 @@ namespace Strawberry::Discord::Voice
 		mGateway.Lock()->Send(msg).Unwrap();
 	}
 
-
 	std::shared_ptr<Codec::Audio::Mixer::InputChannel> Connection::CreateInputChannel()
 	{
 		return mAudioMixer.CreateInputChannel();
 	}
-
 
 	void Connection::SetSpeaking(bool speaking)
 	{

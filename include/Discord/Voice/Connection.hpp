@@ -23,7 +23,6 @@
 #include <Codec/Audio/Encoder.hpp>
 #include <string>
 
-
 namespace Strawberry::Discord::Voice
 {
 	/// Class for representing a voice connection for a discord bot.
@@ -42,12 +41,9 @@ namespace Strawberry::Discord::Voice
 
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> CreateInputChannel();
 
-
 		Snowflake GetGuild() const { return mGuild; }
 
-
 		Snowflake GetChannel() const { return mChannel; }
-
 
 		Snowflake GetUser() const { return mUser; }
 
@@ -88,7 +84,7 @@ namespace Strawberry::Discord::Voice
 
 
 		Core::Optional<Core::RepeatingTask> mVoiceSendingThread;
-		uint32_t                          mLastSequenceNumber = 0;
-		uint32_t                          mLastTimestamp      = 0;
+		uint32_t                            mLastSequenceNumber = 0;
+		uint32_t                            mLastTimestamp      = 0;
 	};
 } // namespace Strawberry::Discord::Voice
