@@ -7,7 +7,6 @@
 #include "Strawberry/Core/Util/Result.hpp"
 #include <queue>
 
-
 namespace Strawberry::Discord::Gateway
 {
 	class Gateway
@@ -18,7 +17,11 @@ namespace Strawberry::Discord::Gateway
 
 
 	public:
-		Gateway(const std::string& endpoint, const std::string& token, Intent intents);
+		static Core::Optional<Gateway> Connect(const std::string& endpoint, const std::string& token, Intent intents);
+
+		Gateway(Gateway&&) = default;
+
+		bool IsOk() const;
 
 
 		/**
@@ -41,13 +44,16 @@ namespace Strawberry::Discord::Gateway
 		/// Stores a message in the internal buffer so that it can be received again by another source.
 		void   BufferMessage(Core::Net::Websocket::Message message);
 
-
 		[[nodiscard]] double GetHeartbeatInterval() const { return mHeartbeat->GetInterval(); }
 
 
 	private:
-		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
-		Core::Optional<Heartbeat>                          mHeartbeat;
-		std::queue<Core::Net::Websocket::Message>          mMessageBuffer;
+		/// Private Constructor
+		Gateway(const std::string& endpoint, const std::string& token, Intent intents);
+
+	private:
+		Core::Optional<Core::SharedMutex<Core::Net::Websocket::WSSClient>> mWSS;
+		std::unique_ptr<Heartbeat>                                         mHeartbeat;
+		std::queue<Core::Net::Websocket::Message>                          mMessageBuffer;
 	};
 } // namespace Strawberry::Discord::Gateway

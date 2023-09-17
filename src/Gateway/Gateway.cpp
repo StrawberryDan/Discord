@@ -3,8 +3,24 @@
 
 namespace Strawberry::Discord::Gateway
 {
+	Core::Optional<Gateway> Gateway::Connect(const std::string& endpoint, const std::string& token, Intent intents)
+	{
+		Gateway gateway(endpoint, token, intents);
+
+		if (!gateway.IsOk()) return Core::NullOpt;
+
+		return gateway;
+	}
+
+	bool Gateway::IsOk() const
+	{
+		return mWSS && mHeartbeat;
+	}
+
 	Gateway::Gateway(const std::string& endpoint, const std::string& token, Intent intent)
-		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
+		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").IntoOptional().Map([](Core::Net::Websocket::WSSClient&& x) {
+			return Core::SharedMutex(std::move(x));
+		}))
 		, mHeartbeat()
 	{
 		auto helloMessage = Receive();
@@ -15,18 +31,21 @@ namespace Strawberry::Discord::Gateway
 		}
 
 		auto helloJson = helloMessage.Unwrap().AsJSON().Unwrap();
-
 		Core::Assert(helloJson["op"] == 10);
-		mHeartbeat.Emplace(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
-		nlohmann::json identifier;
-		identifier["op"]                         = 2;
-		identifier["d"]["token"]                 = token;
-		identifier["d"]["intents"]               = std::to_underlying(intent);
-		identifier["d"]["properties"]["os"]      = "windows";
-		identifier["d"]["properties"]["browser"] = "strawberry";
-		identifier["d"]["properties"]["device"]  = "strawberry";
-		Send(Core::Net::Websocket::Message(identifier)).Unwrap();
+		if (mWSS)
+		{
+			mHeartbeat.reset(new Heartbeat(*mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0));
+
+			nlohmann::json identifier;
+			identifier["op"]                         = 2;
+			identifier["d"]["token"]                 = token;
+			identifier["d"]["intents"]               = std::to_underlying(intent);
+			identifier["d"]["properties"]["os"]      = "windows";
+			identifier["d"]["properties"]["browser"] = "strawberry";
+			identifier["d"]["properties"]["device"]  = "strawberry";
+			Send(Core::Net::Websocket::Message(identifier)).Unwrap();
+		}
 	}
 
 
@@ -40,7 +59,7 @@ namespace Strawberry::Discord::Gateway
 			return message;
 		}
 
-		auto msg = mWSS.Lock()->ReadMessage();
+		auto msg = mWSS->Lock()->ReadMessage();
 
 		if (msg)
 		{
@@ -66,7 +85,7 @@ namespace Strawberry::Discord::Gateway
 
 	Gateway::SendResult Gateway::Send(const Core::Net::Websocket::Message& msg)
 	{
-		return mWSS.Lock()->SendMessage(msg);
+		return mWSS->Lock()->SendMessage(msg);
 	}
 
 
