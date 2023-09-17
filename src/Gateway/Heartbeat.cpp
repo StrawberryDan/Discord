@@ -4,7 +4,6 @@
 #include <random>
 #include <utility>
 
-
 namespace Strawberry::Discord::Gateway
 {
 	Heartbeat::Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval)
@@ -23,7 +22,6 @@ namespace Strawberry::Discord::Gateway
 
 		mThread.Emplace(startUp, [this, count = uint32_t(0)]() mutable { Tick(count); });
 	}
-
 
 	void Heartbeat::Tick(uint32_t& count)
 	{
@@ -44,7 +42,6 @@ namespace Strawberry::Discord::Gateway
 
 		std::this_thread::yield();
 	}
-
 
 	void Heartbeat::UpdateSequenceNumber(size_t value)
 	{

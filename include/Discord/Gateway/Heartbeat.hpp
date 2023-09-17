@@ -10,7 +10,6 @@
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Util/Clock.hpp"
 
-
 namespace Strawberry::Discord::Gateway
 {
 	class Heartbeat
@@ -18,9 +17,7 @@ namespace Strawberry::Discord::Gateway
 	public:
 		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
 
-
 		void UpdateSequenceNumber(size_t value);
-
 
 		[[nodiscard]] double GetInterval() const { return mInterval; }
 
