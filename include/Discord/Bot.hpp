@@ -46,7 +46,7 @@ namespace Strawberry::Discord
 		// Runs the bot. Does not start a new thread. Can be called from another thread.
 		void Run();
 		// Sets the flag so that Run will return as soon as possible.
-		void Stop();
+		void Shutdown();
 		// Returns whether the bot is running or not.
 		bool IsRunning() const;
 		// Set the behaviour to use whilst the Bot is running.

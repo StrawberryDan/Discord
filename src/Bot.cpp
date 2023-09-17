@@ -117,7 +117,7 @@ namespace Strawberry::Discord
 	}
 
 
-	void Bot::Stop()
+	void Bot::Shutdown()
 	{
 		mRunning = false;
 	}
@@ -241,7 +241,7 @@ namespace Strawberry::Discord
 
 	void Bot::RegisterEventListener(EventListener* listener)
 	{
-		Assert(!listener->mRegistry);
+		if (listener->mRegistry) return;
 		listener->mRegistry = this->mEventListenerRegistry;
 		mEventListenerRegistry.Lock()->insert(listener);
 	}
@@ -249,7 +249,7 @@ namespace Strawberry::Discord
 
 	void Bot::DeregisterEventListener(EventListener* listener)
 	{
-		Core::Assert(listener->mRegistry);
+		if (!listener->mRegistry) return;
 		auto eventListeners = mEventListenerRegistry.Lock();
 		if (eventListeners->contains(listener))
 		{
