@@ -78,7 +78,7 @@ namespace Strawberry::Discord::Voice
 			// Receive Hello
 			auto helloMessage      = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
 			auto heartbeatInterval = static_cast<double>(helloMessage["d"]["heartbeat_interval"]) / 1000.0;
-			mVoiceWSSHeartbeat.reset(new Heartbeat(mVoiceWSS, heartbeatInterval));
+			mVoiceWSSHeartbeat.Emplace(mVoiceWSS, heartbeatInterval);
 
 			// Receive Voice Ready Message
 			auto ready = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
