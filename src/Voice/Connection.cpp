@@ -61,10 +61,10 @@ namespace Strawberry::Discord::Voice
 				continue;
 			}
 
-			auto voiceWSSHost = Core::Net::Endpoint::Parse(voiceServerUpdate["d"]["endpoint"]).Unwrap();
+			auto voiceWSSHost = Core::Net::Endpoint::Resolve(voiceServerUpdate["d"]["endpoint"]).Unwrap();
 
 			// Start websocket
-			mVoiceWSS.Emplace(WSSClient::Connect(*voiceWSSHost.GetHostname(), "/?v=4").Unwrap());
+			mVoiceWSS.Emplace(WSSClient::Connect(voiceWSSHost, "/?v=4").Unwrap());
 			// Identify with the voice server
 			json identification;
 			identification["op"]              = 0;

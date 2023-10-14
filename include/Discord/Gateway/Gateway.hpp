@@ -1,10 +1,17 @@
 #pragma once
 
 
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
+// Strawberry Discord
 #include "Discord/Intent.hpp"
 #include "Heartbeat.hpp"
+// Strawberry Core
+#include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Util/Result.hpp"
+// Standard Library
 #include <queue>
 
 namespace Strawberry::Discord::Gateway
@@ -13,11 +20,12 @@ namespace Strawberry::Discord::Gateway
 	{
 	public:
 		using ReceiveResult = Core::Result<Core::Net::Websocket::Message, Core::Net::Websocket::Error>;
-		using SendResult    = Core::Result<int, Core::Net::Websocket::Error>;
+		using SendResult = Core::Result<Core::NullType, Core::Net::Websocket::Error>;
 
 
 	public:
-		static Core::Optional<Gateway> Connect(const std::string& endpoint, const std::string& token, Intent intents);
+		static Core::Optional<Gateway>
+		Connect(const Core::Net::Endpoint& endpoint, const std::string& token, Intent intents);
 
 		Gateway(Gateway&&) = default;
 
@@ -49,7 +57,7 @@ namespace Strawberry::Discord::Gateway
 
 	private:
 		/// Private Constructor
-		Gateway(const std::string& endpoint, const std::string& token, Intent intents);
+		Gateway(const Core::Net::Endpoint& endpoint, const std::string& token, Intent intents);
 
 	private:
 		Core::Optional<Core::SharedMutex<Core::Net::Websocket::WSSClient>> mWSS;

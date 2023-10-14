@@ -3,7 +3,8 @@
 
 namespace Strawberry::Discord::Gateway
 {
-	Core::Optional<Gateway> Gateway::Connect(const std::string& endpoint, const std::string& token, Intent intents)
+	Core::Optional<Gateway>
+	Gateway::Connect(const Core::Net::Endpoint& endpoint, const std::string& token, Intent intents)
 	{
 		Gateway gateway(endpoint, token, intents);
 
@@ -17,7 +18,8 @@ namespace Strawberry::Discord::Gateway
 		return mWSS && mHeartbeat;
 	}
 
-	Gateway::Gateway(const std::string& endpoint, const std::string& token, Intent intent)
+
+	Gateway::Gateway(const Core::Net::Endpoint& endpoint, const std::string& token, Intent intent)
 		: mWSS(Core::Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").IntoOptional().Map([](Core::Net::Websocket::WSSClient&& x) {
 			return Core::SharedMutex(std::move(x));
 		}))

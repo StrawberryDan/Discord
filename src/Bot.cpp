@@ -25,15 +25,12 @@ namespace Strawberry::Discord
 		: mRunning(true)
 		, mToken(std::move(token))
 		, mIntents(intents)
-		, mHTTPS("discord.com")
+		  , mHTTPS(Endpoint::Resolve("discord.com", 443).Unwrap())
 		, mGateway(nullptr)
 	{
-		auto endpoint = GetGatewayEndpoint();
-		if (endpoint)
-		{
-			auto gateway = Gateway::Gateway::Connect(endpoint.Unwrap(), mToken, mIntents);
-			if (gateway) mGateway = Core::SharedMutex(gateway.Unwrap());
-		}
+		auto endpoint = GetGatewayEndpoint().Unwrap();
+		auto gateway = Gateway::Gateway::Connect(endpoint, mToken, mIntents);
+		if (gateway) mGateway = Core::SharedMutex(gateway.Unwrap());
 	}
 
 	bool Bot::IsOk() const
@@ -312,12 +309,13 @@ namespace Strawberry::Discord
 		for (auto listener : *eventListeners) { listener->ProcessEvent(event); }
 	}
 
-	Core::Optional<std::string> Bot::GetGatewayEndpoint()
+
+	Core::Optional<Core::Net::Endpoint> Bot::GetGatewayEndpoint()
 	{
 		auto json = GetEntity("/gateway/bot");
 		if (!json) return Core::NullOpt;
 		auto url = static_cast<std::string>(json.Value()["url"]);
 		url.erase(0, 6);
-		return url;
+		return Endpoint::Resolve(url, 443).Unwrap();
 	}
 } // namespace Strawberry::Discord

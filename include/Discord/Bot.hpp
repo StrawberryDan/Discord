@@ -4,23 +4,24 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
+// Strawberry Discord
+#include "Discord/Behaviour.hpp"
+#include "Discord/Event/EventBase.hpp"
+#include "Discord/EventListener.hpp"
+#include "Discord/Gateway/Gateway.hpp"
+#include "Discord/Intent.hpp"
+#include "Discord/Voice/Connection.hpp"
+// Strawberry Core
+#include "Strawberry/Core/Net/Endpoint.hpp"
+#include "Strawberry/Core/Net/HTTP/Client.hpp"
+#include "Strawberry/Core/Sync/Mutex.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 // C++ Standard Library
 #include <concepts>
 #include <optional>
 #include <set>
 #include <string>
 #include <unordered_set>
-
-// Project Specific Libraries
-#include "Behaviour.hpp"
-#include "Discord/Gateway/Gateway.hpp"
-#include "Discord/Voice/Connection.hpp"
-#include "Event/EventBase.hpp"
-#include "EventListener.hpp"
-#include "Intent.hpp"
-#include "Strawberry/Core/Net/HTTP/Client.hpp"
-#include "Strawberry/Core/Sync/Mutex.hpp"
-#include "Strawberry/Core/Util/Optional.hpp"
 
 namespace Strawberry::Discord
 {
@@ -101,7 +102,7 @@ namespace Strawberry::Discord
 		// Dispatches an event to all event listeners.
 		void                        DispatchEvent(const Event::EventBase& event) const;
 		// Gets the gateway URL from HTTP.
-		Core::Optional<std::string> GetGatewayEndpoint();
+		Core::Optional<Core::Net::Endpoint> GetGatewayEndpoint();
 
 
 	private:
