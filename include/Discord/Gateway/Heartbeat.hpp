@@ -8,7 +8,7 @@
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Util/Clock.hpp"
+#include "Strawberry/Core/Timing/Clock.hpp"
 
 namespace Strawberry::Discord::Gateway
 {

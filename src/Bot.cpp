@@ -2,7 +2,7 @@
 
 #include "Discord/Bot.hpp"
 #include "Discord/Event/GuildCreate.hpp"
-#include "Strawberry/Core/Util/Logging.hpp"
+#include "Strawberry/Core/IO/Logging.hpp"
 
 
 using namespace Strawberry::Core::Net;

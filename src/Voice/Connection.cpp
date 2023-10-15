@@ -6,8 +6,8 @@
 #include "Strawberry/Core/Net/Address.hpp"
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/RTP/Packet.hpp"
-#include "Strawberry/Core/Util/Logging.hpp"
-#include "Strawberry/Core/Util/Metronome.hpp"
+#include "Strawberry/Core/IO/Logging.hpp"
+#include "Strawberry/Core/Timing/Metronome.hpp"
 // Json
 #include "nlohmann/json.hpp"
 /// Standard Library
