@@ -4,7 +4,7 @@
 #include "Channel.hpp"
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
-#include "Strawberry/Core/Util/Result.hpp"
+#include "Strawberry/Core/Types/Variant.hpp"
 #include "nlohmann/json.hpp"
 
 #include <string>

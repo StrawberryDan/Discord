@@ -10,7 +10,7 @@
 // Strawberry Core
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
-#include "Strawberry/Core/Util/Result.hpp"
+#include "Strawberry/Core/Types/Variant.hpp"
 // Standard Library
 #include <queue>
 

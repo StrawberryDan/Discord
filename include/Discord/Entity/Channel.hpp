@@ -4,8 +4,8 @@
 #include "Discord/Error.hpp"
 #include "Discord/Snowflake.hpp"
 #include "PermissionOverwrite.hpp"
-#include "Strawberry/Core/Util/Optional.hpp"
-#include "Strawberry/Core/Util/Result.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
+#include "Strawberry/Core/Types/Result.hpp"
 #include "nlohmann/json.hpp"
 
 

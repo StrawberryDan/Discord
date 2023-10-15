@@ -4,7 +4,7 @@
 #include <concepts>
 
 
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 
 namespace Strawberry::Discord::Event
 {

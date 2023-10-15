@@ -15,7 +15,7 @@
 #include "Strawberry/Core/Net/Endpoint.hpp"
 #include "Strawberry/Core/Net/HTTP/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 // C++ Standard Library
 #include <concepts>
 #include <optional>

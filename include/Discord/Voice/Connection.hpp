@@ -18,7 +18,7 @@
 #include "Strawberry/Core/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 // Standard Library
 #include <Codec/Audio/Encoder.hpp>
 #include <string>
