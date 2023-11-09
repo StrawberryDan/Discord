@@ -11,6 +11,10 @@ if (NOT TARGET StrawberryCodec AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Codec A
 	add_subdirectory(../Codec ${CMAKE_CURRENT_BINARY_DIR}/Codec)
 endif ()
 
+if (NOT TARGET StrawberryNet AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Net AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Net)
+	add_subdirectory(../Net ${CMAKE_CURRENT_BINARY_DIR}/Net)
+endif ()
+
 
 add_library(StrawberryDiscord STATIC
 		include/Discord/Behaviour.hpp
@@ -42,7 +46,7 @@ add_library(StrawberryDiscord STATIC
 		src/Voice/Heartbeat.cpp
 		src/EventListener.cpp)
 target_include_directories(StrawberryDiscord PUBLIC include)
-target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec)
+target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
 
 
 add_executable(StrawberryDiscordTest

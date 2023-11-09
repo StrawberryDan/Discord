@@ -5,7 +5,7 @@
 #include <thread>
 
 
-#include "Strawberry/Core/Net/Websocket/Client.hpp"
+#include "Strawberry/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Timing/Clock.hpp"
@@ -16,7 +16,7 @@ namespace Strawberry::Discord::Voice
 	class Heartbeat
 	{
 	public:
-		Heartbeat(Core::SharedMutex<Core::Net::Websocket::WSSClient> wss, double interval);
+		Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
 		Heartbeat(const Heartbeat&)            = delete;
 		Heartbeat(Heartbeat&&)                 = delete;
 		Heartbeat& operator=(const Heartbeat&) = delete;
@@ -29,7 +29,7 @@ namespace Strawberry::Discord::Voice
 		std::unique_ptr<std::random_device>                mRandomDevice;
 		const double                                       mInterval;
 		Core::Clock                                        mClock;
-		Core::SharedMutex<Core::Net::Websocket::WSSClient> mWSS;
+		Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
 		Core::Optional<Core::RepeatingTask>                mThread;
 	};
 } // namespace Strawberry::Discord::Voice

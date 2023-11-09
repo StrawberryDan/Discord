@@ -12,8 +12,8 @@
 #include "Discord/Intent.hpp"
 #include "Discord/Voice/Connection.hpp"
 // Strawberry Core
-#include "Strawberry/Core/Net/Endpoint.hpp"
-#include "Strawberry/Core/Net/HTTP/Client.hpp"
+#include "Strawberry/Net/Endpoint.hpp"
+#include "Strawberry/Net/HTTP/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Types/Optional.hpp"
 // C++ Standard Library
@@ -98,11 +98,11 @@ namespace Strawberry::Discord
 		}
 
 		// Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
-		bool                        OnGatewayMessage(const Core::Net::Websocket::Message& message);
+		bool                        OnGatewayMessage(const Net::Websocket::Message& message);
 		// Dispatches an event to all event listeners.
 		void                        DispatchEvent(const Event::EventBase& event) const;
 		// Gets the gateway URL from HTTP.
-		Core::Optional<Core::Net::Endpoint> GetGatewayEndpoint();
+		Core::Optional<Net::Endpoint> GetGatewayEndpoint();
 
 
 	private:
@@ -110,7 +110,7 @@ namespace Strawberry::Discord
 		bool                                            mRunning;
 		Token                                           mToken;
 		Intent                                          mIntents;
-		Core::SharedMutex<Core::Net::HTTP::HTTPSClient> mHTTPS;
+		Core::SharedMutex<Net::HTTP::HTTPSClient> mHTTPS;
 		Core::SharedMutex<Gateway::Gateway>             mGateway;
 		std::unique_ptr<Behaviour>                      mBehaviour;
 		Core::SharedMutex<std::set<EventListener*>>     mEventListenerRegistry;

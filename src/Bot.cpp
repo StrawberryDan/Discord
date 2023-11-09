@@ -5,10 +5,10 @@
 #include "Strawberry/Core/IO/Logging.hpp"
 
 
-using namespace Strawberry::Core::Net;
+using namespace Strawberry::Net;
 using Strawberry::Core::Assert;
 using Strawberry::Core::Unreachable;
-using Strawberry::Core::Net::HTTP::HTTPSClient;
+using Strawberry::Net::HTTP::HTTPSClient;
 
 namespace Strawberry::Discord
 {
@@ -47,7 +47,7 @@ namespace Strawberry::Discord
 			auto gatewayMessage = gateway->Receive();
 			if (gatewayMessage)
 			{
-				if (gatewayMessage->GetOpcode() == Core::Net::Websocket::Message::Opcode::Close)
+				if (gatewayMessage->GetOpcode() == Net::Websocket::Message::Opcode::Close)
 				{
 					Core::Logging::Info("Websocket server closed with: {}", gatewayMessage->GetCloseStatusCode());
 				}
@@ -261,7 +261,7 @@ namespace Strawberry::Discord
 	template <>
 	Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
 	{
-		using namespace Strawberry::Core::Net;
+		using namespace Strawberry::Net;
 
 		static constexpr const char* API_PREFIX = "/api/v10";
 
@@ -310,7 +310,7 @@ namespace Strawberry::Discord
 	}
 
 
-	Core::Optional<Core::Net::Endpoint> Bot::GetGatewayEndpoint()
+	Core::Optional<Net::Endpoint> Bot::GetGatewayEndpoint()
 	{
 		auto json = GetEntity("/gateway/bot");
 		if (!json) return Core::NullOpt;

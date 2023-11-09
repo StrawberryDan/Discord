@@ -3,9 +3,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "Discord/Voice/Connection.hpp"
 /// Strawberry Libraries
-#include "Strawberry/Core/Net/Address.hpp"
-#include "Strawberry/Core/Net/Endpoint.hpp"
-#include "Strawberry/Core/Net/RTP/Packet.hpp"
+#include "Strawberry/Net/Address.hpp"
+#include "Strawberry/Net/Endpoint.hpp"
+#include "Strawberry/Net/RTP/Packet.hpp"
 #include "Strawberry/Core/IO/Logging.hpp"
 #include "Strawberry/Core/Timing/Metronome.hpp"
 // Json
@@ -25,7 +25,7 @@ namespace Strawberry::Discord::Voice
 		, mOpusEncoder(AV_CODEC_ID_OPUS, AV_CHANNEL_LAYOUT_STEREO)
 	{
 		using nlohmann::json;
-		using namespace Core::Net::Websocket;
+		using namespace Net::Websocket;
 
 		auto gatewayLock = mGateway.Lock();
 
@@ -36,12 +36,12 @@ namespace Strawberry::Discord::Voice
 		voiceStateUpdate["d"]["channel_id"] = mChannel.AsString();
 		voiceStateUpdate["d"]["self_mute"]  = false;
 		voiceStateUpdate["d"]["self_deaf"]  = false;
-		gatewayLock->Send(Core::Net::Websocket::Message(voiceStateUpdate)).Unwrap();
+		gatewayLock->Send(Net::Websocket::Message(voiceStateUpdate)).Unwrap();
 
 		while (true)
 		{
 			auto message = gatewayLock->Receive(false);
-			if (!message && message.Err() == Core::Net::Websocket::Error::NoMessage)
+			if (!message && message.Err() == Net::Websocket::Error::NoMessage)
 			{
 				std::this_thread::yield();
 				continue;
@@ -61,7 +61,7 @@ namespace Strawberry::Discord::Voice
 				continue;
 			}
 
-			auto voiceWSSHost = Core::Net::Endpoint::Resolve(voiceServerUpdate["d"]["endpoint"]).Unwrap();
+			auto voiceWSSHost = Net::Endpoint::Resolve(voiceServerUpdate["d"]["endpoint"]).Unwrap();
 
 			// Start websocket
 			mVoiceWSS.Emplace(WSSClient::Connect(voiceWSSHost, "/?v=4").Unwrap());
@@ -73,7 +73,7 @@ namespace Strawberry::Discord::Voice
 			identification["d"]["session_id"] = sessionId;
 			identification["d"]["token"]      = voiceServerUpdate["d"]["token"];
 			auto voiceWSS                     = mVoiceWSS.Lock();
-			voiceWSS->SendMessage(Core::Net::Websocket::Message(identification)).Unwrap();
+			voiceWSS->SendMessage(Net::Websocket::Message(identification)).Unwrap();
 
 			// Receive Hello
 			auto helloMessage      = voiceWSS->WaitMessage().Unwrap().AsJSON().Unwrap();
@@ -87,13 +87,13 @@ namespace Strawberry::Discord::Voice
 			// Parse SSRC
 			mSSRC = ready["d"]["ssrc"];
 			// Parse UDP Endpoint
-			mUDPVoiceEndpoint.Emplace(Core::Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap(), ready["d"]["port"]);
+			mUDPVoiceEndpoint.Emplace(Net::IPv4Address::Parse(ready["d"]["ip"]).Unwrap(), ready["d"]["port"]);
 			// Get list of available modes
 			std::vector<std::string> modes     = ready["d"]["modes"];
 			const auto               voiceMode = "xsalsa20_poly1305";
 			// Check that the mode we want is there
 			Core::Assert(std::find(modes.begin(), modes.end(), voiceMode) != modes.end());
-			mUDPVoiceConnection = Core::Net::Socket::UDPClient::CreateIPv4().Unwrap();
+			mUDPVoiceConnection = Net::Socket::UDPClient::CreateIPv4().Unwrap();
 
 			// Send protocol selection
 			nlohmann::json protocolSelect;
@@ -102,7 +102,7 @@ namespace Strawberry::Discord::Voice
 			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress()->AsString();
 			protocolSelect["d"]["data"]["port"]    = mUDPVoiceEndpoint->GetPort();
 			protocolSelect["d"]["data"]["mode"]    = voiceMode;
-			voiceWSS->SendMessage(Core::Net::Websocket::Message(protocolSelect)).Unwrap();
+			voiceWSS->SendMessage(Net::Websocket::Message(protocolSelect)).Unwrap();
 
 
 			// Receive session description
@@ -149,11 +149,11 @@ namespace Strawberry::Discord::Voice
 					for (auto packet : mOpusEncoder.Receive())
 					{
 						Core::IO::DynamicByteBuffer packetData(packet->data, packet->size);
-						Core::Net::RTP::Packet      rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
+						Net::RTP::Packet      rtpPacket(0x78, mLastSequenceNumber++, mLastTimestamp, *mSSRC);
 						mLastTimestamp += packet->duration;
 						Codec::SodiumEncrypter::Nonce nonce{};
 						auto                          rtpAsBytes = rtpPacket.AsBytes();
-						for (int i = 0; i < sizeof(Core::Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
+						for (int i = 0; i < sizeof(Net::RTP::Packet::Header); i++) nonce[i] = rtpAsBytes[i];
 						rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
 						rtpAsBytes = rtpPacket.AsBytes();
 						Core::Assert(rtpAsBytes[0] == 0x80);
@@ -169,7 +169,7 @@ namespace Strawberry::Discord::Voice
 	Connection::~Connection()
 	{
 		using nlohmann::json;
-		using namespace Core::Net::Websocket;
+		using namespace Net::Websocket;
 
 		SetSpeaking(false);
 
@@ -198,7 +198,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["speaking"] = 1;
 			speaking["d"]["delay"]    = 0;
 			speaking["d"]["ssrc"]     = *mSSRC;
-			mVoiceWSS.Lock()->SendMessage(Core::Net::Websocket::Message(speaking)).Unwrap();
+			mVoiceWSS.Lock()->SendMessage(Net::Websocket::Message(speaking)).Unwrap();
 			Core::Logging::Trace("{}:{}\tSent Start Speaking Message", __FILE__, __LINE__);
 		}
 		else if (!speaking && mIsSpeaking)
@@ -208,7 +208,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["speaking"] = 0;
 			speaking["d"]["delay"]    = 0;
 			speaking["d"]["ssrc"]     = *mSSRC;
-			mVoiceWSS.Lock()->SendMessage(Core::Net::Websocket::Message(speaking)).Unwrap();
+			mVoiceWSS.Lock()->SendMessage(Net::Websocket::Message(speaking)).Unwrap();
 			Core::Logging::Trace("{}:{}\tSent Stop Speaking Message", __FILE__, __LINE__);
 		}
 
