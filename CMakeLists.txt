@@ -1,7 +1,15 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
 project(StrawberryDiscord)
+include(FetchContent)
 
 
+if (PROJECT_IS_TOP_LEVEL)
+	FetchContent_Declare(StrawberryConfig
+			GIT_REPOSITORY "https://github.com/StrawberryDan/Config.git"
+			GIT_TAG "main")
+	FetchContent_MakeAvailable(StrawberryConfig)
+	include(StrawberryConfig)
+endif()
 
 
 if (NOT TARGET StrawberryCore AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Core AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Core)
