@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(StrawberryDiscord)
-set(CMAKE_CXX_STANDARD 23)
+
+
 
 
 if (NOT TARGET StrawberryCore AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Core AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Core)
@@ -47,8 +48,10 @@ add_library(StrawberryDiscord STATIC
 		src/EventListener.cpp)
 target_include_directories(StrawberryDiscord PUBLIC include)
 target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
+set_target_properties(StrawberryDiscord PROPERTIES CXX_STANDARD 20)
 
 
 add_executable(StrawberryDiscordTest
 		test/Main.cpp)
 target_link_libraries(StrawberryDiscordTest PRIVATE StrawberryDiscord)
+set_target_properties(StrawberryDiscordTest PROPERTIES CXX_STANDARD 20)
