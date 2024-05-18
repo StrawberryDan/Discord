@@ -33,7 +33,7 @@ namespace Strawberry::Discord::Gateway
 			Net::Websocket::Message wssMessage(to_string(message));
 
 			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
-			if (!sendResult && sendResult.Err() == Net::Websocket::Error::Closed) { return; }
+			if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset) { return; }
 			else { sendResult.Unwrap(); }
 
 			count += 1;

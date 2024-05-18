@@ -58,13 +58,13 @@ namespace Strawberry::Discord
 			{
 				switch (gatewayMessage.Err())
 				{
-					case Websocket::Error::NoMessage:
+					case Net::Error::NoData:
 						std::this_thread::yield();
 						continue;
-					case Websocket::Error::Closed:
+					case Net::Error::ConnectionReset:
 						mRunning = false;
 						break;
-					case Websocket::Error::ProtocolError:
+					case Net::Error::ProtocolError:
 						continue;
 					default:
 						Unreachable();

@@ -41,7 +41,7 @@ namespace Strawberry::Discord::Voice
 		while (true)
 		{
 			auto message = gatewayLock->Receive(false);
-			if (!message && message.Err() == Net::Websocket::Error::NoMessage)
+			if (!message && message.Err() == Net::Error::NoData)
 			{
 				std::this_thread::yield();
 				continue;
@@ -93,7 +93,7 @@ namespace Strawberry::Discord::Voice
 			const auto               voiceMode = "xsalsa20_poly1305";
 			// Check that the mode we want is there
 			Core::Assert(std::find(modes.begin(), modes.end(), voiceMode) != modes.end());
-			mUDPVoiceConnection = Net::Socket::UDPClient::CreateIPv4().Unwrap();
+			mUDPVoiceConnection = Net::Socket::UDPSocket::CreateIPv4().Unwrap();
 
 			// Send protocol selection
 			nlohmann::json protocolSelect;
@@ -157,7 +157,7 @@ namespace Strawberry::Discord::Voice
 						rtpPacket.SetPayload(mSodiumEncrypter->Encrypt(nonce, packetData).second);
 						rtpAsBytes = rtpPacket.AsBytes();
 						Core::Assert(rtpAsBytes[0] == 0x80);
-						mUDPVoiceConnection->Write(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
+						mUDPVoiceConnection->Send(*mUDPVoiceEndpoint, rtpAsBytes).Unwrap();
 						std::this_thread::yield();
 					}
 				}

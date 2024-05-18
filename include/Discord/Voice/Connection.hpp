@@ -14,7 +14,7 @@
 // Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
 #include "Strawberry/Net/RTP/Packet.hpp"
-#include "Strawberry/Net/Socket/UDPClient.hpp"
+#include "Strawberry/Net/Socket/UDPSocket.hpp"
 #include "Strawberry/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
@@ -59,12 +59,12 @@ namespace Strawberry::Discord::Voice
 
 	private:
 		/// Connections
-		Core::SharedMutex<Gateway::Gateway>                mGateway;
+		Core::SharedMutex<Gateway::Gateway>          mGateway;
 		Core::SharedMutex<Net::Websocket::WSSClient> mVoiceWSS;
-		Core::Optional<Heartbeat>                          mVoiceWSSHeartbeat;
+		Core::Optional<Heartbeat>                    mVoiceWSSHeartbeat;
 		Core::Optional<Net::Endpoint>                mUDPVoiceEndpoint;
-		Core::Optional<Net::Socket::UDPClient>       mUDPVoiceConnection;
-		Core::Optional<Codec::SodiumEncrypter>             mSodiumEncrypter;
+		Core::Optional<Net::Socket::UDPSocket>       mUDPVoiceConnection;
+		Core::Optional<Codec::SodiumEncrypter>       mSodiumEncrypter;
 
 
 		/// Current Voice Channels and User

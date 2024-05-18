@@ -26,7 +26,7 @@ namespace Strawberry::Discord::Gateway
 		, mHeartbeat()
 	{
 		auto helloMessage = Receive();
-		while (!helloMessage && helloMessage.Err() == Net::Websocket::Error::NoMessage)
+		while (!helloMessage && helloMessage.Err() == Net::Error::NoData)
 		{
 			std::this_thread::yield();
 			helloMessage = Receive();
@@ -42,7 +42,7 @@ namespace Strawberry::Discord::Gateway
 			nlohmann::json identifier;
 			identifier["op"]                         = 2;
 			identifier["d"]["token"]                 = token;
-			identifier["d"]["intents"]               = std::to_underlying(intent);
+			identifier["d"]["intents"]               = std::underlying_type_t<Intent>(intent);
 			identifier["d"]["properties"]["os"]      = "windows";
 			identifier["d"]["properties"]["browser"] = "strawberry";
 			identifier["d"]["properties"]["device"]  = "strawberry";
@@ -74,9 +74,9 @@ namespace Strawberry::Discord::Gateway
 		{
 			switch (msg.Err())
 			{
-				case Net::Websocket::Error::NoMessage:
-				case Net::Websocket::Error::Closed:
-				case Net::Websocket::Error::ProtocolError:
+				case Net::Error::NoData:
+				case Net::Error::ConnectionReset:
+				case Net::Error::ProtocolError:
 					return msg.Err();
 				default:
 					Core::Unreachable();

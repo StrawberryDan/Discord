@@ -19,8 +19,8 @@ namespace Strawberry::Discord::Gateway
 	class Gateway
 	{
 	public:
-		using ReceiveResult = Core::Result<Net::Websocket::Message, Net::Websocket::Error>;
-		using SendResult = Core::Result<Core::NullType, Net::Websocket::Error>;
+		using ReceiveResult = Core::Result<Net::Websocket::Message, Net::Error>;
+		using SendResult = Core::Result<Core::NullType, Net::Error>;
 
 
 	public:
