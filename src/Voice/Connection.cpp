@@ -21,7 +21,7 @@ namespace Strawberry::Discord::Voice
 		, mGuild(guildId)
 		, mChannel(channelId)
 		, mUser(userId)
-		, mAudioMixer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mAudioMixer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_FLT, AV_CHANNEL_LAYOUT_STEREO), 960)
 		, mOpusEncoder(AV_CODEC_ID_OPUS, AV_CHANNEL_LAYOUT_STEREO)
 	{
 		using nlohmann::json;
