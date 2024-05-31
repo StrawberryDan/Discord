@@ -18,8 +18,8 @@ namespace Strawberry::Discord::Gateway
             Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
             Heartbeat(const Heartbeat& rhs)                = delete;
             Heartbeat& operator=(const Heartbeat& rhs)     = delete;
-            Heartbeat(Heartbeat&& rhs) noexcept            = delete;
-            Heartbeat& operator=(Heartbeat&& rhs) noexcept = delete;
+            Heartbeat(Heartbeat&& rhs) noexcept            = default;
+            Heartbeat& operator=(Heartbeat&& rhs) noexcept = default;
 
 
             void UpdateSequenceNumber(size_t value);
