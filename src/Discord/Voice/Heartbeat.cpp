@@ -53,10 +53,6 @@ namespace Strawberry::Discord::Voice
                 mError = sendResult.Err();
                 return;
             }
-            else
-            {
-                sendResult.Unwrap();
-            }
 
             count += 1;
             mClock.Restart();

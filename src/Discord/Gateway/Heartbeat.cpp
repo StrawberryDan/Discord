@@ -51,10 +51,6 @@ namespace Strawberry::Discord::Gateway
                 mError = sendResult.Err();
                 return;
             }
-            else
-            {
-                sendResult.Unwrap();
-            }
 
             count += 1;
             mClock.Restart();

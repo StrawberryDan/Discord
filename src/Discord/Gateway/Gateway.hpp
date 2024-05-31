@@ -20,7 +20,7 @@ namespace Strawberry::Discord::Gateway
     {
         public:
             using ReceiveResult = Core::Result<Net::Websocket::Message, Net::Error>;
-            using SendResult    = Core::Result<Core::NullType, Net::Error>;
+            using SendResult    = Core::Result<void, Net::Error>;
 
         public:
             static Core::Optional<Gateway> Connect(const Net::Endpoint& endpoint, const std::string& token, Intent intents);
