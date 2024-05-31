@@ -64,11 +64,12 @@ namespace Strawberry::Discord::Gateway
             /// Private Constructor
             Gateway(const Net::Endpoint& endpoint, const std::string& token, Intent intents);
 
-        private:
-            Core::Optional<Core::SharedMutex<Net::Websocket::WSSClient> > mWSS;
-            std::unique_ptr<Heartbeat>                                    mHeartbeat;
-            std::queue<Net::Websocket::Message>                           mMessageBuffer;
-            std::string                                                   mResumeEndpoint;
+
+            Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
+            std::unique_ptr<Heartbeat>                   mHeartbeat;
+            std::queue<Net::Websocket::Message>          mMessageBuffer;
+            std::string                                  mResumeEndpoint;
+
 
             std::string mToken;
             Intent      mIntent;

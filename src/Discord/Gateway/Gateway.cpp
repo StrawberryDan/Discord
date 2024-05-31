@@ -22,7 +22,7 @@ namespace Strawberry::Discord::Gateway
     void Gateway::Resume()
     {
         Core::Logging::Info("Resuming Gateway");
-        auto wssEndpoint = mWSS->Lock()->GetEndpoint();
+        auto wssEndpoint = mWSS.Lock()->GetEndpoint();
         std::destroy_at(this);
         std::construct_at(this, Connect(wssEndpoint, mToken, mIntent).Unwrap());
     }
@@ -33,7 +33,7 @@ namespace Strawberry::Discord::Gateway
             [](Net::Websocket::WSSClient&& x)
             {
                 return Core::SharedMutex(std::move(x));
-            }))
+            }).Unwrap())
         , mHeartbeat()
         , mToken(token)
         , mIntent(intent)
@@ -51,7 +51,7 @@ namespace Strawberry::Discord::Gateway
 
         if (mWSS)
         {
-            mHeartbeat.reset(new Heartbeat(*mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0));
+            mHeartbeat.reset(new Heartbeat(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0));
 
             nlohmann::json identifier;
             identifier["op"]                         = 2;
@@ -75,7 +75,7 @@ namespace Strawberry::Discord::Gateway
             return message;
         }
 
-        auto msg = mWSS->Lock()->ReadMessage();
+        auto msg = mWSS.Lock()->ReadMessage();
 
         if (msg)
         {
@@ -96,7 +96,7 @@ namespace Strawberry::Discord::Gateway
 
     Gateway::SendResult Gateway::Send(const Net::Websocket::Message& msg)
     {
-        return mWSS->Lock()->SendMessage(msg);
+        return mWSS.Lock()->SendMessage(msg);
     }
 
 
