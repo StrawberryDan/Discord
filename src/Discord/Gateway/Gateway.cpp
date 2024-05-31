@@ -51,7 +51,7 @@ namespace Strawberry::Discord::Gateway
 
         if (mWSS)
         {
-            mHeartbeat.reset(new Heartbeat(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0));
+            mHeartbeat.Emplace(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
             nlohmann::json identifier;
             identifier["op"]                         = 2;

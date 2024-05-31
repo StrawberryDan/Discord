@@ -66,7 +66,7 @@ namespace Strawberry::Discord::Gateway
 
 
             Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
-            std::unique_ptr<Heartbeat>                   mHeartbeat;
+            Core::Optional<Heartbeat>                    mHeartbeat;
             std::queue<Net::Websocket::Message>          mMessageBuffer;
             std::string                                  mResumeEndpoint;
 
