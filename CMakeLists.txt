@@ -26,35 +26,35 @@ endif ()
 
 
 add_library(StrawberryDiscord STATIC
-		include/Discord/Behaviour.hpp
-		include/Discord/Bot.hpp
-		include/Discord/Entity/Channel.hpp
-		include/Discord/Entity/Guild.hpp
-		include/Discord/Entity/PermissionOverwrite.hpp
-		include/Discord/Error.hpp
-		include/Discord/Event/EventBase.hpp
-		include/Discord/Event/GuildCreate.hpp
-		include/Discord/Event/Ready.hpp
-		include/Discord/EventListener.hpp
-		include/Discord/Gateway/Gateway.hpp
-		include/Discord/Gateway/Heartbeat.hpp
-		include/Discord/Snowflake.hpp
-		include/Discord/Voice/Connection.hpp
-		include/Discord/Voice/Heartbeat.hpp
-		src/Bot.cpp
-		src/Entities/Channel.cpp
-		src/Entities/Guild.cpp
-		src/Entities/PermissionOverwrite.cpp
-		src/EventListener.cpp
-		src/Events/GuildCreate.cpp
-		src/Events/Ready.cpp
-		src/Gateway/Gateway.cpp
-		src/Gateway/Heartbeat.cpp
-		src/Snowflake.cpp
-		src/Voice/Connection.cpp
-		src/Voice/Heartbeat.cpp
-		src/EventListener.cpp)
-target_include_directories(StrawberryDiscord PUBLIC include)
+		src/Discord/Behaviour.hpp
+		src/Discord/Bot.hpp
+		src/Discord/Entities/Channel.hpp
+		src/Discord/Entities/Guild.hpp
+		src/Discord/Entities/PermissionOverwrite.hpp
+		src/Discord/Error.hpp
+		src/Discord/Events/EventBase.hpp
+		src/Discord/Events/GuildCreate.hpp
+		src/Discord/Events/Ready.hpp
+		src/Discord/EventListener.hpp
+		src/Discord/Gateway/Gateway.hpp
+		src/Discord/Gateway/Heartbeat.hpp
+		src/Discord/Snowflake.hpp
+		src/Discord/Voice/Connection.hpp
+		src/Discord/Voice/Heartbeat.hpp
+		src/Discord/Bot.cpp
+		src/Discord/Entities/Channel.cpp
+		src/Discord/Entities/Guild.cpp
+		src/Discord/Entities/PermissionOverwrite.cpp
+		src/Discord/EventListener.cpp
+		src/Discord/Events/GuildCreate.cpp
+		src/Discord/Events/Ready.cpp
+		src/Discord/Gateway/Gateway.cpp
+		src/Discord/Gateway/Heartbeat.cpp
+		src/Discord/Snowflake.cpp
+		src/Discord/Voice/Connection.cpp
+		src/Discord/Voice/Heartbeat.cpp
+		src/Discord/EventListener.cpp)
+target_include_directories(StrawberryDiscord PUBLIC src)
 target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
 set_target_properties(StrawberryDiscord PROPERTIES CXX_STANDARD 20)
 
