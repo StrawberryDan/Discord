@@ -13,6 +13,7 @@
 namespace Strawberry::Discord::Gateway
 {
     class Heartbeat
+            : public Core::EnableReflexivePointer<Heartbeat>
     {
         public:
             Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
