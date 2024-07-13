@@ -56,10 +56,10 @@ add_library(StrawberryDiscord STATIC
 		src/Discord/EventListener.cpp)
 target_include_directories(StrawberryDiscord PUBLIC src)
 target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
-set_target_properties(StrawberryDiscord PROPERTIES CXX_STANDARD 20)
+set_target_properties(StrawberryDiscord PROPERTIES CXX_STANDARD 23)
 
 
 add_executable(StrawberryDiscordTest
 		test/Main.cpp)
 target_link_libraries(StrawberryDiscordTest PRIVATE StrawberryDiscord)
-set_target_properties(StrawberryDiscordTest PROPERTIES CXX_STANDARD 20)
+set_target_properties(StrawberryDiscordTest PROPERTIES CXX_STANDARD 23)
