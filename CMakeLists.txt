@@ -16,34 +16,34 @@ if (NOT TARGET StrawberryDiscord)
     find_strawberry_library(NAMES Core Codec Net)
 
     list(APPEND StrawberryDiscord_Source
-            src/Discord/Behaviour.hpp
-            src/Discord/Bot.hpp
-            src/Discord/Entities/Channel.hpp
-            src/Discord/Entities/Guild.hpp
-            src/Discord/Entities/PermissionOverwrite.hpp
-            src/Discord/Error.hpp
-            src/Discord/Events/EventBase.hpp
-            src/Discord/Events/GuildCreate.hpp
-            src/Discord/Events/Ready.hpp
-            src/Discord/EventListener.hpp
-            src/Discord/Gateway/Gateway.hpp
-            src/Discord/Gateway/Heartbeat.hpp
-            src/Discord/Snowflake.hpp
-            src/Discord/Voice/Connection.hpp
-            src/Discord/Voice/Heartbeat.hpp
-            src/Discord/Bot.cpp
-            src/Discord/Entities/Channel.cpp
-            src/Discord/Entities/Guild.cpp
-            src/Discord/Entities/PermissionOverwrite.cpp
-            src/Discord/EventListener.cpp
-            src/Discord/Events/GuildCreate.cpp
-            src/Discord/Events/Ready.cpp
-            src/Discord/Gateway/Gateway.cpp
-            src/Discord/Gateway/Heartbeat.cpp
-            src/Discord/Snowflake.cpp
-            src/Discord/Voice/Connection.cpp
-            src/Discord/Voice/Heartbeat.cpp
-            src/Discord/EventListener.cpp)
+        src/Strawberry/Discord/Behaviour.hpp
+        src/Strawberry/Discord/Bot.hpp
+        src/Strawberry/Discord/Entities/Channel.hpp
+        src/Strawberry/Discord/Entities/Guild.hpp
+        src/Strawberry/Discord/Entities/PermissionOverwrite.hpp
+        src/Strawberry/Discord/Error.hpp
+        src/Strawberry/Discord/Events/EventBase.hpp
+        src/Strawberry/Discord/Events/GuildCreate.hpp
+        src/Strawberry/Discord/Events/Ready.hpp
+        src/Strawberry/Discord/EventListener.hpp
+        src/Strawberry/Discord/Gateway/Gateway.hpp
+        src/Strawberry/Discord/Gateway/Heartbeat.hpp
+        src/Strawberry/Discord/Snowflake.hpp
+        src/Strawberry/Discord/Voice/Connection.hpp
+        src/Strawberry/Discord/Voice/Heartbeat.hpp
+        src/Strawberry/Discord/Bot.cpp
+        src/Strawberry/Discord/Entities/Channel.cpp
+        src/Strawberry/Discord/Entities/Guild.cpp
+        src/Strawberry/Discord/Entities/PermissionOverwrite.cpp
+        src/Strawberry/Discord/EventListener.cpp
+        src/Strawberry/Discord/Events/GuildCreate.cpp
+        src/Strawberry/Discord/Events/Ready.cpp
+        src/Strawberry/Discord/Gateway/Gateway.cpp
+        src/Strawberry/Discord/Gateway/Heartbeat.cpp
+        src/Strawberry/Discord/Snowflake.cpp
+        src/Strawberry/Discord/Voice/Connection.cpp
+        src/Strawberry/Discord/Voice/Heartbeat.cpp
+        src/Strawberry/Discord/EventListener.cpp)
     new_strawberry_library(NAME StrawberryDiscord SOURCE ${StrawberryDiscord_Source})
     target_include_directories(StrawberryDiscord PUBLIC src)
     target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
