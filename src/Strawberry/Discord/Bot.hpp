@@ -41,6 +41,7 @@ namespace Strawberry::Discord
     //------------------------------------------------------------------------------------------------------------------
     class Bot
         : public EventBroadcaster
+        , public Core::EnableReflexivePointer
     {
         public:
             using Token = std::string;
