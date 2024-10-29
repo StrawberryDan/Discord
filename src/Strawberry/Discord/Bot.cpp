@@ -112,7 +112,7 @@ namespace Strawberry::Discord
                     mSessionId         = event.GetSessionId();
                     mGateway.Lock()->SetResumeGatewayURL(event.GetResumeGatewayURL());
                     if (mBehaviour) mBehaviour->OnReady(event);
-                    DispatchEvent(event);
+                    Broadcast(event);
                     return true;
                 }
                 else if (json["t"] == "GUILD_CREATE")
@@ -124,9 +124,14 @@ namespace Strawberry::Discord
 
                     // Action event
                     if (mBehaviour) mBehaviour->OnGuildCreate(event);
-                    DispatchEvent(event);
+                    Broadcast(event);
 
                     return true;
+                }
+                else if (json["t"] == "MESSAGE_CREATE")
+                {
+                    Event::MessageCreate event = Event::MessageCreate::Parse(json).Unwrap();
+                    Broadcast(event);
                 }
                 else if (json["t"] == "VOICE_SERVER_UPDATE")
                 {
@@ -300,26 +305,6 @@ namespace Strawberry::Discord
     }
 
 
-    void Bot::RegisterEventListener(EventListener* listener)
-    {
-        if (listener->mRegistry) return;
-        listener->mRegistry = this->mEventListenerRegistry;
-        mEventListenerRegistry.Lock()->insert(listener);
-    }
-
-
-    void Bot::DeregisterEventListener(EventListener* listener)
-    {
-        if (!listener->mRegistry) return;
-        auto eventListeners = mEventListenerRegistry.Lock();
-        if (eventListeners->contains(listener))
-        {
-            eventListeners->erase(listener);
-            listener->mRegistry = nullptr;
-        }
-    }
-
-
     template<>
     Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
     {
@@ -360,16 +345,6 @@ namespace Strawberry::Discord
 
             default: Core::Logging::Error("{}", response.GetPayload().AsString());
                 Core::Unreachable();
-        }
-    }
-
-
-    void Bot::DispatchEvent(const Event::EventBase& event) const
-    {
-        auto eventListeners = mEventListenerRegistry.Lock();
-        for (auto listener: *eventListeners)
-        {
-            listener->ProcessEvent(event);
         }
     }
 

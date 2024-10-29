@@ -3,14 +3,13 @@
 
 #include "Strawberry/Discord/Error.hpp"
 #include "Strawberry/Discord/Snowflake.hpp"
-#include "EventBase.hpp"
 #include "Strawberry/Core/Types/Result.hpp"
 #include "nlohmann/json.hpp"
 
 
 namespace Strawberry::Discord::Event
 {
-    class Ready : public EventBase
+    class Ready
     {
         public:
             static Core::Result<Ready, Error> Parse(const nlohmann::json& json);

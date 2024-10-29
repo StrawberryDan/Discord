@@ -3,15 +3,12 @@
 
 #include "Strawberry/Discord/Entities/Guild.hpp"
 #include "Strawberry/Discord/Error.hpp"
-#include "Strawberry/Discord/Snowflake.hpp"
-#include "EventBase.hpp"
-#include "Strawberry/Core/Types/Variant.hpp"
 #include <nlohmann/json.hpp>
 
 
 namespace Strawberry::Discord::Event
 {
-    class GuildCreate : public EventBase
+    class GuildCreate
     {
         public:
             // Constructors

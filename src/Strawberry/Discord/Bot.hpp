@@ -6,22 +6,23 @@
 //----------------------------------------------------------------------------------------------------------------------
 // Strawberry Discord
 #include "Strawberry/Discord/Behaviour.hpp"
-#include "Strawberry/Discord/Events/EventBase.hpp"
-#include "Strawberry/Discord/EventListener.hpp"
 #include "Strawberry/Discord/Gateway/Gateway.hpp"
 #include "Strawberry/Discord/Intent.hpp"
 #include "Strawberry/Discord/Voice/Connection.hpp"
+#include "Strawberry/Discord/Events/MessageCreate.hpp"
 // Strawberry Core
-#include "Strawberry/Net/Endpoint.hpp"
-#include "Strawberry/Net/HTTP/Client.hpp"
+#include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Types/Optional.hpp"
+#include "Strawberry/Net/Endpoint.hpp"
+#include "Strawberry/Net/HTTP/Client.hpp"
 // C++ Standard Library
 #include <concepts>
 #include <optional>
 #include <set>
 #include <string>
 #include <unordered_set>
+
 
 namespace Strawberry::Discord
 {
@@ -30,11 +31,16 @@ namespace Strawberry::Discord
     //------------------------------------------------------------------------------------------------------------------
     using GuildList   = std::unordered_map<Snowflake, Core::Optional<Entity::Guild> >;
     using ChannelList = std::unordered_map<Snowflake, Core::Optional<Entity::Channel> >;
+    using EventBroadcaster = Core::IO::ChannelBroadcaster<
+        Event::Ready,
+        Event::GuildCreate,
+        Event::MessageCreate>;
 
     //==================================================================================================================
     //  Class Declaration
     //------------------------------------------------------------------------------------------------------------------
     class Bot
+        : public EventBroadcaster
     {
         public:
             using Token = std::string;
@@ -82,12 +88,6 @@ namespace Strawberry::Discord
             // Get the channel with the given ID.
             const Entity::Channel* FetchChannel(const Snowflake& id);
             const Entity::Channel* GetChannel(const Snowflake& id) const;
-
-            // Register an EventListener with this bot.
-            void RegisterEventListener(EventListener* listener);
-            // Unregister an event listener with this bot.
-            void DeregisterEventListener(EventListener* listener);
-
         private:
             // Private Constructor
             explicit Bot(Token token, Intent intents);
@@ -102,8 +102,6 @@ namespace Strawberry::Discord
 
             // Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
             bool OnGatewayMessage(const Net::Websocket::Message& message);
-            // Dispatches an event to all event listeners.
-            void DispatchEvent(const Event::EventBase& event) const;
             // Gets the gateway URL from HTTP.
             Core::Optional<Net::Endpoint> GetGatewayEndpoint();
 
@@ -115,7 +113,6 @@ namespace Strawberry::Discord
             Core::SharedMutex<Net::HTTP::HTTPSClient>    mHTTPS;
             Core::SharedMutex<Gateway::Gateway>          mGateway;
             std::unique_ptr<Behaviour>                   mBehaviour;
-            Core::SharedMutex<std::set<EventListener*> > mEventListenerRegistry;
             Core::Optional<Snowflake>                    mUserId;
             Core::Optional<std::string>                  mSessionId;
 

@@ -16,34 +16,33 @@ if (NOT TARGET StrawberryDiscord)
     find_strawberry_library(NAMES Core Codec Net)
 
     list(APPEND StrawberryDiscord_Source
-        src/Strawberry/Discord/Behaviour.hpp
+        src/Strawberry/Discord/Bot.cpp
         src/Strawberry/Discord/Bot.hpp
+        src/Strawberry/Discord/Behaviour.hpp
+        src/Strawberry/Discord/Entities/Channel.cpp
         src/Strawberry/Discord/Entities/Channel.hpp
+        src/Strawberry/Discord/Entities/Guild.cpp
         src/Strawberry/Discord/Entities/Guild.hpp
+        src/Strawberry/Discord/Entities/PermissionOverwrite.cpp
         src/Strawberry/Discord/Entities/PermissionOverwrite.hpp
         src/Strawberry/Discord/Error.hpp
-        src/Strawberry/Discord/Events/EventBase.hpp
-        src/Strawberry/Discord/Events/GuildCreate.hpp
-        src/Strawberry/Discord/Events/Ready.hpp
-        src/Strawberry/Discord/EventListener.hpp
-        src/Strawberry/Discord/Gateway/Gateway.hpp
-        src/Strawberry/Discord/Gateway/Heartbeat.hpp
-        src/Strawberry/Discord/Snowflake.hpp
-        src/Strawberry/Discord/Voice/Connection.hpp
-        src/Strawberry/Discord/Voice/Heartbeat.hpp
-        src/Strawberry/Discord/Bot.cpp
-        src/Strawberry/Discord/Entities/Channel.cpp
-        src/Strawberry/Discord/Entities/Guild.cpp
-        src/Strawberry/Discord/Entities/PermissionOverwrite.cpp
-        src/Strawberry/Discord/EventListener.cpp
         src/Strawberry/Discord/Events/GuildCreate.cpp
+        src/Strawberry/Discord/Events/GuildCreate.hpp
+        src/Strawberry/Discord/Events/MessageCreate.hpp
+        src/Strawberry/Discord/Events/MessageCreate.cpp
         src/Strawberry/Discord/Events/Ready.cpp
+        src/Strawberry/Discord/Events/Ready.hpp
         src/Strawberry/Discord/Gateway/Gateway.cpp
+        src/Strawberry/Discord/Gateway/Gateway.hpp
         src/Strawberry/Discord/Gateway/Heartbeat.cpp
+        src/Strawberry/Discord/Gateway/Heartbeat.hpp
         src/Strawberry/Discord/Snowflake.cpp
+        src/Strawberry/Discord/Snowflake.hpp
         src/Strawberry/Discord/Voice/Connection.cpp
+        src/Strawberry/Discord/Voice/Connection.hpp
         src/Strawberry/Discord/Voice/Heartbeat.cpp
-        src/Strawberry/Discord/EventListener.cpp)
+        src/Strawberry/Discord/Voice/Heartbeat.hpp
+    )
     new_strawberry_library(NAME StrawberryDiscord SOURCE ${StrawberryDiscord_Source})
     target_include_directories(StrawberryDiscord PUBLIC src)
     target_link_libraries(StrawberryDiscord PUBLIC StrawberryCore StrawberryCodec StrawberryNet)
