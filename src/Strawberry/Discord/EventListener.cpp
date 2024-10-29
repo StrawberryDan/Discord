@@ -1,4 +1,4 @@
-#include "Discord/EventListener.hpp"
+#include "Strawberry/Discord/EventListener.hpp"
 
 
 namespace Strawberry::Discord

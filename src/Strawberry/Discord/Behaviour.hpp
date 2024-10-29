@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "Discord/Events/GuildCreate.hpp"
-#include "Discord/Events/Ready.hpp"
+#include "Strawberry/Discord/Events/GuildCreate.hpp"
+#include "Strawberry/Discord/Events/Ready.hpp"
 
 
 namespace Strawberry::Discord

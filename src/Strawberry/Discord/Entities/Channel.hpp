@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "Discord/Error.hpp"
-#include "Discord/Snowflake.hpp"
+#include "Strawberry/Discord/Error.hpp"
+#include "Strawberry/Discord/Snowflake.hpp"
 #include "PermissionOverwrite.hpp"
 #include "Strawberry/Core/Types/Optional.hpp"
 #include "Strawberry/Core/Types/Result.hpp"

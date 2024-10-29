@@ -5,7 +5,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Discord
-#include "Discord/Snowflake.hpp"
+#include "Strawberry/Discord/Snowflake.hpp"
 // Standard Library
 #include <cstdint>
 

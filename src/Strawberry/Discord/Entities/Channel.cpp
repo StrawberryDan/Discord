@@ -1,4 +1,4 @@
-#include "Discord/Entities/Channel.hpp"
+#include "Strawberry/Discord/Entities/Channel.hpp"
 
 
 namespace Strawberry::Discord::Entity

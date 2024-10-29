@@ -1,9 +1,9 @@
 #pragma once
 
 
-#include "Discord/Entities/Guild.hpp"
-#include "Discord/Error.hpp"
-#include "Discord/Snowflake.hpp"
+#include "Strawberry/Discord/Entities/Guild.hpp"
+#include "Strawberry/Discord/Error.hpp"
+#include "Strawberry/Discord/Snowflake.hpp"
 #include "EventBase.hpp"
 #include "Strawberry/Core/Types/Variant.hpp"
 #include <nlohmann/json.hpp>

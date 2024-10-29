@@ -1,4 +1,4 @@
-#include "Discord/Events/GuildCreate.hpp"
+#include "Strawberry/Discord/Events/GuildCreate.hpp"
 
 
 namespace Strawberry::Discord::Event

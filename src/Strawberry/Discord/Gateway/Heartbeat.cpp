@@ -1,4 +1,4 @@
-#include "Discord/Gateway/Heartbeat.hpp"
+#include "Strawberry/Discord/Gateway/Heartbeat.hpp"
 
 
 #include <random>
@@ -13,7 +13,7 @@ namespace Strawberry::Discord::Gateway
         auto startUp = [self = GetReflexivePointer()](Core::RepeatingTask* thread) mutable
         {
             std::random_device                     rd;
-            std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * self->mInterval);
+            std::uniform_real_distribution<double> jitterDist(0.0, 0.5);
             std::mt19937_64                        rng(rd());
             double                                 jitter = jitterDist(rng);
 

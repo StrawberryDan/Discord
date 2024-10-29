@@ -8,9 +8,9 @@
 #include "Codec/Packet.hpp"
 #include "Codec/SodiumEncrypter.hpp"
 // Discord
-#include "Discord/Gateway/Gateway.hpp"
-#include "Discord/Snowflake.hpp"
-#include "Discord/Voice/Heartbeat.hpp"
+#include "Strawberry/Discord/Gateway/Gateway.hpp"
+#include "Strawberry/Discord/Snowflake.hpp"
+#include "Strawberry/Discord/Voice/Heartbeat.hpp"
 // Core
 #include "Strawberry/Core/Collection/CircularBuffer.hpp"
 #include "Strawberry/Net/RTP/Packet.hpp"

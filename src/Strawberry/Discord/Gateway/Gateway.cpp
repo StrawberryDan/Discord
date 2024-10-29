@@ -1,4 +1,4 @@
-#include "Discord/Gateway/Gateway.hpp"
+#include "Strawberry/Discord/Gateway/Gateway.hpp"
 
 
 namespace Strawberry::Discord::Gateway

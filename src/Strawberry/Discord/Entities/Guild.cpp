@@ -1,4 +1,4 @@
-#include "Discord/Entities/Guild.hpp"
+#include "Strawberry/Discord/Entities/Guild.hpp"
 
 
 namespace Strawberry::Discord::Entity

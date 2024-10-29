@@ -5,7 +5,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Strawberry Discord
-#include "Discord/Intent.hpp"
+#include "Strawberry/Discord/Intent.hpp"
 #include "Heartbeat.hpp"
 // Strawberry Core
 #include "Strawberry/Net/Endpoint.hpp"

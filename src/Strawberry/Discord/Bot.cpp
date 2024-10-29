@@ -1,7 +1,7 @@
 #include <utility>
 
-#include "Discord/Bot.hpp"
-#include "Discord/Events/GuildCreate.hpp"
+#include "Strawberry/Discord/Bot.hpp"
+#include "Strawberry/Discord/Events/GuildCreate.hpp"
 #include "Strawberry/Core/IO/Logging.hpp"
 
 

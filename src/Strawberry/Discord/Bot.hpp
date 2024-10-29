@@ -5,12 +5,12 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Strawberry Discord
-#include "Discord/Behaviour.hpp"
-#include "Discord/Events/EventBase.hpp"
-#include "Discord/EventListener.hpp"
-#include "Discord/Gateway/Gateway.hpp"
-#include "Discord/Intent.hpp"
-#include "Discord/Voice/Connection.hpp"
+#include "Strawberry/Discord/Behaviour.hpp"
+#include "Strawberry/Discord/Events/EventBase.hpp"
+#include "Strawberry/Discord/EventListener.hpp"
+#include "Strawberry/Discord/Gateway/Gateway.hpp"
+#include "Strawberry/Discord/Intent.hpp"
+#include "Strawberry/Discord/Voice/Connection.hpp"
 // Strawberry Core
 #include "Strawberry/Net/Endpoint.hpp"
 #include "Strawberry/Net/HTTP/Client.hpp"

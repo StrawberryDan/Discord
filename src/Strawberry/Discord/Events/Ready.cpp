@@ -1,4 +1,4 @@
-#include "Discord/Events/Ready.hpp"
+#include "Strawberry/Discord/Events/Ready.hpp"
 
 
 namespace Strawberry::Discord::Event

@@ -1,7 +1,7 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
-#include "Discord/Voice/Connection.hpp"
+#include "Strawberry/Discord/Voice/Connection.hpp"
 /// Strawberry Libraries
 #include "Strawberry/Net/Address.hpp"
 #include "Strawberry/Net/Endpoint.hpp"
