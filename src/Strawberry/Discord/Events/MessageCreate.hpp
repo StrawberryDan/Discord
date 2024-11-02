@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 #include "Strawberry/Core/Types/Result.hpp"
 #include "Strawberry/Discord/Error.hpp"
+#include "Strawberry/Discord/Snowflake.hpp"
 
 
 //======================================================================================================================
@@ -19,6 +20,12 @@ namespace Strawberry::Discord::Event
 		static Core::Result<MessageCreate, Error> Parse(const nlohmann::json& json);
 
 
+		const Snowflake& Channel() const noexcept
+		{
+			return mChannel;
+		}
+
+
 		const std::string& Content() const noexcept
 		{
 			return mContents;
@@ -28,6 +35,7 @@ namespace Strawberry::Discord::Event
 		MessageCreate() = default;
 
 	private:
+		Snowflake mChannel;
 		std::string mContents;
 	};
 }
