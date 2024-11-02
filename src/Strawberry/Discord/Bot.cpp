@@ -305,7 +305,60 @@ namespace Strawberry::Discord
     }
 
 
-    template<>
+    void Bot::SendMessage(Snowflake channel, const std::string& message)
+    {
+        nlohmann::json json;
+        json["content"] = message;
+
+        PostRequest(json, "/channels/{}/messages", channel);
+    }
+
+
+    Core::Optional<nlohmann::json> Bot::PostRequest(const nlohmann::json& json, const std::string& endpoint)
+    {
+        static constexpr const char* API_PREFIX = "/api/v10";
+
+        // Setup
+        Core::Assert(endpoint.starts_with('/'));
+        HTTP::Request request(HTTP::Verb::POST, fmt::format("{}{}", API_PREFIX, endpoint));
+        request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
+        request.GetHeader().Add("Host", "discord.com");
+        request.GetHeader().Add("Content-Type", "application/json");
+        std::string jsonString = json.dump(1, '\t');
+        request.SetPayload(jsonString);
+        request.GetHeader().Add("Content-Length", std::to_string(jsonString.length()));
+
+        auto http = mHTTPS.Lock();
+        http->SendRequest(request);
+
+        HTTP::Response response = http->Receive();
+        switch (response.GetStatus())
+        {
+            case 200: try
+            {
+                return nlohmann::json::parse(response.GetPayload().AsString());
+            }
+            catch (const std::exception& e)
+            {
+                Core::Unreachable();
+            }
+
+            case 401: return Core::NullOpt;
+
+            case 429:
+            {
+                float                        waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
+                std::chrono::duration<float> timeToWait(waitTime);
+                std::this_thread::sleep_for(timeToWait);
+                return GetEntity(endpoint);
+            }
+
+            default: Core::Logging::Error("{}", response.GetPayload().AsString());
+            Core::Unreachable();
+        }
+    }
+
+
     Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint)
     {
         using namespace Strawberry::Net;

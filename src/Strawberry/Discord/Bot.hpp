@@ -89,16 +89,32 @@ namespace Strawberry::Discord
             // Get the channel with the given ID.
             const Entity::Channel* FetchChannel(const Snowflake& id);
             const Entity::Channel* GetChannel(const Snowflake& id) const;
+
+
+            void SendMessage(Snowflake channel, const std::string& message);
         private:
             // Private Constructor
             explicit Bot(Token token, Intent intents);
 
-            // Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
-            template<typename... Ts> requires std::same_as<std::string, decltype(fmt::format(std::declval<std::string>(), std::declval<Ts>()...))>
-            inline Core::Optional<nlohmann::json> GetEntity(const std::string& endpoint, Ts... args)
+            template <typename... Ts> requires (fmt::is_formattable<Ts>::value && ...)
+            Core::Optional<nlohmann::json> PostRequest(const nlohmann::json& json, const fmt::format_string<Ts...>& fmt, Ts&&... args)
             {
-                return GetEntity(fmt::format(fmt::runtime(endpoint), std::forward<Ts>(args)...));
+                return PostRequest(json, fmt::format(fmt, std::forward<Ts>(args)...));
             }
+
+            Core::Optional<nlohmann::json> PostRequest(const nlohmann::json& json, const std::string& endpoint);
+
+            // Gets a JSON entity from the discord endpoint. Template forwards arguments into fmt::format.
+            template<typename... Ts> requires (fmt::is_formattable<Ts>::value && ...)
+            inline Core::Optional<nlohmann::json> GetEntity(const fmt::format_string<Ts...>& endpoint, Ts&&... args)
+            {
+                return GetEntity(fmt::format(endpoint, std::forward<Ts>(args)...));
+            }
+
+
+            Core::Optional<nlohmann::json> GetEntity(const std::string& request);
+
+
 
 
             // Callback when a gateway message is received. Returns true when the message is handled. False if the message should be buffered.
@@ -124,9 +140,4 @@ namespace Strawberry::Discord
             GuildList   mGuilds;
             ChannelList mChannels;
     };
-
-
-    // Base case for GetEntity which actually does the request.
-    template<>
-    Core::Optional<nlohmann::json> Bot::GetEntity(const std::string& endpoint);
 } // namespace Strawberry::Discord
