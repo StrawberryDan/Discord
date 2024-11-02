@@ -35,6 +35,7 @@ namespace Strawberry::Discord::Event
 		MessageCreate() = default;
 
 	private:
+		Snowflake mAuthor;
 		Snowflake mChannel;
 		std::string mContents;
 	};

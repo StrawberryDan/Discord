@@ -17,6 +17,7 @@ namespace Strawberry::Discord
 		MessageCreate event;
 		event.mContents = json["d"]["content"];
 		event.mChannel = Snowflake(std::string(json["d"]["channel_id"]));
+        event.mAuthor = Snowflake(std::string(json["d"]["author"]["id"]));
 		return event;
 	}
 }
