@@ -26,6 +26,7 @@ namespace Strawberry::Discord
 
         public:
             friend struct std::hash<Snowflake>;
+            friend std::string format_as(const Snowflake& snowflake) noexcept { return snowflake.AsString(); }
 
         private:
             // Members
