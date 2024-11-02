@@ -39,7 +39,7 @@ namespace Strawberry::Discord::Gateway
             nlohmann::json message;
             message["op"] = 1;
             message["d"]  = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
-            Net::Websocket::Message wssMessage(to_string(message));
+            Net::Websocket::Message wssMessage(message.dump(1, '\t'));
 
             auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
             if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset)
