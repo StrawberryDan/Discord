@@ -44,11 +44,13 @@ namespace Strawberry::Discord::Gateway
             auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
             if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset)
             {
+                Core::Logging::Warning("WSS Connection reset in gateway when sending heartbeat!");
                 return;
             }
             else if (!sendResult)
             {
                 mError = sendResult.Err();
+                Core::Logging::Warning("WSS send error in gateway when sending heartbeat!");
                 return;
             }
 
