@@ -77,6 +77,9 @@ namespace Strawberry::Discord
             }
 
 
+            const User& GetCurrentUser() const noexcept { return mUser.Value(); }
+
+
             // Retrieves the list of known guilds this bot is a member of.
             // Fetch indicates getting the list from the server, whilst Get means using the cache.
             std::unordered_set<Snowflake> FetchGuilds();
@@ -131,7 +134,7 @@ namespace Strawberry::Discord
             Core::SharedMutex<Net::HTTP::HTTPSClient>    mHTTPS;
             Core::SharedMutex<Gateway::Gateway>          mGateway;
             std::unique_ptr<Behaviour>                   mBehaviour;
-            Core::Optional<Snowflake>                    mUserId;
+            Core::Optional<User>                         mUser;
             Core::Optional<std::string>                  mSessionId;
 
             // Voice State Info

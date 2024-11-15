@@ -17,8 +17,8 @@ if (NOT TARGET StrawberryDiscord)
 
     list(APPEND StrawberryDiscord_Source
         src/Strawberry/Discord/Bot.cpp
-        src/Strawberry/Discord/Bot.hpp
         src/Strawberry/Discord/Behaviour.hpp
+        src/Strawberry/Discord/Bot.hpp
         src/Strawberry/Discord/Entities/Channel.cpp
         src/Strawberry/Discord/Entities/Channel.hpp
         src/Strawberry/Discord/Entities/Guild.cpp
@@ -30,8 +30,8 @@ if (NOT TARGET StrawberryDiscord)
         src/Strawberry/Discord/Error.hpp
         src/Strawberry/Discord/Events/GuildCreate.cpp
         src/Strawberry/Discord/Events/GuildCreate.hpp
-        src/Strawberry/Discord/Events/MessageCreate.hpp
         src/Strawberry/Discord/Events/MessageCreate.cpp
+        src/Strawberry/Discord/Events/MessageCreate.hpp
         src/Strawberry/Discord/Events/Ready.cpp
         src/Strawberry/Discord/Events/Ready.hpp
         src/Strawberry/Discord/Gateway/Gateway.cpp

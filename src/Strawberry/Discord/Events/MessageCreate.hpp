@@ -20,6 +20,12 @@ namespace Strawberry::Discord::Event
 		static Core::Result<MessageCreate, Error> Parse(const nlohmann::json& json);
 
 
+		const Snowflake& Author() const noexcept
+		{
+			return mAuthor;
+		}
+
+
 		const Snowflake& Channel() const noexcept
 		{
 			return mChannel;

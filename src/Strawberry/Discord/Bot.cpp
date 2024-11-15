@@ -312,12 +312,13 @@ namespace Strawberry::Discord
         nlohmann::json json;
         json["content"] = message;
 
-        PostRequest(json, "/channels/{}/messages", channel);
+        PostRequest(json, "/channels/{}/messages", channel).Unwrap();
     }
 
 
     Core::Optional<nlohmann::json> Bot::PostRequest(const nlohmann::json& json, const std::string& endpoint)
     {
+    begin:
         static constexpr const char* API_PREFIX = "/api/v10";
 
         // Setup
@@ -353,7 +354,7 @@ namespace Strawberry::Discord
                 float                        waitTime = std::strtof(response.GetHeader().Get("X-RateLimit-Reset-After").c_str(), nullptr);
                 std::chrono::duration<float> timeToWait(waitTime);
                 std::this_thread::sleep_for(timeToWait);
-                return GetEntity(endpoint);
+                goto begin;
             }
 
             default: Core::Logging::Error("{}", response.GetPayload().AsString());
