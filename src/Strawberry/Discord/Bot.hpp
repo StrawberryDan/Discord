@@ -10,6 +10,7 @@
 #include "Strawberry/Discord/Intent.hpp"
 #include "Strawberry/Discord/Voice/Connection.hpp"
 #include "Strawberry/Discord/Events/MessageCreate.hpp"
+#include "Strawberry/Discord/Entities/User.hpp"
 // Strawberry Core
 #include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"

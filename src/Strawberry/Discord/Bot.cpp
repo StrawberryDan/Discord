@@ -30,8 +30,10 @@ namespace Strawberry::Discord
         , mGateway(nullptr)
     {
         auto endpoint = GetGatewayEndpoint().Unwrap();
-        auto gateway  = Gateway::Gateway::Connect(endpoint, mToken, mIntents);
-        if (gateway) mGateway = Core::SharedMutex(gateway.Unwrap());
+        mGateway = Core::SharedMutex(
+            Gateway::Gateway::Connect(endpoint, mToken, mIntents).Unwrap());
+        nlohmann::json identityJSON = GetEntity("/users/@me").Unwrap();
+        mUser = User::Parse(identityJSON).Unwrap();
     }
 
 
@@ -108,7 +110,7 @@ namespace Strawberry::Discord
                 if (type == "READY")
                 {
                     Event::Ready event = Event::Ready::Parse(json).Unwrap();
-                    mUserId            = event.GetUserId();
+                    Core::AssertEQ(mUser->ID(), event.GetUserId());
                     mSessionId         = event.GetSessionId();
                     mGateway.Lock()->SetResumeGatewayURL(event.GetResumeGatewayURL());
                     if (mBehaviour) mBehaviour->OnReady(event);
@@ -183,7 +185,7 @@ namespace Strawberry::Discord
 
     void Bot::ConnectToVoice(Snowflake guild, Snowflake channel)
     {
-        mVoiceConnection.reset(new Voice::Connection(mGateway, *mSessionId, guild, channel, *mUserId));
+        mVoiceConnection.reset(new Voice::Connection(mGateway, *mSessionId, guild, channel, mUser->ID()));
     }
 
 
