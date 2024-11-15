@@ -324,6 +324,7 @@ namespace Strawberry::Discord
         request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
         request.GetHeader().Add("Host", "discord.com");
         request.GetHeader().Add("Content-Type", "application/json");
+        request.GetHeader().Add("Connection", "keep-alive");
         std::string jsonString = json.dump(1, '\t');
         request.SetPayload(jsonString);
         request.GetHeader().Add("Content-Length", std::to_string(jsonString.length()));
@@ -370,6 +371,7 @@ namespace Strawberry::Discord
         HTTP::Request request(HTTP::Verb::GET, fmt::format("{}{}", API_PREFIX, endpoint));
         request.GetHeader().Add("Authorization", fmt::format("Bot {}", mToken));
         request.GetHeader().Add("Host", "discord.com");
+        request.GetHeader().Add("Connection", "keep-alive");
 
         auto http = mHTTPS.Lock();
         http->SendRequest(request);
