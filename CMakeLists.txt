@@ -29,6 +29,8 @@ if (NOT TARGET StrawberryDiscord)
         src/Strawberry/Discord/Entities/PermissionOverwrite.hpp
         src/Strawberry/Discord/Entities/User.cpp
         src/Strawberry/Discord/Entities/User.hpp
+        src/Strawberry/Discord/Entities/VoiceState.cpp
+        src/Strawberry/Discord/Entities/VoiceState.hpp
         src/Strawberry/Discord/Error.hpp
         src/Strawberry/Discord/Events/GuildCreate.cpp
         src/Strawberry/Discord/Events/GuildCreate.hpp

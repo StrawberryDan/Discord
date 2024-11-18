@@ -21,6 +21,12 @@ namespace Strawberry::Discord::Event
 		static Core::Result<MessageCreate, Error> Parse(const nlohmann::json& json);
 
 
+		const Core::Optional<Snowflake>& GetGuildID() const noexcept
+		{
+			return mGuildID;
+		}
+
+
 		const Entity::User& GetAuthor() const noexcept
 		{
 			return mAuthor;
@@ -42,8 +48,9 @@ namespace Strawberry::Discord::Event
 		MessageCreate() = default;
 
 	private:
-		Entity::User mAuthor;
-		Snowflake    mChannelID;
-		std::string  mContents;
+		Core::Optional<Snowflake> mGuildID;
+		Entity::User              mAuthor;
+		Snowflake                 mChannelID;
+		std::string               mContents;
 	};
 }

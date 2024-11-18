@@ -286,8 +286,7 @@ namespace Strawberry::Discord
     Core::Optional<const Entity::Channel*> Bot::FetchChannel(const Snowflake& id)
     {
         auto channelInfo = GetEntity("/channels/{}", id.AsString()).Unwrap();
-        mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap());
-        return &mChannels.at(id);
+        return &mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap()).first->second;
     }
 
 
@@ -303,12 +302,30 @@ namespace Strawberry::Discord
         }
     }
 
+    Core::Optional<const Entity::User*> Bot::GetUser(const Snowflake& id) const
+    {
+        if (auto iter = mUsers.find(id); iter != mUsers.end())
+        {
+            return &iter->second;
+        }
+        return Core::NullOpt;
+    }
+
+    Core::Optional<const Entity::User*> Bot::FetchUser(const Snowflake& id)
+    {
+        auto userInfo = GetEntity("/users/{}", id).Unwrap();
+        return &mUsers.insert_or_assign(id, Entity::User::Parse(userInfo).Unwrap()).first->second;
+    }
+
+    Core::Optional<const Entity::VoiceState> Bot::FetchVoiceState(const Snowflake& guildID, const Snowflake& userID)
+    {
+        return GetEntity("/guilds/{}/voice-states/{}", guildID, userID).Map([](auto&& x){ return Entity::VoiceState::Parse(x).Unwrap(); }).Unwrap();
+    }
 
     void Bot::SendMessage(Snowflake channel, const std::string& message)
     {
         nlohmann::json json;
         json["content"] = message;
-
         PostRequest(json, "/channels/{}/messages", channel).Unwrap();
     }
 

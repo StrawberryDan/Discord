@@ -11,6 +11,7 @@
 #include "Strawberry/Discord/Voice/Connection.hpp"
 #include "Strawberry/Discord/Events/MessageCreate.hpp"
 #include "Strawberry/Discord/Entities/User.hpp"
+#include "Strawberry/Discord/Entities/VoiceState.hpp"
 // Strawberry Core
 #include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
@@ -30,8 +31,7 @@ namespace Strawberry::Discord
 	//==================================================================================================================
 	//  Type Aliases
 	//------------------------------------------------------------------------------------------------------------------
-	using GuildList        = std::unordered_map<Snowflake, Core::Optional<Entity::Guild>>;
-	using ChannelList      = std::unordered_map<Snowflake, Core::Optional<Entity::Channel>>;
+	using UserList         = std::unordered_map<Snowflake, Entity::User>;
 	using GuildList        = std::unordered_map<Snowflake, Entity::Guild>;
 	using ChannelList      = std::unordered_map<Snowflake, Entity::Channel>;
 	using EventBroadcaster = Core::IO::ChannelBroadcaster<
@@ -95,11 +95,13 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> FetchChannels(const Snowflake& guildId);
 		std::unordered_set<Snowflake> GetChannels(const Snowflake& guildId) const;
 		// Get the channel with the given ID.
-		const Entity::Channel* FetchChannel(const Snowflake& id);
-		const Entity::Channel* GetChannel(const Snowflake& id) const;
 		Core::Optional<const Entity::Channel*> FetchChannel(const Snowflake& id);
 		Core::Optional<const Entity::Channel*> GetChannel(const Snowflake& id) const;
-
+		// Get user with the given ID
+		Core::Optional<const Entity::User*> FetchUser(const Snowflake& id);
+		Core::Optional<const Entity::User*> GetUser(const Snowflake& id) const;
+		// Get User Voice State
+		Core::Optional<const Entity::VoiceState> FetchVoiceState(const Snowflake& guildID, const Snowflake& userID);
 
 
 		void SendMessage(Snowflake channel, const std::string& message);
@@ -149,6 +151,7 @@ namespace Strawberry::Discord
 		std::unique_ptr<Voice::Connection> mVoiceConnection;
 
 		// Caches
+		UserList    mUsers;
 		GuildList   mGuilds;
 		ChannelList mChannels;
 	};

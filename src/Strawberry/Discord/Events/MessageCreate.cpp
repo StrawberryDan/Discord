@@ -15,9 +15,10 @@ namespace Strawberry::Discord
 		Core::AssertEQ(json["t"], "MESSAGE_CREATE");
 
 		MessageCreate event;
-		event.mContents = json["d"]["content"];
+		event.mGuildID   = Snowflake(std::string(json["d"]["guild_id"]));
+		event.mContents  = json["d"]["content"];
 		event.mChannelID = Snowflake(std::string(json["d"]["channel_id"]));
-        event.mAuthor = Entity::User::Parse(json["d"]["author"]).Unwrap();
+		event.mAuthor    = Entity::User::Parse(json["d"]["author"]).Unwrap();
 		return event;
 	}
 }
