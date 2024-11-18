@@ -235,15 +235,15 @@ namespace Strawberry::Discord
     {
         auto guildInfo = GetEntity("/guilds/{}", id.AsString()).Unwrap();
         mGuilds.insert_or_assign(id, Entity::Guild::Parse(guildInfo).Unwrap());
-        return &*mGuilds.at(id);
+        return &mGuilds.at(id);
     }
 
 
     const Entity::Guild* Bot::GetGuild(const Snowflake& id) const
     {
-        if (mGuilds.contains(id))
+        if (auto guild = mGuilds.find(id); guild != mGuilds.end())
         {
-            return mGuilds.at(id).AsPtr().UnwrapOr(nullptr);
+            return std::addressof(guild->second);
         }
 
         return nullptr;
@@ -262,10 +262,7 @@ namespace Strawberry::Discord
             result.insert(channel.GetId());
 
             // Cache guild id.
-            if (!mChannels.contains(channel.GetId()))
-            {
-                mChannels.insert({channel.GetId(), channel});
-            }
+            mChannels.emplace(channel.GetId(), channel);
         }
 
         return result;
@@ -290,7 +287,7 @@ namespace Strawberry::Discord
     {
         auto channelInfo = GetEntity("/channels/{}", id.AsString()).Unwrap();
         mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap());
-        return &*mChannels.at(id);
+        return &mChannels.at(id);
     }
 
 
@@ -298,7 +295,7 @@ namespace Strawberry::Discord
     {
         if (mChannels.contains(id))
         {
-            return mChannels.at(id).AsPtr().UnwrapOr(nullptr);
+            return std::addressof(mChannels.at(id));
         }
         else
         {

@@ -32,6 +32,8 @@ namespace Strawberry::Discord
 	//------------------------------------------------------------------------------------------------------------------
 	using GuildList        = std::unordered_map<Snowflake, Core::Optional<Entity::Guild>>;
 	using ChannelList      = std::unordered_map<Snowflake, Core::Optional<Entity::Channel>>;
+	using GuildList        = std::unordered_map<Snowflake, Entity::Guild>;
+	using ChannelList      = std::unordered_map<Snowflake, Entity::Channel>;
 	using EventBroadcaster = Core::IO::ChannelBroadcaster<
 		Event::Ready,
 		Event::GuildCreate,
@@ -72,7 +74,7 @@ namespace Strawberry::Discord
 		// Accessor for the voice connection.
 		Core::Optional<Voice::Connection*> GetVoiceConnection()
 		{
-			return mVoiceConnection ? mVoiceConnection.get() : nullptr;
+			return mVoiceConnection.get();
 		}
 
 
@@ -95,6 +97,7 @@ namespace Strawberry::Discord
 		// Get the channel with the given ID.
 		const Entity::Channel* FetchChannel(const Snowflake& id);
 		const Entity::Channel* GetChannel(const Snowflake& id) const;
+
 
 
 		void SendMessage(Snowflake channel, const std::string& message);
