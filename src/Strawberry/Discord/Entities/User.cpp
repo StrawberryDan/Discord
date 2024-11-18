@@ -7,9 +7,9 @@
 //======================================================================================================================
 //		Method Definitions
 //----------------------------------------------------------------------------------------------------------------------
-namespace Strawberry::Discord
+namespace Strawberry::Discord::Entity
 {
-	Core::Optional<User> User::Parse(const nlohmann::json& json)
+	Core::Result<User, Error> User::Parse(const nlohmann::json& json)
 	{
 		User user;
 		user.mID = Snowflake(std::string(json["id"]));

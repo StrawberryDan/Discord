@@ -2,48 +2,27 @@
 //======================================================================================================================
 //		Includes
 //----------------------------------------------------------------------------------------------------------------------
-#include <nlohmann/json.hpp>
-#include "Strawberry/Core/Types/Result.hpp"
 #include "Strawberry/Discord/Error.hpp"
-#include "Strawberry/Discord/Entities/Channel.hpp"
 #include "Strawberry/Discord/Entities/User.hpp"
-
+// Core
+#include "Strawberry/Core/Types/Result.hpp"
+// JSON
+#include "nlohmann/json.hpp"
 
 //======================================================================================================================
 //		Class Declaration
 //----------------------------------------------------------------------------------------------------------------------
-namespace Strawberry::Discord::Event
+namespace Strawberry::Discord::Entity
 {
-	class MessageCreate
+	class GuildMember
 	{
 	public:
-		// Constructors
-		static Core::Result<MessageCreate, Error> Parse(const nlohmann::json& json);
-
-
-		const Entity::User& GetAuthor() const noexcept
-		{
-			return mAuthor;
-		}
-
-
-		const Snowflake& GetChannelID() const noexcept
-		{
-			return mChannelID;
-		}
-
-
-		const std::string& GetContent() const noexcept
-		{
-			return mContents;
-		}
+		static Core::Result<GuildMember, Error> Parse(const nlohmann::json& json) noexcept;
 
 	protected:
-		MessageCreate() = default;
+		GuildMember() = default;
 
 	private:
-		Entity::User mAuthor;
-		Snowflake    mChannelID;
-		std::string  mContents;
+		Core::Optional<User> mUser;
 	};
 }

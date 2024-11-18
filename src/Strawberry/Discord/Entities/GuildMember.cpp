@@ -1,23 +1,20 @@
 //======================================================================================================================
 //		Includes
 //----------------------------------------------------------------------------------------------------------------------
-#include "MessageCreate.hpp"
-#include "Strawberry/Core/IO/Error.hpp"
+#include "GuildMember.hpp"
 
 
 //======================================================================================================================
 //		Method Definitions
 //----------------------------------------------------------------------------------------------------------------------
-namespace Strawberry::Discord
+namespace Strawberry::Discord::Entity
 {
-	Core::Result<Event::MessageCreate, Error> Event::MessageCreate::Parse(const nlohmann::json& json)
+	Core::Result<GuildMember, Error> GuildMember::Parse(const nlohmann::json& json) noexcept
 	{
-		Core::AssertEQ(json["t"], "MESSAGE_CREATE");
+		GuildMember guildMember;
 
-		MessageCreate event;
-		event.mContents = json["d"]["content"];
-		event.mChannelID = Snowflake(std::string(json["d"]["channel_id"]));
-        event.mAuthor = Entity::User::Parse(json["d"]["author"]).Unwrap();
-		return event;
+		guildMember.mUser = User::Parse(json["user"]);
+
+		return guildMember;
 	}
 }

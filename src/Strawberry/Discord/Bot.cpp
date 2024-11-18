@@ -33,7 +33,7 @@ namespace Strawberry::Discord
         mGateway = Core::SharedMutex(
             Gateway::Gateway::Connect(endpoint, mToken, mIntents).Unwrap());
         nlohmann::json identityJSON = GetEntity("/users/@me").Unwrap();
-        mUser = User::Parse(identityJSON).Unwrap();
+        mUser = Entity::User::Parse(identityJSON).Unwrap();
     }
 
 
