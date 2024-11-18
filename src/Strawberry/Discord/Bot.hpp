@@ -89,14 +89,16 @@ namespace Strawberry::Discord
 		std::unordered_set<Snowflake> FetchGuilds();
 		std::unordered_set<Snowflake> GetGuilds() const;
 		// Retrieves guild data from server or from cache.
-		const Entity::Guild* FetchGuild(const Snowflake& id);
-		const Entity::Guild* GetGuild(const Snowflake& id) const;
+		Core::Optional<const Entity::Guild*> FetchGuild(const Snowflake& id);
+		Core::Optional<const Entity::Guild*> GetGuild(const Snowflake& id) const;
 		// Retrieves the channels in the given guild.
 		std::unordered_set<Snowflake> FetchChannels(const Snowflake& guildId);
 		std::unordered_set<Snowflake> GetChannels(const Snowflake& guildId) const;
 		// Get the channel with the given ID.
 		const Entity::Channel* FetchChannel(const Snowflake& id);
 		const Entity::Channel* GetChannel(const Snowflake& id) const;
+		Core::Optional<const Entity::Channel*> FetchChannel(const Snowflake& id);
+		Core::Optional<const Entity::Channel*> GetChannel(const Snowflake& id) const;
 
 
 

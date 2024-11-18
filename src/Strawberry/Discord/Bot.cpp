@@ -231,7 +231,7 @@ namespace Strawberry::Discord
     }
 
 
-    const Entity::Guild* Bot::FetchGuild(const Snowflake& id)
+    Core::Optional<const Entity::Guild*> Bot::FetchGuild(const Snowflake& id)
     {
         auto guildInfo = GetEntity("/guilds/{}", id.AsString()).Unwrap();
         mGuilds.insert_or_assign(id, Entity::Guild::Parse(guildInfo).Unwrap());
@@ -239,7 +239,7 @@ namespace Strawberry::Discord
     }
 
 
-    const Entity::Guild* Bot::GetGuild(const Snowflake& id) const
+    Core::Optional<const Entity::Guild*> Bot::GetGuild(const Snowflake& id) const
     {
         if (auto guild = mGuilds.find(id); guild != mGuilds.end())
         {
@@ -283,7 +283,7 @@ namespace Strawberry::Discord
     }
 
 
-    const Entity::Channel* Bot::FetchChannel(const Snowflake& id)
+    Core::Optional<const Entity::Channel*> Bot::FetchChannel(const Snowflake& id)
     {
         auto channelInfo = GetEntity("/channels/{}", id.AsString()).Unwrap();
         mChannels.insert_or_assign(id, Entity::Channel::Parse(channelInfo).Unwrap());
@@ -291,7 +291,7 @@ namespace Strawberry::Discord
     }
 
 
-    const Entity::Channel* Bot::GetChannel(const Snowflake& id) const
+    Core::Optional<const Entity::Channel*> Bot::GetChannel(const Snowflake& id) const
     {
         if (mChannels.contains(id))
         {
@@ -332,8 +332,7 @@ namespace Strawberry::Discord
         auto http = mHTTPS.Lock();
         http->SendRequest(request);
 
-        HTTP::Response response = http->Receive();
-        switch (response.GetStatus())
+        switch (HTTP::Response response = http->Receive(); response.GetStatus())
         {
             case 200: try
             {
