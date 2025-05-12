@@ -96,7 +96,7 @@ namespace Strawberry::Discord
 
     bool Bot::OnGatewayMessage(const Websocket::Message& message)
     {
-        auto json = message.AsJSON().UnwrapOr({});
+        auto json = message.AsJSON().UnwrapOr(nlohmann::json{});
         if (json.is_null())
         {
             return false;
