@@ -46,8 +46,11 @@ namespace Strawberry::Discord::Gateway
         }
         Core::Assert(helloMessage.IsOk());
 
-        auto helloJson = helloMessage.Unwrap().AsJSON().Unwrap();
-        Core::Assert(helloJson["op"] == 10);
+        auto helloJson = helloMessage.Value().AsJSON().Value();
+
+        Core::Assert(helloJson.is_object());
+        Core::Assert(helloJson.contains("op"));
+        Core::AssertEQ(helloJson["op"], 10);
 
         if (mWSS)
         {
