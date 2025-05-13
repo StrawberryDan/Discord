@@ -12,24 +12,25 @@ namespace Strawberry::Discord::Voice
         , mInterval(interval)
         , mRandomDevice(std::make_unique<std::random_device>())
     {
-        auto startUp = [this](Core::RepeatingTask* thread) mutable
+        auto startUp = [this]() mutable
         {
             std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
             std::mt19937_64                        rng((*mRandomDevice)());
             double                                 jitter = jitterDist(rng);
 
             mClock.Restart();
-            while (mClock.Read() < jitter && thread->IsRunning())
+            while (mClock.Read() < jitter && mThread->IsRunning())
             {
                 std::this_thread::yield();
             }
         };
 
-        mThread.Emplace(startUp,
-                        [this, count = uint32_t(0)]() mutable
-                        {
-                            Tick(count);
-                        });
+        mThread.Emplace(
+            [this, count = uint32_t(0)]() mutable
+            {
+                Tick(count);
+            },
+            std::move(startUp));
     }
 
 

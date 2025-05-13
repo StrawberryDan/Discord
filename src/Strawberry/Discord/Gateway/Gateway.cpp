@@ -29,14 +29,13 @@ namespace Strawberry::Discord::Gateway
 
 
     Gateway::Gateway(const Net::Endpoint& endpoint, const std::string& token, Intent intent)
-        : mWSS(Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").IntoOptional().Map(
-            [](Net::Websocket::WSSClient&& x)
-            {
-                return Core::SharedMutex(std::move(x));
-            }).Unwrap())
-        , mHeartbeat()
-        , mToken(token)
-        , mIntent(intent)
+        : mWSS(Net::Websocket::WSSClient::Connect(endpoint, "/?v=10&encoding=json").Map(
+              [](Net::Websocket::WSSClient&& x)
+              {
+                  return Core::SharedMutex(std::move(x));
+              }).Unwrap())
+          , mToken(token)
+          , mIntent(intent)
     {
         auto helloMessage = Receive();
         while (!helloMessage && helloMessage.Err() == Net::Error::NoData)
@@ -54,7 +53,7 @@ namespace Strawberry::Discord::Gateway
 
         if (mWSS)
         {
-            mHeartbeat.Emplace(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
+            mHeartbeat = std::make_unique<Heartbeat>(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
             nlohmann::json identifier;
             identifier["op"]                         = 2;
