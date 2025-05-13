@@ -10,25 +10,26 @@ namespace Strawberry::Discord::Gateway
         : mWSS(std::move(wss))
         , mInterval(interval)
     {
-        auto startUp = [self = GetReflexivePointer()](Core::RepeatingTask* thread) mutable
+        auto startUp = [this]() mutable
         {
             std::random_device                     rd;
             std::uniform_real_distribution<double> jitterDist(0.0, 0.5);
             std::mt19937_64                        rng(rd());
             double                                 jitter = jitterDist(rng);
 
-            self->mClock.Restart();
-            while (self->mClock.Read() < jitter && thread->IsRunning())
+            mClock.Restart();
+            while (mClock.Read() < jitter && mThread->IsRunning())
             {
                 std::this_thread::yield();
             }
         };
 
-        mThread.Emplace(startUp,
-                        [self = GetReflexivePointer(), count = uint32_t(0)]() mutable
-                        {
-                            self->Tick(count);
-                        });
+        mThread.Emplace(
+            [this, count = uint32_t(0)]() mutable
+            {
+                Tick(count);
+            },
+            std::move(startUp));
     }
 
 
