@@ -12,8 +12,6 @@
 #include "Strawberry/Discord/Snowflake.hpp"
 #include "Strawberry/Discord/Voice/Heartbeat.hpp"
 // Core
-#include "Strawberry/Core/Collection/CircularBuffer.hpp"
-#include "Strawberry/Net/RTP/Packet.hpp"
 #include "Strawberry/Net/Socket/UDPSocket.hpp"
 #include "Strawberry/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
