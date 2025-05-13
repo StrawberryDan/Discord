@@ -13,7 +13,9 @@ namespace Strawberry::Discord::Entity
 	{
 		GuildMember guildMember;
 
-		guildMember.mUser = User::Parse(json["user"]);
+		auto userParse = User::Parse(json["user"]);
+		if (!userParse) return userParse.Err();
+		guildMember.mUser = userParse.Unwrap();
 
 		return guildMember;
 	}
