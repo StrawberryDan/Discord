@@ -37,7 +37,7 @@ namespace Strawberry::Discord::Voice
 		voiceStateUpdate["d"]["channel_id"] = mChannel.AsString();
 		voiceStateUpdate["d"]["self_mute"] = false;
 		voiceStateUpdate["d"]["self_deaf"] = false;
-		gatewayLock->Send(Net::Websocket::Message(voiceStateUpdate)).Unwrap();
+		gatewayLock->Send(Message(voiceStateUpdate)).Unwrap();
 
 		while (true)
 		{
@@ -157,6 +157,8 @@ namespace Strawberry::Discord::Voice
 
 				if (frame)
 				{
+					Core::Logging::Trace("Sending Discord Voice RTP Voice Package");
+
 					Core::Assert(mIsSpeaking);
 					mOpusEncoder.Send(frame.Unwrap());
 					for (auto packet : mOpusEncoder.Receive())
