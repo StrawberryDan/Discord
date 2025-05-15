@@ -18,7 +18,7 @@
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Types/Optional.hpp"
 // Standard Library
-#include <Codec/Audio/Encoder.hpp>
+#include <Codec/Audio/AudioEncoder.hpp>
 #include <string>
 
 namespace Strawberry::Discord::Voice
@@ -93,7 +93,7 @@ namespace Strawberry::Discord::Voice
 
             /// Voice Packet Buffer
             Codec::Audio::Mixer   mAudioMixer;
-            Codec::Audio::Encoder mOpusEncoder;
+            Codec::Audio::AudioEncoder mOpusEncoder;
 
 
             Core::Optional<Core::RepeatingTask> mVoiceSendingThread;
