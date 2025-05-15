@@ -96,7 +96,10 @@ namespace Strawberry::Discord::Voice
             Codec::Audio::AudioEncoder mOpusEncoder;
 
 
+
             Core::Optional<Core::RepeatingTask> mVoiceSendingThread;
+            std::chrono::steady_clock mClock;
+            std::chrono::steady_clock::time_point mNextSendTime = mClock.now();
             uint32_t                            mLastSequenceNumber = 0;
             uint32_t                            mLastTimestamp      = 0;
     };

@@ -8,7 +8,6 @@
 #include "Strawberry/Net/Websocket/Client.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Timing/Clock.hpp"
 
 namespace Strawberry::Discord::Gateway
 {
@@ -35,14 +34,17 @@ namespace Strawberry::Discord::Gateway
             Net::Error GetError() const;
 
         private:
-            void Tick(uint32_t& count);
+            void Tick();
 
 
             const double                                 mInterval;
-            Core::Clock                                  mClock;
             Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
             Core::Optional<Core::Mutex<size_t> >         mLastSequenceNumber;
             Core::Optional<Core::RepeatingTask>          mThread;
             Core::Optional<Net::Error>                   mError;
+
+
+            std::chrono::steady_clock mClock;
+            std::chrono::steady_clock::time_point mNextHeartbeatTime = mClock.now();
     };
 } // namespace Strawberry::Discord::Gateway
