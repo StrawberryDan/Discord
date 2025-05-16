@@ -1,4 +1,4 @@
-#include "Strawberry/Discord/Voice/Heartbeat.hpp"
+#include "Strawberry/Discord/Voice/VoiceConnectionHeartbeat.hpp"
 
 
 #include <random>
@@ -7,7 +7,7 @@
 
 namespace Strawberry::Discord::Voice
 {
-	Heartbeat::Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval)
+	VoiceConnectionHeartbeat::VoiceConnectionHeartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval)
 		: mWSS(std::move(wss))
 		  , mInterval(interval)
 		  , mRandomDevice(std::make_unique<std::random_device>())
@@ -18,7 +18,7 @@ namespace Strawberry::Discord::Voice
 			std::mt19937_64 rng((*mRandomDevice)());
 			double jitter = jitterDist(rng);
 
-			mNextHeartbeatTime = mClock.now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+			mNextHeartbeatTime = std::chrono::steady_clock::now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
 				std::chrono::duration<double>(jitter));
 		};
 
@@ -31,9 +31,9 @@ namespace Strawberry::Discord::Voice
 	}
 
 
-	void Heartbeat::Tick()
+	void VoiceConnectionHeartbeat::Tick()
 	{
-		if (mClock.now() > mNextHeartbeatTime)
+		if (std::chrono::steady_clock::now() > mNextHeartbeatTime)
 		{
 			nlohmann::json message;
 			message["op"] = 3;
@@ -52,7 +52,7 @@ namespace Strawberry::Discord::Voice
 				return;
 			}
 
-			mNextHeartbeatTime = mClock.now() + duration_cast<std::chrono::steady_clock::duration>(
+			mNextHeartbeatTime = std::chrono::steady_clock::now() + duration_cast<std::chrono::steady_clock::duration>(
 				std::chrono::duration<double>(0.9 * mInterval));
 		}
 		else

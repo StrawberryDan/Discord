@@ -53,7 +53,7 @@ namespace Strawberry::Discord::Gateway
 
         if (mWSS)
         {
-            mHeartbeat = std::make_unique<Heartbeat>(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
+            mHeartbeat = std::make_unique<GatewayConnectionHeartbeat>(mWSS, static_cast<double>(helloJson["d"]["heartbeat_interval"]) / 1000.0);
 
             nlohmann::json identifier;
             identifier["op"]                         = 2;

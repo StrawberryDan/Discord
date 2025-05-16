@@ -10,7 +10,7 @@
 // Discord
 #include "Strawberry/Discord/Gateway/Gateway.hpp"
 #include "Strawberry/Discord/Snowflake.hpp"
-#include "Strawberry/Discord/Voice/Heartbeat.hpp"
+#include "Strawberry/Discord/Voice/VoiceConnectionHeartbeat.hpp"
 // Core
 #include "Strawberry/Net/Socket/UDPSocket.hpp"
 #include "Strawberry/Net/Websocket/Client.hpp"
@@ -74,7 +74,7 @@ namespace Strawberry::Discord::Voice
             /// Connections
             Core::SharedMutex<Gateway::Gateway>          mGateway;
             Core::SharedMutex<Net::Websocket::WSSClient> mVoiceWSS;
-            Core::Optional<Heartbeat>                    mVoiceWSSHeartbeat;
+            Core::Optional<VoiceConnectionHeartbeat>                    mVoiceWSSHeartbeat;
             Core::Optional<Net::Endpoint>                mUDPVoiceEndpoint;
             Core::Optional<Net::Socket::UDPSocket>       mUDPVoiceConnection;
             Core::Optional<Codec::SodiumEncrypter>       mSodiumEncrypter;

@@ -40,14 +40,14 @@ if (NOT TARGET StrawberryDiscord)
         src/Strawberry/Discord/Events/Ready.hpp
         src/Strawberry/Discord/Gateway/Gateway.cpp
         src/Strawberry/Discord/Gateway/Gateway.hpp
-        src/Strawberry/Discord/Gateway/Heartbeat.cpp
-        src/Strawberry/Discord/Gateway/Heartbeat.hpp
+		src/Strawberry/Discord/Gateway/GatewayConnectionHeartbeat.cpp
+		src/Strawberry/Discord/Gateway/GatewayConnectionHeartbeat.hpp
         src/Strawberry/Discord/Snowflake.cpp
         src/Strawberry/Discord/Snowflake.hpp
         src/Strawberry/Discord/Voice/Connection.cpp
         src/Strawberry/Discord/Voice/Connection.hpp
-        src/Strawberry/Discord/Voice/Heartbeat.cpp
-        src/Strawberry/Discord/Voice/Heartbeat.hpp
+        src/Strawberry/Discord/Voice/VoiceConnectionHeartbeat.cpp
+        src/Strawberry/Discord/Voice/VoiceConnectionHeartbeat.hpp
     )
     new_strawberry_library(NAME StrawberryDiscord SOURCE ${StrawberryDiscord_Source})
     target_include_directories(StrawberryDiscord PUBLIC src)

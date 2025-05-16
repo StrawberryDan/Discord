@@ -12,14 +12,14 @@
 
 namespace Strawberry::Discord::Voice
 {
-	class Heartbeat
+	class VoiceConnectionHeartbeat
 	{
 	public:
-		Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
-		Heartbeat(const Heartbeat&) = delete;
-		Heartbeat(Heartbeat&&) = delete;
-		Heartbeat& operator=(const Heartbeat&) = delete;
-		Heartbeat& operator=(Heartbeat&&) = delete;
+		VoiceConnectionHeartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
+		VoiceConnectionHeartbeat(const VoiceConnectionHeartbeat&) = delete;
+		VoiceConnectionHeartbeat(VoiceConnectionHeartbeat&&) = delete;
+		VoiceConnectionHeartbeat& operator=(const VoiceConnectionHeartbeat&) = delete;
+		VoiceConnectionHeartbeat& operator=(VoiceConnectionHeartbeat&&) = delete;
 
 
 		bool IsOk() const
@@ -43,7 +43,6 @@ namespace Strawberry::Discord::Voice
 		Core::Optional<Net::Error> mError;
 
 
-		std::chrono::steady_clock mClock;
-		std::chrono::steady_clock::time_point mNextHeartbeatTime = mClock.now();
+		std::chrono::steady_clock::time_point mNextHeartbeatTime = std::chrono::steady_clock::now();
 	};
 } // namespace Strawberry::Discord::Voice

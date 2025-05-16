@@ -1,4 +1,4 @@
-#include "Strawberry/Discord/Gateway/Heartbeat.hpp"
+#include "Strawberry/Discord/Gateway/GatewayConnectionHeartbeat.hpp"
 
 
 #include <random>
@@ -6,20 +6,19 @@
 
 namespace Strawberry::Discord::Gateway
 {
-	Heartbeat::Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval)
+	GatewayConnectionHeartbeat::GatewayConnectionHeartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval)
 		: mWSS(std::move(wss))
 		  , mInterval(interval)
 	{
 		auto startUp = [this]() mutable
 		{
 			std::random_device rd;
-			std::uniform_real_distribution<double> jitterDist(0.0, 0.5);
+			std::uniform_real_distribution jitterDist(0.0, 0.5);
 			std::mt19937_64 rng(rd());
-			double jitter = jitterDist(rng);
+			std::chrono::duration<double> jitter(jitterDist(rng));
 
 
-			mNextHeartbeatTime = mClock.now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
-				std::chrono::duration<double>(jitter));
+			mNextHeartbeatTime = std::chrono::steady_clock::now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(jitter);
 		};
 
 		mThread.Emplace(
@@ -31,9 +30,9 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-	void Heartbeat::Tick()
+	void GatewayConnectionHeartbeat::Tick()
 	{
-		if (mClock.now() > mNextHeartbeatTime)
+		if (std::chrono::steady_clock::now() > mNextHeartbeatTime)
 		{
 			nlohmann::json message;
 			message["op"] = 1;
@@ -53,8 +52,8 @@ namespace Strawberry::Discord::Gateway
 				return;
 			}
 
-			mNextHeartbeatTime = mClock.now() + duration_cast<std::chrono::steady_clock::duration>(
-				std::chrono::duration<double>(0.9 * mInterval));
+			mNextHeartbeatTime = std::chrono::steady_clock::now() + duration_cast<std::chrono::steady_clock::duration>(
+				std::chrono::duration<double>(mInterval));
 		}
 		else
 		{
@@ -63,7 +62,7 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-	void Heartbeat::UpdateSequenceNumber(size_t value)
+	void GatewayConnectionHeartbeat::UpdateSequenceNumber(size_t value)
 	{
 		if (mLastSequenceNumber)
 		{
@@ -76,13 +75,13 @@ namespace Strawberry::Discord::Gateway
 	}
 
 
-	bool Heartbeat::IsOk() const
+	bool GatewayConnectionHeartbeat::IsOk() const
 	{
 		return !mError.HasValue();
 	}
 
 
-	Net::Error Heartbeat::GetError() const
+	Net::Error GatewayConnectionHeartbeat::GetError() const
 	{
 		return mError.Value();
 	}

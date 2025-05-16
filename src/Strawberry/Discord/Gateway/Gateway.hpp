@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 // Strawberry Discord
 #include "Strawberry/Discord/Intent.hpp"
-#include "Heartbeat.hpp"
+#include "GatewayConnectionHeartbeat.hpp"
 // Strawberry Core
 #include "Strawberry/Net/Endpoint.hpp"
 #include "Strawberry/Net/Websocket/Client.hpp"
@@ -66,7 +66,7 @@ namespace Strawberry::Discord::Gateway
 
 
             Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
-            std::unique_ptr<Heartbeat>                   mHeartbeat;
+            std::unique_ptr<GatewayConnectionHeartbeat>                   mHeartbeat;
             std::queue<Net::Websocket::Message>          mMessageBuffer;
             std::string                                  mResumeEndpoint;
 

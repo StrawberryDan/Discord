@@ -11,14 +11,14 @@
 
 namespace Strawberry::Discord::Gateway
 {
-    class Heartbeat
+    class GatewayConnectionHeartbeat
     {
         public:
-            Heartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
-            Heartbeat(const Heartbeat& rhs)                = delete;
-            Heartbeat& operator=(const Heartbeat& rhs)     = delete;
-            Heartbeat(Heartbeat&& rhs) noexcept            = default;
-            Heartbeat& operator=(Heartbeat&& rhs) noexcept = default;
+            GatewayConnectionHeartbeat(Core::SharedMutex<Net::Websocket::WSSClient> wss, double interval);
+            GatewayConnectionHeartbeat(const GatewayConnectionHeartbeat& rhs)                = delete;
+            GatewayConnectionHeartbeat& operator=(const GatewayConnectionHeartbeat& rhs)     = delete;
+            GatewayConnectionHeartbeat(GatewayConnectionHeartbeat&& rhs) noexcept            = default;
+            GatewayConnectionHeartbeat& operator=(GatewayConnectionHeartbeat&& rhs) noexcept = default;
 
 
             void UpdateSequenceNumber(size_t value);
@@ -44,7 +44,6 @@ namespace Strawberry::Discord::Gateway
             Core::Optional<Net::Error>                   mError;
 
 
-            std::chrono::steady_clock mClock;
-            std::chrono::steady_clock::time_point mNextHeartbeatTime = mClock.now();
+            std::chrono::steady_clock::time_point mNextHeartbeatTime = std::chrono::steady_clock::now();
     };
 } // namespace Strawberry::Discord::Gateway
