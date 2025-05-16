@@ -9,7 +9,7 @@
 #include "GatewayConnectionHeartbeat.hpp"
 // Strawberry Core
 #include "Strawberry/Net/Endpoint.hpp"
-#include "Strawberry/Net/Websocket/Client.hpp"
+#include "Strawberry/Net/Websocket/WebsocketClient.hpp"
 #include "Strawberry/Core/Types/Variant.hpp"
 // Standard Library
 #include <queue>

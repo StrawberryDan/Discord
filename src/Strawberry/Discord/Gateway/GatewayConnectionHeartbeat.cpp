@@ -32,14 +32,13 @@ namespace Strawberry::Discord::Gateway
 
 	void GatewayConnectionHeartbeat::Tick()
 	{
-		if (std::chrono::steady_clock::now() > mNextHeartbeatTime)
-		{
-			nlohmann::json message;
-			message["op"] = 1;
-			message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
-			Net::Websocket::Message wssMessage(message.dump(1, '\t'));
+		const auto NOW = std::chrono::steady_clock::now();
 
-			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
+		if (NOW > mNextHeartbeatTime)
+		{
+			Net::Websocket::Message heartBeatMessage = CreateHeartbeatMessage();
+			auto sendResult = mWSS.Lock()->SendMessage(heartBeatMessage);
+
 			if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset)
 			{
 				Core::Logging::Warning("WSS Connection reset in gateway when sending heartbeat!");
@@ -52,13 +51,26 @@ namespace Strawberry::Discord::Gateway
 				return;
 			}
 
-			mNextHeartbeatTime = std::chrono::steady_clock::now() + duration_cast<std::chrono::steady_clock::duration>(
+			mNextHeartbeatTime = NOW + duration_cast<std::chrono::steady_clock::duration>(
 				std::chrono::duration<double>(mInterval));
 		}
 		else
 		{
 			std::this_thread::sleep_until(mNextHeartbeatTime);
 		}
+	}
+
+
+	Net::Websocket::Message GatewayConnectionHeartbeat::CreateHeartbeatMessage()
+	{
+		auto lastSequenceNumber = mLastSequenceNumber.Lock();
+
+		nlohmann::json json;
+		json["op"] = 1;
+		json["d"] = nlohmann::json(nullptr);
+		if (lastSequenceNumber->HasValue()) json["d"] = lastSequenceNumber->Value();
+		Net::Websocket::Message message(json.dump());
+		return message;
 	}
 
 

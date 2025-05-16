@@ -5,7 +5,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Core
-#include "Strawberry/Net/Websocket/Client.hpp"
+#include "Strawberry/Net/Websocket/WebsocketClient.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 
@@ -36,10 +36,12 @@ namespace Strawberry::Discord::Gateway
         private:
             void Tick();
 
+            Net::Websocket::Message CreateHeartbeatMessage();
+
 
             const double                                 mInterval;
             Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
-            Core::Optional<Core::Mutex<size_t> >         mLastSequenceNumber;
+            Core::Mutex<Core::Optional<size_t>>          mLastSequenceNumber;
             Core::Optional<Core::RepeatingTask>          mThread;
             Core::Optional<Net::Error>                   mError;
 

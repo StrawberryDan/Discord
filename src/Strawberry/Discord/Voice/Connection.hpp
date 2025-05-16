@@ -13,7 +13,7 @@
 #include "Strawberry/Discord/Voice/VoiceConnectionHeartbeat.hpp"
 // Core
 #include "Strawberry/Net/Socket/UDPSocket.hpp"
-#include "Strawberry/Net/Websocket/Client.hpp"
+#include "Strawberry/Net/Websocket/WebsocketClient.hpp"
 #include "Strawberry/Core/Sync/Mutex.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Types/Optional.hpp"
