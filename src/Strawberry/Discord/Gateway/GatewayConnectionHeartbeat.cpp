@@ -39,7 +39,7 @@ namespace Strawberry::Discord::Gateway
 			Net::Websocket::Message heartBeatMessage = CreateHeartbeatMessage();
 			auto sendResult = mWSS.Lock()->SendMessage(heartBeatMessage);
 
-			if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset)
+			if (!sendResult && sendResult.Err().IsType<Net::ErrorConnectionReset>())
 			{
 				Core::Logging::Warning("WSS Connection reset in gateway when sending heartbeat!");
 				return;
@@ -76,14 +76,8 @@ namespace Strawberry::Discord::Gateway
 
 	void GatewayConnectionHeartbeat::UpdateSequenceNumber(size_t value)
 	{
-		if (mLastSequenceNumber)
-		{
-			(*mLastSequenceNumber->Lock()) = value;
-		}
-		else
-		{
-			mLastSequenceNumber = Core::Mutex(value);
-		}
+		auto lastSequenceNumber = mLastSequenceNumber.Lock();
+		*lastSequenceNumber = value;
 	}
 
 

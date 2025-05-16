@@ -42,7 +42,7 @@ namespace Strawberry::Discord::Voice
 		while (true)
 		{
 			auto message = gatewayLock->Receive(false);
-			if (!message && message.Err() == Net::Error::NoData)
+			if (!message && message.Err().template IsType<Net::ErrorNoData>())
 			{
 				std::this_thread::yield();
 				continue;

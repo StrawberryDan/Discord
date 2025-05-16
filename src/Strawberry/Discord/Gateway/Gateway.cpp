@@ -38,7 +38,7 @@ namespace Strawberry::Discord::Gateway
           , mIntent(intent)
     {
         auto helloMessage = Receive();
-        while (!helloMessage && helloMessage.Err() == Net::Error::NoData)
+        while (!helloMessage && helloMessage.Err().template IsType<Net::ErrorNoData>())
         {
             std::this_thread::yield();
             helloMessage = Receive();

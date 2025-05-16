@@ -70,15 +70,19 @@ namespace Strawberry::Discord
             }
             else
             {
-                switch (gatewayMessage.Err())
+                if (gatewayMessage.Err().template IsType<ErrorNoData>())
                 {
-                    case Net::Error::NoData: std::this_thread::yield();
-                        continue;
-                    case Net::Error::ConnectionReset: mRunning = false;
-                        break;
-                    case Net::Error::ProtocolError: continue;
-                    default: mGateway.Lock()->Resume();
-                        break;
+                    std::this_thread::yield();
+                }
+                else if (gatewayMessage.Err().template IsType<ErrorConnectionReset>())
+                {
+                    mRunning = false;
+                    break;
+                }
+                else
+                {
+                    Core::Logging::Error("Unknown error when receiving message from discord gateway!");
+                    mGateway.Lock()->Resume();
                 }
             }
 

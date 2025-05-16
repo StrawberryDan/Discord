@@ -42,7 +42,7 @@ namespace Strawberry::Discord::Voice
 			Net::Websocket::Message wssMessage(to_string(message));
 
 			auto sendResult = mWSS.Lock()->SendMessage(wssMessage);
-			if (!sendResult && sendResult.Err() == Net::Error::ConnectionReset)
+			if (!sendResult && sendResult.Err().template IsType<Net::ErrorConnectionReset>())
 			{
 				return;
 			}
