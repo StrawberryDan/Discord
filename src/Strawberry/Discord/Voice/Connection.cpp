@@ -125,7 +125,8 @@ namespace Strawberry::Discord::Voice
 
 		mVoiceSendingThread.Emplace([this, silentSamplesSent = 0, samplesHandled = size_t(0), clock=std::chrono::steady_clock(), epoch = std::chrono::steady_clock::now()]() mutable
 		{
-			size_t requiredFramesHandledSinceEpoch = std::chrono::duration_cast<std::chrono::duration<double>>(clock.now() - epoch).count() / 0.02 + 1;
+			const double secondsSinceEpoch = std::chrono::duration_cast<std::chrono::duration<double>>(clock.now() - epoch).count();
+			const size_t requiredFramesHandledSinceEpoch = secondsSinceEpoch / 0.02 + 1;
 
 			while (samplesHandled < requiredFramesHandledSinceEpoch)
 			{
@@ -157,7 +158,7 @@ namespace Strawberry::Discord::Voice
 
 				if (frame)
 				{
-					Core::Logging::Trace("Sending Discord Voice RTP Voice Package");
+					Core::Logging::Trace("Sending Discord Voice RTP Packet");
 
 					Core::Assert(mIsSpeaking);
 					mOpusEncoder.Send(frame.Unwrap());
