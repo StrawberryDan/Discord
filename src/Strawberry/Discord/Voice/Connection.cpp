@@ -218,7 +218,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["delay"] = 0;
 			speaking["d"]["ssrc"] = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(Net::Websocket::Message(speaking)).Unwrap();
-			Core::Logging::Trace("{}:{}\tSent Start Speaking Message", __FILE__, __LINE__);
+			Core::Logging::Trace("Sent Start Speaking Message");
 		}
 		else if (!speaking && mIsSpeaking)
 		{
@@ -228,7 +228,7 @@ namespace Strawberry::Discord::Voice
 			speaking["d"]["delay"] = 0;
 			speaking["d"]["ssrc"] = *mSSRC;
 			mVoiceWSS.Lock()->SendMessage(Net::Websocket::Message(speaking)).Unwrap();
-			Core::Logging::Trace("{}:{}\tSent Stop Speaking Message", __FILE__, __LINE__);
+			Core::Logging::Trace("Sent Stop Speaking Message");
 		}
 
 		mIsSpeaking = speaking;
