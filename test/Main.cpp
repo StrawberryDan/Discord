@@ -1,4 +1,4 @@
-#include "Discord/Bot.hpp"
+#include "Strawberry/Discord/Bot.hpp"
 #include "Strawberry/Net/Socket/API.hpp"
 
 

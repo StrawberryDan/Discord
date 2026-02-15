@@ -100,7 +100,7 @@ namespace Strawberry::Discord::Voice
 			nlohmann::json protocolSelect;
 			protocolSelect["op"] = 1;
 			protocolSelect["d"]["protocol"] = "udp";
-			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress()->AsString();
+			protocolSelect["d"]["data"]["address"] = mUDPVoiceEndpoint->GetAddress().AsString();
 			protocolSelect["d"]["data"]["port"] = mUDPVoiceEndpoint->GetPort();
 			protocolSelect["d"]["data"]["mode"] = voiceMode;
 			voiceWSS->SendMessage(Net::Websocket::Message(protocolSelect)).Unwrap();

@@ -39,7 +39,7 @@ namespace Strawberry::Discord::Gateway
             Net::Websocket::Message CreateHeartbeatMessage();
 
 
-            const double                                 mInterval;
+            double                                       mInterval;
             Core::SharedMutex<Net::Websocket::WSSClient> mWSS;
             Core::Mutex<Core::Optional<size_t>>          mLastSequenceNumber;
             Core::Optional<Core::RepeatingTask>          mThread;
